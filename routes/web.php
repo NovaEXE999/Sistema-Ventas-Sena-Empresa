@@ -30,3 +30,11 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 });
+
+Route::get('/pruebasbuscador', function () {
+    return view('pruebasbuscador');
+})->name('pruebasbuscador');
+
+Route::get('/pruebaslista', function () {
+    return view('pruebaslista');
+})->name('pruebaslista');

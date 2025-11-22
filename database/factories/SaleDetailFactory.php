@@ -17,7 +17,10 @@ class SaleDetailFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'quantity' => $this->faker->numberBetween(1, 30),
+            'total' => $this->faker->randomFloat(2, 10000, 5000000),
+            'product_id' => $this->faker->numberBetween(2, 10),
+            'sale_id' => $this->faker->numberBetween(2, 10)
         ];
     }
 }

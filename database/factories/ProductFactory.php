@@ -21,11 +21,11 @@ class ProductFactory extends Factory
 
         return [
             
-            'name' => $this->faker->unique()->randomElement($opProducts),
+            'name' => $this->faker->randomElement($opProducts),
             'quantity' => $this->faker->numberBetween(1, 100),
-            'price' => $this->faker->numberBetween(1000.00, 999999.00),
-            'category_id' => $this->faker->unique()->numberBetween(1, 10),
-            'measure_id' => $this->faker->numberBetween(1, 10),
+            'price' => $this->faker->randomFloat(2, 10000, 5000000),
+            'category_id' => $this->faker->numberBetween(2, 10),
+            'measure_id' => $this->faker->numberBetween(2, 10),
         ];
     }
 }

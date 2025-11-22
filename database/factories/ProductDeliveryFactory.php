@@ -17,7 +17,10 @@ class ProductDeliveryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'date' => $this->faker->dateTimeThisMonth(),
+            'delivered_amount' => $this->faker->numberBetween(100, 1000),
+            'product_id' => $this->faker->numberBetween(2, 10),
+            'provider_id' => $this->faker->numberBetween(2, 10),
         ];
     }
 }

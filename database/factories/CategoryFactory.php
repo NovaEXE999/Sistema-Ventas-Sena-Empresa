@@ -16,7 +16,7 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $opCategories = ["Lacteos y Huevos", "Verduras", "Mekatos", "Entretenimiento", "Deportes", "Carnes Frias"];
+        $opCategories = ['Lacteos y Huevos', 'Verduras', 'Mekatos', 'Entretenimiento', 'Deportes', 'Carnes Frias'];
 
         return [
             //

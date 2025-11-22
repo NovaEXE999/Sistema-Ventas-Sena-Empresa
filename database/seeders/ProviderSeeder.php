@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Provider;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,10 @@ class ProviderSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $provider = new Provider();
+
+        $provider->name = 'Jabones S.A.S';
+
+        $provider->save();
     }
 }
