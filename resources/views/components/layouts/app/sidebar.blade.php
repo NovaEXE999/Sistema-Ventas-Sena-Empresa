@@ -14,12 +14,14 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Productos') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Clientes') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Ventas') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Reportes') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Inventario') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Acerca de') }}</flux:navlist.item>
+                    <flux:navlist.item icon="gift" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>Productos</flux:navlist.item>
+                    <flux:navlist.item icon="currency-dollar" :href="route('sales.index')" :current="request()->routeIs('sales.*')" wire:navigate>Ventas</flux:navlist.item>
+                    <flux:navlist.item icon="gift" :href="route('categoriesandmeasures.index')" :current="request()->routeIs('categoriesandmeasures.*')" wire:navigate>Categorias y Medidas</flux:navlist.item>
+                    <flux:navlist.item icon="user" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>Clientes</flux:navlist.item>
+                    <flux:navlist.item icon="user" :href="route('providers.index')" :current="request()->routeIs('providers.*')" wire:navigate>Proveedores</flux:navlist.item>
+                    <flux:navlist.item icon="truck" :href="route('productdeliveries.index')" :current="request()->routeIs('productdeliveries.*')" wire:navigate>Inventario</flux:navlist.item>
+                    <flux:navlist.item icon="document" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>Reportes</flux:navlist.item>
+                    <flux:navlist.item icon="information-circle" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Acerca de</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
