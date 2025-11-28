@@ -1,16 +1,60 @@
-<div>
-    <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
+<div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
+    <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
+        <a href="{{ route('products.index')}}" wire:navigate class="flex w-fit justify-center items-center whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
 
+            Volver
+        </a>
+        <h1 class="p-4 text-center">
+            Registro de productos
+        </h1>
+    </div>
+
+    <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
         <x-form.input wire:model="name" label="Nombre" name="name" placeholder="Ingresa el nombre del producto"/>
         <x-form.input wire:model="quantity" label="Cantidad" name="quantity" placeholder="Ingresa la cantidad"/>
         <x-form.input wire:model="price" label="Precio" name="price" placeholder="Ingresa el precio"/>
-        <x-form.input wire:model="category_id" label="ID de categoria" name="category_id" placeholder="Ingresa el ID de la categoria"/>
-        <x-form.input wire:model="measure_id" label="ID de unidad de medida" name="measure_id" placeholder="Ingresa el ID de la unidad de medida"/>
+
+        {{-- Categoría --}}
+        <div class="space-y-1">
+            <x-form.input wire:model.live.debounce.300ms="categorySearch"
+                          label="Categoría" name="categorySearch" placeholder="Escribe para buscar..." />
+            @if($categoryResults)
+                <ul class="border rounded shadow-sm bg-black">
+                    @foreach($categoryResults as $cat)
+                        <li wire:click="selectCategory({{ $cat['id'] }}, '{{ $cat['name'] }}')"
+                            class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                            {{ $cat['name'] }}
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+
+        {{-- Medida --}}
+        <div class="space-y-1 mt-3">
+            <x-form.input wire:model.live.debounce.300ms="measureSearch"
+                          label="Unidad de medida" name="measureSearch" placeholder="Escribe para buscar..." />
+            @if($measureResults)
+                <ul class="border rounded shadow-sm bg-black">
+                    @foreach($measureResults as $m)
+                        <li wire:click="selectMeasure({{ $m['id'] }}, '{{ $m['name'] }}')"
+                            class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                            {{ $m['name'] }}
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+
+        @php
+            $isEdit = property_exists($this, 'product') && $this->product?->exists;
+        @endphp
         <!-- primary Button -->
         <button type="submit" class="whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-primary-dark dark:border-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark">
-            {{ request()->routeIs('products.create') ? 'Crear producto' : 'Actualizar producto' }}
+            {{ $isEdit ? 'Actualizar producto' : 'Crear producto' }}
         </button>
-
-
     </form>
 </div>
