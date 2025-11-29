@@ -15,11 +15,45 @@
 
         <x-form.input wire:model="total_value" label="Valor total" name="total_value" placeholder="Ingresa el valor total"/>
         <x-form.input wire:model="date" type="date" label="Fecha" name="date" placeholder="Selecciona la fecha"/>
-        <x-form.input wire:model="user_id" label="ID del vendedor" name="user_id" placeholder="Ingresa el ID del vendedor"/>
-        <x-form.input wire:model="client_id" label="ID del cliente" name="client_id" placeholder="Ingresa el ID del cliente"/>
+
+        {{-- Vendedor --}}
+        <div class="space-y-1">
+            <x-form.input wire:model.live.debounce.300ms="userSearch"
+                          label="Vendedor" name="userSearch" placeholder="Escribe para buscar..." />
+            @if($userResults)
+                <ul class="border rounded shadow-sm bg-black">
+                    @foreach($userResults as $user)
+                        <li wire:click="selectUser({{ $user['id'] }}, '{{ $user['name'] }}')"
+                            class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                            {{ $user['name'] }}
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+
+        {{-- Cliente --}}
+        <div class="space-y-1 mt-3">
+            <x-form.input wire:model.live.debounce.300ms="clientSearch"
+                          label="Cliente" name="clientSearch" placeholder="Escribe para buscar..." />
+            @if($clientResults)
+                <ul class="border rounded shadow-sm bg-white text-gray-900">
+                    @foreach($clientResults as $client)
+                        <li wire:click="selectClient({{ $client['id'] }}, '{{ $client['full_name'] ?? $client['name'] ?? '' }}')"
+                            class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                            {{ $client['full_name'] ?? $client['name'] ?? '' }}
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+
+        @php
+            $isEdit = property_exists($this, 'sale') && $this->sale?->exists;
+        @endphp
         <!-- primary Button -->
         <button type="submit" class="whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-primary-dark dark:border-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark">
-            {{ request()->routeIs('sales.create') ? 'Crear venta' : 'Actualizar venta' }}
+            {{ $isEdit ? 'Actualizar venta' : 'Crear venta' }}
         </button>
 
 

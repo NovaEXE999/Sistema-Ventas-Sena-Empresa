@@ -13,8 +13,7 @@ use App\Models\Measure;
 class Create extends Component
 {
 
-    //-------------------------------------------------------------------------------------------------------------
-// ...
+    // Campos de búsqueda para categoría y medida
 public string $categorySearch = '';
 public string $categoryLabel  = '';
 public array $categoryResults = [];
@@ -23,7 +22,7 @@ public string $measureSearch = '';
 public string $measureLabel  = '';
 public array $measureResults = [];
 
-// cuando el usuario escribe
+// Actualiza resultados cuando el usuario escribe en la caja de categoría
 public function updatedCategorySearch()
 {
     $this->categoryResults = Category::query()
@@ -41,6 +40,7 @@ public function selectCategory(int $id, string $name)
     $this->categoryResults = [];
 }
 
+// Actualiza resultados para unidad de medida
 public function updatedMeasureSearch()
 {
     $this->measureResults = Measure::query()
@@ -52,10 +52,10 @@ public function updatedMeasureSearch()
 
 public function selectMeasure(int $id, string $name)
 {
-    $this->measure_id = $id;
+    $this->measure_id = $id;            // id que se persiste
     $this->measureLabel = $name;
-    $this->measureSearch = $name; // mostrar el nombre elegido en el input
-    $this->measureResults = [];
+    $this->measureSearch = $name;       // pinta el nombre elegido en el input
+    $this->measureResults = [];         // limpia la lista desplegable
 }
 
 

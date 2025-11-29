@@ -19,4 +19,15 @@ class Client extends Model
     {
         return $this->hasMany(Sale::class);
     }
+
+    // Nombre completo concatenando las partes disponibles
+    public function getFullNameAttribute(): string
+    {
+        return trim(collect([
+            $this->first_name,
+            $this->middle_name,
+            $this->last_name,
+            $this->second_last_name,
+        ])->filter()->join(' '));
+    }
 }

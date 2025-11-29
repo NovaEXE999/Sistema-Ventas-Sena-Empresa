@@ -3,12 +3,23 @@
 namespace App\Livewire\ProductDeliveries;
 
 use App\Models\ProductDelivery;
+use App\Models\Product;
+use App\Models\Provider;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class Update extends Component
 {
     public ?ProductDelivery $delivery;
+
+    // Campos de búsqueda
+    public string $productSearch = '';
+    public string $productLabel = '';
+    public array $productResults = [];
+
+    public string $providerSearch = '';
+    public string $providerLabel = '';
+    public array $providerResults = [];
 
     #[Validate('required|date')]
     public $date = '';
@@ -33,6 +44,12 @@ class Update extends Component
         $this->delivered_amount = $delivery->delivered_amount;
         $this->product_id = $delivery->product_id;
         $this->provider_id = $delivery->provider_id;
+
+        // Precarga nombres en inputs de búsqueda
+        $this->productLabel = optional($delivery->product)->name ?? '';
+        $this->productSearch = $this->productLabel;
+        $this->providerLabel = optional($delivery->provider)->name ?? '';
+        $this->providerSearch = $this->providerLabel;
     }
 
     public function update()
@@ -48,6 +65,42 @@ class Update extends Component
 
         session()->flash('success', 'Entrada de inventario actualizada correctamente.');
         $this->redirectRoute('productdeliveries.index', navigate:true);
+    }
+
+    // Búsqueda de producto
+    public function updatedProductSearch(): void
+    {
+        $this->productResults = Product::query()
+            ->where('name', 'like', '%'.$this->productSearch.'%')
+            ->limit(5)
+            ->get(['id','name'])
+            ->toArray();
+    }
+
+    public function selectProduct(int $id, string $name): void
+    {
+        $this->product_id = $id;
+        $this->productLabel = $name;
+        $this->productSearch = $name;
+        $this->productResults = [];
+    }
+
+    // Búsqueda de proveedor
+    public function updatedProviderSearch(): void
+    {
+        $this->providerResults = Provider::query()
+            ->where('name', 'like', '%'.$this->providerSearch.'%')
+            ->limit(5)
+            ->get(['id','name'])
+            ->toArray();
+    }
+
+    public function selectProvider(int $id, string $name): void
+    {
+        $this->provider_id = $id;
+        $this->providerLabel = $name;
+        $this->providerSearch = $name;
+        $this->providerResults = [];
     }
 
     public function render()
