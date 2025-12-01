@@ -10,11 +10,17 @@ class Index extends Component
 {
     use WithPagination;
 
-    public function delete(Provider $provider)
+    public function toggleStatus(Provider $provider)
     {
-        $provider->delete();
+        $provider->status = ! $provider->status;
+        $provider->save();
 
-        session()->flash('success', 'Proveedor eliminado satisfactoriamente.');
+
+        $message = $provider->status
+            ? 'Proveedor reactivado satisfactoriamente.'
+            : 'Proveedor inhabilitado satisfactoriamente.';
+
+        session()->flash('success', $message);
         $this->redirectRoute('providers.index', navigate: true);
     }
 

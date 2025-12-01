@@ -14,14 +14,14 @@
                 </div>
                 <button type="button" @click="alertIsVisible = false" class="ml-auto" aria-label="dismiss alert">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2.5" class="w-4 h-4 shrink-0">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
         </div>
     @endif
-        {{-- {{ route('products.create') }} --}}
-    <a href="{{route('clients.create')}}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
+
+    <a href="{{ route('clients.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
         Registrar un cliente
     </a>
 
@@ -30,6 +30,7 @@
             <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
                 <tr>
                     <th scope="col" class="p-4">Nombre</th>
+                    <th scope="col" class="p-4">Estado</th>
                     <th scope="col" class="p-4 text-center">Acciones</th>
                 </tr>
             </thead>
@@ -37,15 +38,18 @@
                 @forelse ($clients as $client)
                     <tr>
                         <td class="p-4">
-                            {{ $client->first_name }}
-                            {{ $client->middle_name }}
-                            {{ $client->last_name }}
-                            {{ $client->second_last_name }}
+                            {{ $client->name }}
+                        </td>
+
+                        <td class="p-4">
+                            <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium
+                                {{ $client->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
+                                {{ $client->status ? 'Activo' : 'Inactivo' }}
+                            </span>
                         </td>
 
                         <td class="p-4 flex justify-center items-center gap-2">
-                            {{-- {{ route('products.update', $product) }} --}}
-                            <a href="{{ route('clients.update', $client)}}" wire:navigate>
+                            <a href="{{ route('clients.update', $client) }}" wire:navigate>
                                 <!-- alternate Button with Icon -->
                                 <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
@@ -54,31 +58,47 @@
                                     Editar
                                 </button>
                             </a>
-                            <button 
-                                wire:click='delete({{ $client }})' 
-                                wire:confirm="¿Estás seguro de borrar el cliente {{$client->first_name}}{{$client->last_name}}?"
-                                type="button" 
-                                class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                </svg>
-                                Borrar
-                            </button>
+
+                            @if ($client->status)
+                                {{-- Botón para inhabilitar --}}
+                                <button
+                                    wire:click="toggleStatus({{ $client->id }})"
+                                    wire:confirm="¿Estás seguro de inhabilitar al cliente {{ $client->name }}?"
+                                    type="button"
+                                    class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                    </svg>
+                                    Inhabilitar
+                                </button>
+                            @else
+                                {{-- Botón para habilitar --}}
+                                <button
+                                    wire:click="toggleStatus({{ $client->id }})"
+                                    wire:confirm="¿Estás seguro de habilitar al cliente {{ $client->name }}?"
+                                    type="button"
+                                    class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                                    </svg>
+                                    Habilitar
+                                </button>
+                            @endif
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="2">No hay clientes registrados.</td>
+                        <td colspan="3" class="p-4">No hay clientes registrados.</td>
                     </tr>
                 @endforelse
-                  
             </tbody>
         </table>
-        {{-- Esto es para la paginación de la tabla. --}}
+
+        {{-- Paginación --}}
         <div class="p-4">
             {{ $clients->links() }}
         </div>
     </div>
-
 </div>

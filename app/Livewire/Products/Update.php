@@ -73,6 +73,7 @@ class Update extends Component
     {
         $this->categoryResults = Category::query()
             ->where('name', 'like', '%'.$this->categorySearch.'%')
+            ->where('status', true)
             ->limit(5)
             ->get(['id','name'])
             ->toArray();
@@ -91,6 +92,7 @@ class Update extends Component
     {
         $this->measureResults = Measure::query()
             ->where('name', 'like', '%'.$this->measureSearch.'%')
+            ->where('status', true)
             ->limit(5)
             ->get(['id','name'])
             ->toArray();

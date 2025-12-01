@@ -3,130 +3,110 @@
 namespace App\Livewire\Sales;
 
 use App\Models\Sale;
-use App\Models\User;
+use App\Models\Product;
 use App\Models\Client;
-use Livewire\Attributes\Validate;
-use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 
-class Update extends Component
+class Update extends Create
 {
-    public ?Sale $sale;
+    public Sale $sale;
 
-    // Campos de búsqueda
-    public string $userSearch = '';
-    public string $userLabel = '';
-    public array $userResults = [];
-
-    public string $clientSearch = '';
-    public string $clientLabel = '';
-    public array $clientResults = [];
-
-    #[Validate('required|numeric|min:0')]
-    public $total_value = '';
-    #[Validate('required|date')]
-    public $date = '';
-    #[Validate('required|exists:users,id')]
-    public $user_id = '';
-    #[Validate('required|exists:clients,id')]
-    public $client_id = '';
-
-
-    public function mount(Sale $sale)
+    public function mount($sale = null): void
     {
-        $this->setSale($sale);
-    }
+        parent::mount();
 
-    public function setSale (Sale $sale){
-        $this->sale = $sale;
-        $this->total_value = $sale->total_value;
-        // El input type="date" requiere formato Y-m-d
-        $this->date = $sale->date instanceof \Carbon\Carbon
-            ? $sale->date->format('Y-m-d')
-            : $sale->date;
-        $this->user_id = $sale->user_id;
-        $this->client_id = $sale->client_id;
-
-        // Precarga nombres en inputs de búsqueda
-        $this->userLabel = optional($sale->user)->name ?? '';
-        $this->userSearch = $this->userLabel;
-        $this->clientLabel = optional($sale->client)->full_name ?? optional($sale->client)->name ?? '';
-        $this->clientSearch = $this->clientLabel;
-    }
-
-    public function update()
-    {
-        $this->validate();
-        
-        $this->sale->update($this->all());
-    }
-
-     public function save()
-    {
-        $this->update();
-
-        session()->flash('success', 'Venta actualizada correctamente.');
-        $this->redirectRoute('sales.index', navigate:true);
-    }
-
-    // Búsqueda de vendedor
-    public function updatedUserSearch(): void
-    {
-        $this->userResults = User::query()
-            ->where('name', 'like', '%'.$this->userSearch.'%')
-            ->limit(5)
-            ->get(['id','name'])
-            ->toArray();
-    }
-
-    public function selectUser(int $id, string $name): void
-    {
-        $this->user_id = $id;
-        $this->userLabel = $name;
-        $this->userSearch = $name;
-        $this->userResults = [];
-    }
-
-    // Búsqueda de cliente
-    public function updatedClientSearch(): void
-    {
-        $term = trim($this->clientSearch);
-
-        if ($term === '') {
-            $this->clientResults = [];
-            return;
+        if (!$sale) {
+            abort(404);
         }
 
-        $like = '%'.$term.'%';
+        $this->sale = $sale instanceof Sale
+            ? $sale->load('details.product', 'client', 'user')
+            : Sale::with('details.product', 'client', 'user')->findOrFail($sale);
+        $this->date = $this->sale->date instanceof \Carbon\Carbon
+            ? $this->sale->date->format('Y-m-d')
+            : $this->sale->date;
 
-        $this->clientResults = Client::query()
-            ->select('id', 'first_name', 'middle_name', 'last_name', 'second_last_name')
-            ->where(function ($q) use ($term, $like) {
-                $q->where('first_name', 'like', $term.'%')
-                  ->orWhere('last_name', 'like', $like)
-                  ->orWhere('middle_name', 'like', $like)
-                  ->orWhere('second_last_name', 'like', $like);
-            })
-            ->limit(5)
+        $this->user_id = $this->sale->user_id;
+        $this->sellerName = optional($this->sale->user)->name ?? $this->sellerName;
+        $this->client_id = $this->sale->client_id;
+        $this->clientSearch = optional($this->sale->client)->name ?? '';
+
+        foreach ($this->sale->details as $detail) {
+            $product = $detail->product;
+            if (!$product) {
+                continue;
+            }
+
+            // Devuelve a stock la cantidad vendida para permitir editar sin bloquear por inventario actual
+            $this->lineItems[$product->id] = [
+                'product_id' => $product->id,
+                'name' => $product->name,
+                'quantity' => $detail->quantity,
+                'price' => (float) $product->price,
+                'stock' => $product->quantity + $detail->quantity,
+                'subtotal' => (float) $product->price * $detail->quantity,
+            ];
+        }
+
+        $this->recalculateTotals();
+    }
+
+    protected function persistSale(Client $client): void
+    {
+        $products = Product::whereIn('id', array_keys($this->lineItems))
+            ->select('id', 'price', 'quantity')
             ->get()
-            ->map(fn ($c) => [
-                'id' => $c->id,
-                'full_name' => collect([$c->first_name, $c->middle_name, $c->last_name, $c->second_last_name])
-                    ->filter()
-                    ->join(' ')
-            ])
-            ->toArray();
-    }
+            ->keyBy('id');
 
-    public function selectClient(int $id, string $name): void
-    {
-        $this->client_id = $id;
-        $this->clientLabel = $name;
-        $this->clientSearch = $name;
-        $this->clientResults = [];
-    }
+        foreach ($this->lineItems as $item) {
+            $product = $products[$item['product_id']] ?? null;
+            if (!$product) {
+                $this->addError('lineItems', 'Un producto seleccionado ya no existe.');
+                return;
+            }
 
-    public function render()
-    {
-        return view('livewire.sales.create');
+            $available = $product->quantity;
+            $previousDetail = $this->sale?->details->firstWhere('product_id', $item['product_id']);
+            if ($previousDetail) {
+                $available += $previousDetail->quantity;
+            }
+
+            if ($item['quantity'] > $available) {
+                $this->addError('lineItems', "Stock insuficiente para {$item['name']}. Disponible: {$available}.");
+                return;
+            }
+        }
+
+        DB::transaction(function () use ($client, $products) {
+            // Devuelve stock previo de la venta actual
+            foreach ($this->sale->details as $detail) {
+                $detail->product?->increment('quantity', $detail->quantity);
+            }
+
+            $this->sale->update([
+                'total_value' => $this->total_value,
+                'date' => $this->date,
+                'user_id' => $this->user_id,
+                'client_id' => $client->id,
+            ]);
+
+            $this->sale->details()->delete();
+
+            foreach ($this->lineItems as $item) {
+                $price = $products[$item['product_id']]->price;
+                $quantity = $item['quantity'];
+
+                $this->sale->details()->create([
+                    'quantity' => $quantity,
+                    'total' => $price * $quantity,
+                    'product_id' => $item['product_id'],
+                ]);
+
+                $products[$item['product_id']]->decrement('quantity', $quantity);
+            }
+        });
+
+        session()->flash('success', 'Venta actualizada correctamente.');
+        $this->redirectRoute('sales.index', navigate: true);
     }
 }

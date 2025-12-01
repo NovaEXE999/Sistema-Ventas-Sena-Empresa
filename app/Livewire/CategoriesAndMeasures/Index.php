@@ -11,27 +11,40 @@ class Index extends Component
 {
     use WithPagination;
 
-    public function deleteCategory(Category $category)
+    public function toggleCategoryStatus(Category $category)
     {
-        $category->delete();
+        $category->status = ! $category->status;
+        $category->save();
 
-        session()->flash('success', 'Categoria eliminada satisfactoriamente.');
-        $this->redirectRoute('categoriesandmeasures.index', navigate:true);
+        $message = $category->status
+            ? 'Categoria reactivada satisfactoriamente.'
+            : 'Categoria inhabilitada satisfactoriamente.';
+
+        session()->flash('success', $message);
+
+        $this->redirectRoute('categoriesandmeasures.index', navigate: true);
     }
 
-    public function deleteMeasure(Measure $measure)
+    public function toggleMeasureStatus(Measure $measure)
     {
-        $measure->delete();
+        $measure->status = ! $measure->status;
+        $measure->save();
 
-        session()->flash('success', 'Unidad de medida eliminada satisfactoriamente.');
+        $message = $measure->status
+            ? 'Unidad de medida reactivada satisfactoriamente.'
+            : 'Unidad de medida inhabilitada satisfactoriamente.';
+
+        session()->flash('success', $message);
+
         $this->redirectRoute('categoriesandmeasures.index', navigate: true);
     }
 
     public function render()
     {
         return view('livewire.categories-and-measures.index', [
+
             'categories' => Category::latest()->paginate(10, pageName: 'categoriesPage'),
-            'measures' => Measure::latest()->paginate(10, pageName: 'measuresPage')
+            'measures' => Measure::latest()->paginate(10, pageName: 'measuresPage'),
         ]);
     }
 }

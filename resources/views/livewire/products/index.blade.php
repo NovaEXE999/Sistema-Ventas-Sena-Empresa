@@ -34,6 +34,7 @@
                     <th scope="col" class="p-4">Precio</th>
                     <th scope="col" class="p-4">Categoria</th>
                     <th scope="col" class="p-4">Unidad de Medida</th>
+                    <th scope="col" class="p-4">Estado</th>
                     <th scope="col" class="p-4 text-center">Acciones</th>
                 </tr>
             </thead>
@@ -47,6 +48,14 @@
                         por cualquier campo dentro de estas y mostrarla en la vista. --}}
                         <td class="p-4">{{ $product->category->name }}</td>
                         <td class="p-4">{{ $product->measure->name }}</td>
+
+                        <td class="p-4">
+                            <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium
+                                {{ $product->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
+                                {{ $product->status ? 'Activo' : 'Inactivo' }}
+                            </span>
+                        </td>
+
                         <td class="p-4 flex justify-center items-center gap-2">
                             {{-- {{ route('products.edit', $product) }} --}}
                             <a href="{{ route('products.update', $product)}}" wire:navigate>
@@ -58,18 +67,33 @@
                                     Editar
                                 </button>
                             </a>
-                            <button 
-                                wire:click='delete({{ $product }})' 
-                                {{-- wire:confirm='Are you sure you want to delete this product?'  --}}
-                                wire:confirm="¿Estás seguro de borrar el producto {{$product->name}}?"
-                                type="button" 
-                                class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                </svg>
-                                Borrar
-                            </button>
+                            @if ($product->status)
+                                {{-- Botón para inhabilitar --}}
+                                <button
+                                    wire:click="toggleStatus({{ $product->id }})"
+                                    wire:confirm="¿Estás seguro de inhabilitar el producto {{ $product->name }}?"
+                                    type="button"
+                                    class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                    </svg>
+                                    Inhabilitar
+                                </button>
+                            @else
+                                {{-- Botón para habilitar --}}
+                                <button
+                                    wire:click="toggleStatus({{ $product->id }})"
+                                    wire:confirm="¿Estás seguro de habilitar al producto {{ $product->name }}?"
+                                    type="button"
+                                    class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                                    </svg>
+                                    Habilitar
+                                </button>
+                            @endif
                         </td>
                     </tr>
                 @empty

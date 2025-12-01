@@ -51,7 +51,7 @@
     </p>
     <br>
     <p>
-        Cliente: {{$sale->client->first_name}} {{$sale->client->last_name}}
+        Cliente: {{$sale->client->name}}
     </p>
     <p>
         Vendedor: {{$sale->user->name}}

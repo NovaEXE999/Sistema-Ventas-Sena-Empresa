@@ -5,106 +5,95 @@ namespace App\Livewire\ProductDeliveries;
 use App\Models\ProductDelivery;
 use App\Models\Product;
 use App\Models\Provider;
-use Livewire\Attributes\Validate;
-use Livewire\Component;
+use Illuminate\Support\Facades\DB;
 
-class Update extends Component
+class Update extends Create
 {
-    public ?ProductDelivery $delivery;
+    public ProductDelivery $delivery;
 
-    // Campos de búsqueda
-    public string $productSearch = '';
-    public string $productLabel = '';
-    public array $productResults = [];
-
-    public string $providerSearch = '';
-    public string $providerLabel = '';
-    public array $providerResults = [];
-
-    #[Validate('required|date')]
-    public $date = '';
-    #[Validate('required|integer|min:0')]
-    public $delivered_amount = '';
-    #[Validate('required|exists:products,id')]
-    public $product_id = '';
-    #[Validate('required|exists:providers,id')]
-    public $provider_id = '';
-
-    public function mount(ProductDelivery $delivery)
+    public function mount($delivery = null): void
     {
-        $this->setDelivery($delivery);
+        parent::mount();
+
+        if (!$delivery) {
+            abort(404);
+        }
+
+        $this->delivery = $delivery instanceof ProductDelivery
+            ? $delivery->load('product', 'provider')
+            : ProductDelivery::with('product', 'provider')->findOrFail($delivery);
+
+        $this->date = $this->delivery->date instanceof \Carbon\Carbon
+            ? $this->delivery->date->format('Y-m-d')
+            : $this->delivery->date;
+
+        $this->provider_id = $this->delivery->provider_id;
+        $this->providerSearch = optional($this->delivery->provider)->name ?? '';
+
+        $product = $this->delivery->product;
+        if ($product) {
+            $this->lineItems = [
+                $product->id => [
+                    'product_id' => $product->id,
+                    'name' => $product->name,
+                    'quantity' => $this->delivery->delivered_amount,
+                ],
+            ];
+        }
     }
 
-    public function setDelivery (ProductDelivery $delivery){
-        $this->delivery = $delivery;
-        // Input date necesita formato Y-m-d
-        $this->date = $delivery->date instanceof \Carbon\Carbon
-            ? $delivery->date->format('Y-m-d')
-            : $delivery->date;
-        $this->delivered_amount = $delivery->delivered_amount;
-        $this->product_id = $delivery->product_id;
-        $this->provider_id = $delivery->provider_id;
-
-        // Precarga nombres en inputs de búsqueda
-        $this->productLabel = optional($delivery->product)->name ?? '';
-        $this->productSearch = $this->productLabel;
-        $this->providerLabel = optional($delivery->provider)->name ?? '';
-        $this->providerSearch = $this->providerLabel;
-    }
-
-    public function update()
+    public function save(): void
     {
+        // En edición, recalculamos reglas y reutilizamos validaciones del padre
         $this->validate();
-        
-        $this->delivery->update($this->all());
-    }
 
-     public function save()
-    {
-        $this->update();
+        if (empty($this->lineItems)) {
+            $this->addError('lineItems', 'Agrega al menos un producto.');
+            return;
+        }
+
+        $provider = Provider::find($this->provider_id);
+        if (!$provider) {
+            $this->addError('provider_id', 'El proveedor seleccionado ya no existe.');
+            return;
+        }
+        if (!$provider->status) {
+            $this->addError('provider_id', 'El proveedor está inactivo; no puedes registrar la entrada.');
+            return;
+        }
+
+        $this->persistUpdate($provider);
 
         session()->flash('success', 'Entrada de inventario actualizada correctamente.');
-        $this->redirectRoute('productdeliveries.index', navigate:true);
+        $this->redirectRoute('productdeliveries.index', navigate: true);
     }
 
-    // Búsqueda de producto
-    public function updatedProductSearch(): void
+    protected function persistUpdate(Provider $provider): void
     {
-        $this->productResults = Product::query()
-            ->where('name', 'like', '%'.$this->productSearch.'%')
-            ->limit(5)
-            ->get(['id','name'])
-            ->toArray();
-    }
+        $item = collect($this->lineItems)->first();
+        if (!$item) {
+            $this->addError('lineItems', 'Agrega al menos un producto.');
+            return;
+        }
 
-    public function selectProduct(int $id, string $name): void
-    {
-        $this->product_id = $id;
-        $this->productLabel = $name;
-        $this->productSearch = $name;
-        $this->productResults = [];
-    }
+        DB::transaction(function () use ($item, $provider) {
+            // Revertir stock previo
+            if ($this->delivery->product_id) {
+                Product::where('id', $this->delivery->product_id)
+                    ->decrement('quantity', $this->delivery->delivered_amount);
+            }
 
-    // Búsqueda de proveedor
-    public function updatedProviderSearch(): void
-    {
-        $this->providerResults = Provider::query()
-            ->where('name', 'like', '%'.$this->providerSearch.'%')
-            ->limit(5)
-            ->get(['id','name'])
-            ->toArray();
-    }
+            // Actualizar registro
+            $this->delivery->update([
+                'date' => $this->date,
+                'delivered_amount' => $item['quantity'],
+                'product_id' => $item['product_id'],
+                'provider_id' => $provider->id,
+            ]);
 
-    public function selectProvider(int $id, string $name): void
-    {
-        $this->provider_id = $id;
-        $this->providerLabel = $name;
-        $this->providerSearch = $name;
-        $this->providerResults = [];
-    }
-
-    public function render()
-    {
-        return view('livewire.product-deliveries.create');
+            // Aplicar nuevo stock
+            Product::where('id', $item['product_id'])
+                ->increment('quantity', $item['quantity']);
+        });
     }
 }

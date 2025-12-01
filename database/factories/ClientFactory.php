@@ -18,10 +18,7 @@ class ClientFactory extends Factory
     {
         return [
             //
-            'first_name' => $this->faker->firstName(),
-            'middle_name' => $this->faker->name(),
-            'last_name' => $this->faker->lastName(),
-            'second_last_name' => $this->faker->lastName(),
+            'name' => $this->faker->name(),
         ];
     }
 }

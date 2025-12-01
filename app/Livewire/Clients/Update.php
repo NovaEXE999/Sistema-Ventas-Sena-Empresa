@@ -12,13 +12,7 @@ class Update extends Component
     public ?Client $client;
 
     #[Validate('required|string|max:255')]
-    public $first_name = '';
-    #[Validate('nullable|string|max:255')]
-    public $middle_name = '';
-    #[Validate('required|string|max:255')]
-    public $last_name='';
-    #[Validate('nullable|string|max:255')]
-    public $second_last_name = '';
+    public $name = '';
 
 
     public function mount(Client $client)
@@ -28,10 +22,7 @@ class Update extends Component
 
     public function setClient (Client $client){
         $this->client = $client;
-        $this->first_name = $client->first_name;
-        $this->middle_name = $client->middle_name;
-        $this->last_name = $client->last_name;
-        $this->second_last_name = $client->second_last_name;
+        $this->name = $client->name;
     }
 
     public function update()

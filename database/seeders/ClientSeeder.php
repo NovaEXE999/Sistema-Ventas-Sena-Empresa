@@ -16,10 +16,7 @@ class ClientSeeder extends Seeder
         //
         $client = new Client();
 
-        $client->first_name = 'Cristiano';
-        $client->middle_name = 'Ronaldo';
-        $client->last_name = 'Do santos';
-        $client->second_last_name = 'Aveiro';
+        $client->name = 'Cristiano Ronaldo Do Santos Aveiro';
 
         $client->save();
     }

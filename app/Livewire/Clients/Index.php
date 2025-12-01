@@ -10,11 +10,17 @@ class Index extends Component
 {
     use WithPagination;
 
-    public function delete(Client $client)
+    public function toggleStatus(Client $client)
     {
-        $client->delete();
+        // 1 = Activo, 0 = Inactivo
+        $client->status = ! $client->status;
+        $client->save();
 
-        session()->flash('success', 'Cliente eliminado satisfactoriamente.');
+        $message = $client->status
+            ? 'Cliente reactivado satisfactoriamente.'
+            : 'Cliente inhabilitado satisfactoriamente.';
+
+        session()->flash('success', $message);
         $this->redirectRoute('clients.index', navigate: true);
     }
     public function render()

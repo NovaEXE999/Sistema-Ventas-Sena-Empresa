@@ -13,7 +13,11 @@ class Product extends Model
         'quantity',
         'price',
         'category_id',
-        'measure_id'
+        'measure_id', 
+        'status'
+    ];
+    protected $casts = [
+        'status' => 'boolean',
     ];
 
     // Category relation

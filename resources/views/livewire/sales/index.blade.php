@@ -41,7 +41,7 @@
                     <tr>
                         <td class="p-4">{{ $sale->date }}</td>
                         <td class="p-4">{{ $sale->total_value }}</td>
-                        <td class="p-4">{{ $sale->client->first_name }} {{ $sale->client->last_name }}</td>
+                        <td class="p-4">{{ $sale->client->name }}</td>
                         {{-- Debido a que productos viene con categoria y nombre, podemos llamar las variables de esas tablas
                         por cualquier campo dentro de estas y mostrarla en la vista. --}}
                         <td class="p-4">{{ $sale->user->name }}</td>

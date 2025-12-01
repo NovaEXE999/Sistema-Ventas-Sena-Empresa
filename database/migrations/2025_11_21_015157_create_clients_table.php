@@ -13,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name', 50);
-            $table->string('middle_name', 50)->nullable();
-            $table->string('last_name', 50);
-            $table->string('second_last_name', 50)->nullable();
+            $table->string('name', 256);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

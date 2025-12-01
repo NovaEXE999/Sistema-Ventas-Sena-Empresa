@@ -11,51 +11,121 @@
             Registro de ventas 
         </h1>
     </div>
-    <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
-
-        <x-form.input wire:model="total_value" label="Valor total" name="total_value" placeholder="Ingresa el valor total"/>
-        <x-form.input wire:model="date" type="date" label="Fecha" name="date" placeholder="Selecciona la fecha"/>
-
-        {{-- Vendedor --}}
-        <div class="space-y-1">
-            <x-form.input wire:model.live.debounce.300ms="userSearch"
-                          label="Vendedor" name="userSearch" placeholder="Escribe para buscar..." />
-            @if($userResults)
-                <ul class="border rounded shadow-sm bg-black">
-                    @foreach($userResults as $user)
-                        <li wire:click="selectUser({{ $user['id'] }}, '{{ $user['name'] }}')"
-                            class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                            {{ $user['name'] }}
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
+    <form wire:submit.prevent="save" class="space-y-6 p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
+        <div class="grid gap-4 md:grid-cols-2">
+            <div>
+                <label class="block text-sm font-medium text-on-surface mb-1">Fecha</label>
+                <input type="date" wire:model="date" disabled class="w-full rounded-radius border border-outline bg-gray-100 px-3 py-2 text-sm text-on-surface-strong focus:outline-none disabled:cursor-not-allowed">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-on-surface mb-1">Vendedor</label>
+                <input type="text" value="{{ $sellerName }}" disabled class="w-full rounded-radius border border-outline bg-gray-100 px-3 py-2 text-sm text-on-surface-strong focus:outline-none disabled:cursor-not-allowed">
+            </div>
         </div>
 
         {{-- Cliente --}}
-        <div class="space-y-1 mt-3">
+        <div class="space-y-2">
             <x-form.input wire:model.live.debounce.300ms="clientSearch"
-                          label="Cliente" name="clientSearch" placeholder="Escribe para buscar..." />
+                          label="Cliente" name="clientSearch" placeholder="Busca o escribe el cliente..." />
             @if($clientResults)
                 <ul class="border rounded shadow-sm bg-white text-gray-900">
                     @foreach($clientResults as $client)
-                        <li wire:click="selectClient({{ $client['id'] }}, '{{ $client['full_name'] ?? $client['name'] ?? '' }}')"
+                        <li wire:click="selectClient({{ $client['id'] }}, @js($client['name']))"
                             class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                            {{ $client['full_name'] ?? $client['name'] ?? '' }}
+                            {{ $client['name'] }}
                         </li>
                     @endforeach
                 </ul>
             @endif
+            @if($clientNotFound && $pendingClientName)
+                <div class="flex items-center gap-3 rounded-radius border border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-700">
+                    <span>El cliente "{{ $pendingClientName }}" no existe. ¿Deseas crearlo?</span>
+                    <div class="flex gap-2">
+                        <button type="button" wire:click="confirmClientCreation" class="rounded-radius bg-amber-500 px-3 py-1 text-white text-xs font-semibold">Crear</button>
+                        <button type="button" wire:click="resetClientPrompt" class="rounded-radius border border-outline px-3 py-1 text-xs font-semibold text-on-surface">Cancelar</button>
+                    </div>
+                </div>
+            @endif
+            @error('clientSearch') <p class="text-sm text-danger">{{ $message }}</p> @enderror
+        </div>
+
+        {{-- Productos --}}
+        <div class="space-y-2 rounded-radius border border-outline p-4">
+            <div class="grid gap-3 md:grid-cols-[2fr_120px_auto] items-end">
+                <div>
+                    <x-form.input wire:model.live.debounce.250ms="productSearch"
+                                  label="Producto" name="productSearch" placeholder="Busca el producto..." />
+                    @if($productResults)
+                        <ul class="border rounded shadow-sm bg-white text-gray-900 max-h-48 overflow-y-auto">
+                            @foreach($productResults as $product)
+                                <li wire:click="selectProduct({{ $product['id'] }})"
+                                    class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
+                                    {{ $product['name'] }} — ${{ number_format($product['price'], 2) }} (Stock: {{ $product['quantity'] }})
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+                <div>
+                    <x-form.input wire:model="productQuantity" type="number" min="1"
+                                  label="Cantidad" name="productQuantity" placeholder="0" />
+                </div>
+                <button type="button" wire:click="addProductLine" class="h-10 self-end whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-90">
+                    Insertar
+                </button>
+            </div>
+            @error('productSearch') <p class="text-sm text-danger">{{ $message }}</p> @enderror
+            @error('productQuantity') <p class="text-sm text-danger">{{ $message }}</p> @enderror
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-on-surface">
+                    <thead class="border-b border-outline bg-surface">
+                        <tr>
+                            <th class="p-2"></th>
+                            <th class="p-2 text-left">Nombre producto</th>
+                            <th class="p-2 text-left">Cantidad</th>
+                            <th class="p-2 text-left">Precio</th>
+                            <th class="p-2 text-left">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($lineItems as $item)
+                            <tr wire:key="product-{{ $item['product_id'] }}" class="border-b border-outline/50">
+                                <td class="p-2">
+                                    <button type="button" wire:click="removeLine({{ $item['product_id'] }})" class="text-danger font-bold">-</button>
+                                </td>
+                                <td class="p-2">
+                                    <span class="text-primary font-semibold">{{ $item['name'] }}</span>
+                                    <p class="text-xs text-gray-500">Stock: {{ $item['stock'] }}</p>
+                                </td>
+                                <td class="p-2">
+                                    <input type="number" min="1" class="w-24 rounded-radius border border-outline px-2 py-1 text-sm"
+                                           value="{{ $item['quantity'] }}"
+                                           wire:change="updateLineQuantity({{ $item['product_id'] }}, $event.target.value)">
+                                </td>
+                                <td class="p-2">${{ number_format($item['price'], 2) }}</td>
+                                <td class="p-2 font-semibold">${{ number_format($item['subtotal'], 2) }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="p-3 text-center text-on-surface-variant">Agrega productos a la venta.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+                @error('lineItems') <p class="text-sm text-danger mt-2">{{ $message }}</p> @enderror
+            </div>
+
+            <div class="flex justify-end text-lg font-semibold text-primary">
+                Total: ${{ number_format($total_value, 2) }}
+            </div>
         </div>
 
         @php
             $isEdit = property_exists($this, 'sale') && $this->sale?->exists;
         @endphp
-        <!-- primary Button -->
         <button type="submit" class="whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-primary-dark dark:border-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark">
             {{ $isEdit ? 'Actualizar venta' : 'Crear venta' }}
         </button>
-
-
     </form>
 </div>

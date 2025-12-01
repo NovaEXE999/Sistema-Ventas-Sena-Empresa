@@ -18,11 +18,16 @@ class Index extends Component
         $product = Product::with(['category', 'measure'])->get();
     }
 
-    public function delete(Product $product)
+    public function toggleStatus(Product $product)
     {
-        $product->delete();
+        $product->status = ! $product->status;
+        $product->save();
 
-        session()->flash('success', 'Producto eliminado satisfactoriamente.');
+        $message = $product->status
+            ? 'Producto reactivado satisfactoriamente.'
+            : 'Producto inhabilitado satisfactoriamente.';
+
+        session()->flash('success', $message);
         $this->redirectRoute('products.index', navigate: true);
     }
 
