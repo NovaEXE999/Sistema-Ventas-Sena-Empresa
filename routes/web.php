@@ -20,6 +20,7 @@ use App\Livewire\Sales\Index as SalesIndex;
 use App\Livewire\Sales\Show as SalesShow;
 use App\Livewire\Sales\Create as SalesCreate;
 use App\Livewire\Sales\Update as SalesUpdate;
+use App\Livewire\Sales\Reports as SalesReport;
 
 use App\Livewire\ProductDeliveries\Index as ProductDeliveriesIndex;
 use App\Livewire\ProductDeliveries\Create as ProductDeliveriesCreate;
@@ -75,6 +76,8 @@ Route::get('sales', SalesIndex::class)->name('sales.index');
 Route::get('sales/create', SalesCreate::class)->name('sales.create');
 Route::get('sales/{sale}/update', SalesUpdate::class)->name('sales.update');
 Route::get('sales/{sale}/show', SalesShow::class)->name('sales.show');
+Route::get('sales/{sale}/reports/pdf', [SalesReport::class, 'pdf'])->name('sales.reports.pdf');
+Route::get('sales/{sale}/reports/download', [SalesReport::class, 'download'])->name('sales.reports.download');
 
 Route::get('providers', ProvidersIndex::class)->name('providers.index');
 Route::get('providers/create', ProvidersCreate::class)->name('providers.create');

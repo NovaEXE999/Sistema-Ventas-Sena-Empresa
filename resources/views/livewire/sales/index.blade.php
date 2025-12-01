@@ -76,6 +76,18 @@
                                     Detalles
                                 </button>
                             </a>
+                            <a href="{{route('sales.reports.pdf', $sale)}}" target="_blank">
+                                <!-- info Button -->
+                                <button type="button" class="whitespace-nowrap rounded-radius bg-info border border-info px-4 py-2 text-sm font-medium tracking-wide text-onInfo transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-info dark:border-info dark:text-onInfo dark:focus-visible:outline-info">
+                                PDF
+                                </button>
+                            </a>
+                            <a href="{{ route('sales.reports.download', $sale) }}">
+                                <!-- success Button -->
+                                <button type="button" class="whitespace-nowrap rounded-radius bg-success border border-success px-4 py-2 text-sm font-medium tracking-wide text-onSuccess transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:border-success dark:text-onSuccess dark:focus-visible:outline-success">
+                                Descargar
+                                </button>
+                            </a>
                            
                         </td>
                     </tr>
@@ -94,4 +106,3 @@
     </div>
 
 </div>
-
