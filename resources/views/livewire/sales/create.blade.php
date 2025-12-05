@@ -21,6 +21,16 @@
                 <label class="block text-sm font-medium text-on-surface mb-1">Vendedor</label>
                 <input type="text" value="{{ $sellerName }}" disabled class="w-full rounded-radius border border-outline bg-gray-100 px-3 py-2 text-sm text-on-surface-strong focus:outline-none disabled:cursor-not-allowed">
             </div>
+            <div class="md:col-span-2">
+                <label class="block text-sm font-medium text-on-surface mb-1">Método de pago</label>
+                <select wire:model="payment_method_id" class="w-full rounded-radius border border-outline px-3 py-2 text-sm text-on-surface focus:outline-none">
+                    <option value="">Seleccione...</option>
+                    @foreach($paymentMethods as $method)
+                        <option value="{{ $method['id'] }}">{{ $method['name'] }}</option>
+                    @endforeach
+                </select>
+                @error('payment_method_id') <p class="text-sm text-danger">{{ $message }}</p> @enderror
+            </div>
         </div>
 
         {{-- Cliente --}}
@@ -60,7 +70,7 @@
                             @foreach($productResults as $product)
                                 <li wire:click="selectProduct({{ $product['id'] }})"
                                     class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                                    {{ $product['name'] }} — ${{ number_format($product['price'], 2) }} (Stock: {{ $product['quantity'] }})
+                                    {{ $product['name'] }} — ${{ number_format($product['price'], 2) }} (Stock: {{ $product['stock'] }})
                                 </li>
                             @endforeach
                         </ul>

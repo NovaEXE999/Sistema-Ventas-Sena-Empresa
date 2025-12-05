@@ -13,11 +13,25 @@ class ClientSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        $client = new Client();
+        $clients = [
+            [
+                'identification' => '9001234567',
+                'name' => 'Cristiano Ronaldo Do Santos Aveiro',
+                'phone_number' => '3001234567',
+                'status' => true,
+                'client_type_id' => 1,
+            ],
+            [
+                'identification' => '8009876543',
+                'name' => 'Lionel Andres Messi',
+                'phone_number' => '3019876543',
+                'status' => true,
+                'client_type_id' => 2,
+            ],
+        ];
 
-        $client->name = 'Cristiano Ronaldo Do Santos Aveiro';
-
-        $client->save();
+        foreach ($clients as $client) {
+            Client::create($client);
+        }
     }
 }

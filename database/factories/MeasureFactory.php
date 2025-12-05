@@ -17,11 +17,11 @@ class MeasureFactory extends Factory
     public function definition(): array
     {
 
-        $opMeasures = ["Kg", "Lb", "Und"];
+        $opMeasures = ["Kg", "Lb", "Und", "Lt"];
 
         return [
-            
             'name' => $this->faker->randomElement($opMeasures),
+            'status' => true,
         ];
     }
 }

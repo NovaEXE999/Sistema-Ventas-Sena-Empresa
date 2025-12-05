@@ -15,7 +15,7 @@ class Index extends Component
     // Este proceso aquí realizado funciona cómo un Join. Plaga la variable producto junto a Categoria 
     // y medidas.
     public function mount(){
-        $product = Product::with(['category', 'measure'])->get();
+        $product = Product::with(['category'])->get();
     }
 
     public function toggleStatus(Product $product)

@@ -1,5 +1,5 @@
 <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-    Aquí van a ir las categorias y las medidas, se pondrán sus respectivas tablas y botones para poder acceder a la creación, edición y eliminación de estos.
+
     @if (session('success'))
         <!-- success Alert -->
         <div x-data="{ alertIsVisible: true }" x-show="alertIsVisible" class="relative w-full overflow-hidden rounded-radius border border-success bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark" role="alert" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90">
@@ -41,6 +41,7 @@
                 <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
                     <tr>
                         <th scope="col" class="p-4">Nombre</th>
+                        <th scope="col" class="p-4">Unidad de medida</th>
                         <th scope="col" class="p-4">Estado</th>
                         <th scope="col" class="p-4 text-center">Acciones</th>
                     </tr>
@@ -49,6 +50,7 @@
                     @forelse ($categories as $category)
                         <tr>
                             <td class="p-4">{{ $category->name }}</td>
+                            <td class="p-4">{{ $category->measure->name }}</td>
 
                             <td class="p-4">
                                 <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium

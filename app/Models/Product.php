@@ -10,11 +10,10 @@ class Product extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'quantity',
+        'stock',
         'price',
+        'status',
         'category_id',
-        'measure_id', 
-        'status'
     ];
     protected $casts = [
         'status' => 'boolean',
@@ -24,12 +23,6 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
-    }
-
-    // Measure relation
-    public function measure()
-    {
-        return $this->belongsTo(Measure::class);
     }
 
     // SaleDetails relation

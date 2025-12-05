@@ -16,9 +16,14 @@ class ClientFactory extends Factory
      */
     public function definition(): array
     {
+        $clientTypeId = \App\Models\ClientType::query()->inRandomOrder()->value('id') ?? \App\Models\ClientType::factory();
+
         return [
-            //
+            'identification' => $this->faker->unique()->numerify('##########'),
             'name' => $this->faker->name(),
+            'phone_number' => $this->faker->numerify('3#########'),
+            'status' => true,
+            'client_type_id' => $clientTypeId,
         ];
     }
 }

@@ -71,7 +71,7 @@ class Create extends Component
                     'provider_id' => $provider->id,
                 ]);
 
-                Product::where('id', $item['product_id'])->increment('quantity', $item['quantity']);
+                Product::where('id', $item['product_id'])->increment('stock', $item['quantity']);
             }
         });
     }
@@ -201,11 +201,16 @@ class Create extends Component
 
         $quantity = max(1, (int) $this->productQuantity);
 
-        $this->lineItems[$product->id] = [
-            'product_id' => $product->id,
-            'name' => $product->name,
-            'quantity' => $quantity,
-        ];
+        // si ya existe en la lista, sumamos cantidades
+        if (isset($this->lineItems[$product->id])) {
+            $this->lineItems[$product->id]['quantity'] += $quantity;
+        } else {
+            $this->lineItems[$product->id] = [
+                'product_id' => $product->id,
+                'name' => $product->name,
+                'quantity' => $quantity,
+            ];
+        }
 
         $this->productQuantity = 1;
     }

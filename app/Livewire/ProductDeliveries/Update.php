@@ -80,7 +80,7 @@ class Update extends Create
             // Revertir stock previo
             if ($this->delivery->product_id) {
                 Product::where('id', $this->delivery->product_id)
-                    ->decrement('quantity', $this->delivery->delivered_amount);
+                    ->decrement('stock', $this->delivery->delivered_amount);
             }
 
             // Actualizar registro
@@ -93,7 +93,7 @@ class Update extends Create
 
             // Aplicar nuevo stock
             Product::where('id', $item['product_id'])
-                ->increment('quantity', $item['quantity']);
+                ->increment('stock', $item['quantity']);
         });
     }
 }

@@ -29,6 +29,7 @@
         <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
             <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
                 <tr>
+                    <th scope="col" class="p-4">Identificación del proveedor</th>
                     <th scope="col" class="p-4">Proveedor</th>
                     <th scope="col" class="p-4">Producto Entregado</th>
                     <th scope="col" class="p-4">Cantidad Entregada</th>
@@ -41,9 +42,10 @@
                     <tr>
                         {{-- Debido a que entrada de inventario viene con productos y proveedores, podemos llamar las variables de esas tablas
                         por cualquier campo dentro de estas y mostrarla en la vista. --}}
+                        <td class="p-4">{{ $delivery->provider->identification}}</td>
                         <td class="p-4">{{ $delivery->provider->name }}</td>
                         <td class="p-4">{{ $delivery->product->name }} </td>
-                        <td class="p-4">{{ $delivery->delivered_amount }} {{$delivery->product->measure->name}}</td>
+                        <td class="p-4">{{ $delivery->delivered_amount }} {{$delivery->product->category->measure->name}}</td>
                         <td class="p-4">{{ $delivery->date }}</td>
                         
                         

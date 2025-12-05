@@ -34,7 +34,7 @@
                         <td class="p-4">{{ $detail->product->price }}</td>
                         {{-- Debido a que productos viene con categoria y nombre, podemos llamar las variables de esas tablas
                         por cualquier campo dentro de estas y mostrarla en la vista. --}}
-                        <td class="p-4">{{ $detail->total }}</td>
+                        <td class="p-4">{{ $detail->subtotal }}</td>
                     </tr>
                 @empty
                     <tr>
@@ -48,6 +48,9 @@
 
     <p>
         Valor total: {{$sale->total_value}}
+    </p>
+    <p>
+        Metodo de pago: {{$sale->paymentMethod->name}}
     </p>
     <br>
     <p>

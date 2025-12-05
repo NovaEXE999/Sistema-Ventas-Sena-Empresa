@@ -9,8 +9,9 @@ class Category extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 
-        'status'
+        'name',
+        'status',
+        'measure_id',
     ];
     protected $casts = [
         'status' => 'boolean',
@@ -19,5 +20,10 @@ class Category extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function measure()
+    {
+        return $this->belongsTo(Measure::class);
     }
 }

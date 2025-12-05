@@ -13,14 +13,13 @@ class ProductDeliverySeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        $productDeliveries = new ProductDelivery();
+        $deliveries = [
+            ['date' => now(), 'delivered_amount' => 90, 'product_id' => 1, 'provider_id' => 1],
+            ['date' => now(), 'delivered_amount' => 60, 'product_id' => 2, 'provider_id' => 2],
+        ];
 
-        $productDeliveries->date = now();
-        $productDeliveries->delivered_amount = '90';
-        $productDeliveries->product_id = '1';
-        $productDeliveries->provider_id = '1';
-
-        $productDeliveries->save();
+        foreach ($deliveries as $delivery) {
+            ProductDelivery::create($delivery);
+        }
     }
 }

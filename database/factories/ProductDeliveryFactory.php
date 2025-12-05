@@ -16,11 +16,14 @@ class ProductDeliveryFactory extends Factory
      */
     public function definition(): array
     {
+        $productId = \App\Models\Product::query()->inRandomOrder()->value('id') ?? \App\Models\Product::factory();
+        $providerId = \App\Models\Provider::query()->inRandomOrder()->value('id') ?? \App\Models\Provider::factory();
+
         return [
             'date' => $this->faker->dateTimeThisMonth(),
             'delivered_amount' => $this->faker->numberBetween(100, 1000),
-            'product_id' => $this->faker->numberBetween(2, 10),
-            'provider_id' => $this->faker->numberBetween(2, 10),
+            'product_id' => $productId,
+            'provider_id' => $providerId,
         ];
     }
 }

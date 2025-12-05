@@ -22,7 +22,7 @@ class Index extends Component
         // Revertir stock antes de eliminar la entrada
         if ($delivery->product_id && $delivery->delivered_amount > 0) {
             Product::where('id', $delivery->product_id)
-                ->decrement('quantity', $delivery->delivered_amount);
+                ->decrement('stock', $delivery->delivered_amount);
         }
 
         $delivery->delete();

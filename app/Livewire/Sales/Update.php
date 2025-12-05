@@ -43,7 +43,7 @@ class Update extends Create
                 'name' => $product->name,
                 'quantity' => $detail->quantity,
                 'price' => (float) $product->price,
-                'stock' => $product->quantity + $detail->quantity,
+                'stock' => $product->stock + $detail->quantity,
                 'subtotal' => (float) $product->price * $detail->quantity,
             ];
         }
@@ -54,7 +54,7 @@ class Update extends Create
     protected function persistSale(Client $client): void
     {
         $products = Product::whereIn('id', array_keys($this->lineItems))
-            ->select('id', 'price', 'quantity')
+            ->select('id', 'price', 'stock')
             ->get()
             ->keyBy('id');
 
@@ -65,7 +65,7 @@ class Update extends Create
                 return;
             }
 
-            $available = $product->quantity;
+            $available = $product->stock;
             $previousDetail = $this->sale?->details->firstWhere('product_id', $item['product_id']);
             if ($previousDetail) {
                 $available += $previousDetail->quantity;
@@ -80,7 +80,7 @@ class Update extends Create
         DB::transaction(function () use ($client, $products) {
             // Devuelve stock previo de la venta actual
             foreach ($this->sale->details as $detail) {
-                $detail->product?->increment('quantity', $detail->quantity);
+                $detail->product?->increment('stock', $detail->quantity);
             }
 
             $this->sale->update([
@@ -98,11 +98,11 @@ class Update extends Create
 
                 $this->sale->details()->create([
                     'quantity' => $quantity,
-                    'total' => $price * $quantity,
+                    'subtotal' => $price * $quantity,
                     'product_id' => $item['product_id'],
                 ]);
 
-                $products[$item['product_id']]->decrement('quantity', $quantity);
+                $products[$item['product_id']]->decrement('stock', $quantity);
             }
         });
 

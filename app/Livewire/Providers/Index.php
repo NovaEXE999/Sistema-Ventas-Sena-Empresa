@@ -10,6 +10,9 @@ class Index extends Component
 {
     use WithPagination;
 
+    public function mount(){
+        $Provider = Provider::with(['persontype'])->get();
+    }
     public function toggleStatus(Provider $provider)
     {
         $provider->status = ! $provider->status;

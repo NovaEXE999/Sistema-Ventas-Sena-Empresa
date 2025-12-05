@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 200);
             $table->boolean('status')->default(true);
+            $table->foreignId('measure_id')->constrained('measures')->onDelete('cascade');
             $table->timestamps();
         });
     }

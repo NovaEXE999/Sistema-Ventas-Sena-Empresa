@@ -151,12 +151,12 @@
                             <span class="product-name">
                                 {{ $detail->product->name }}
                             </span>
-                            @if ($detail->product->measure)
-                                x {{ $detail->product->measure->abbreviation ?? $detail->product->measure->name }}
+                            @if ($detail->product->category && $detail->product->category->measure)
+                                x {{ $detail->product->category->measure->name }}
                             @endif
                         </td>
                         <td class="text-right">{{ number_format($detail->quantity, 0, ',', '.') }}</td>
-                        <td class="text-right">{{ number_format($detail->total, 0, ',', '.') }}</td>
+                        <td class="text-right">{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
                 <tr class="total-row">

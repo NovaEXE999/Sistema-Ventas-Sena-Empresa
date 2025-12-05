@@ -11,6 +11,9 @@ class Index extends Component
 {
     use WithPagination;
 
+    public function mount(){
+        $category = Category::with(['measure'])->get();
+    }
     public function toggleCategoryStatus(Category $category)
     {
         $category->status = ! $category->status;

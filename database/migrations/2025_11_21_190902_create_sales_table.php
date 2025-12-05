@@ -17,6 +17,7 @@ return new class extends Migration
             $table->date('date');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+            $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('cascade');
             $table->timestamps();
         });
     }

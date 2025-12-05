@@ -16,8 +16,8 @@ class Measure extends Model
         'status' => 'boolean',
     ];
 
-    public function products()
+    public function categories()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Category::class);
     }
 }

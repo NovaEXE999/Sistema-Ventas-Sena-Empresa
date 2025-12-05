@@ -34,6 +34,10 @@ use App\Livewire\CategoriesAndMeasures\UpdateCategory as CategoriesUpdate;
 use App\Livewire\CategoriesAndMeasures\CreateMeasure as MeasuresCreate;
 use App\Livewire\CategoriesAndMeasures\UpdateMeasure as MeasuresUpdate;
 
+use App\Livewire\PaymentMethods\Index as PaymentMethodsIndex;
+use App\Livewire\PaymentMethods\Create as PaymentMethodsCreate;
+use App\Livewire\PaymentMethods\Update as PaymentMethodsUpdate;
+
 use App\Livewire\Reports\Index as ReportsIndex;
 
 Route::get('/', function () {
@@ -92,5 +96,9 @@ Route::get('categories/create', CategoriesCreate::class)->name('categories.creat
 Route::get('categories/{category}/update', CategoriesUpdate::class)->name('categories.update');
 Route::get('measures/create', MeasuresCreate::class)->name('measures.create');
 Route::get('measures/{measure}/update', MeasuresUpdate::class)->name('measures.update');
+
+Route::get('paymentmethods', PaymentMethodsIndex::class)->name('paymentmethods.index');
+Route::get('paymentmethods/create', PaymentMethodsCreate::class)->name('paymentmethods.create');
+Route::get('paymentmethods/{payment}/update', PaymentMethodsUpdate::class)->name('paymentmethods.update');
 
 Route::get('reports', ReportsIndex::class)->name('reports.index');

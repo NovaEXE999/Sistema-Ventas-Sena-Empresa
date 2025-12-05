@@ -13,12 +13,16 @@ class MeasureSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $measures = [
+            ['name' => 'Und', 'status' => true],
+            ['name' => 'Kg', 'status' => true],
+            ['name' => 'Lt', 'status' => true],
+            ['name' => 'Lb', 'status' => true],
+            ['name' => 'Canastas', 'status' => true],
+        ];
 
-        $measure = new Measure();
-
-        $measure->name = 'Ml';
-
-        $measure->save();
+        foreach ($measures as $measure) {
+            Measure::create($measure);
+        }
     }
 }

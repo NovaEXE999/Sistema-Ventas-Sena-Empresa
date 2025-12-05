@@ -33,7 +33,6 @@
                     <th scope="col" class="p-4">Stock</th>
                     <th scope="col" class="p-4">Precio</th>
                     <th scope="col" class="p-4">Categoria</th>
-                    <th scope="col" class="p-4">Unidad de Medida</th>
                     <th scope="col" class="p-4">Estado</th>
                     <th scope="col" class="p-4 text-center">Acciones</th>
                 </tr>
@@ -42,12 +41,11 @@
                 @forelse ($products as $product)
                     <tr>
                         <td class="p-4">{{ $product->name }}</td>
-                        <td class="p-4">{{ $product->quantity }}</td>
+                        <td class="p-4">{{ $product->stock }} {{ $product->category->measure->name }}</td>
                         <td class="p-4">{{ $product->price }}</td>
-                        {{-- Debido a que productos viene con categoria y nombre, podemos llamar las variables de esas tablas
+                        {{-- Debido a que productos viene con categoria, podemos llamar las variables de esas tablas
                         por cualquier campo dentro de estas y mostrarla en la vista. --}}
                         <td class="p-4">{{ $product->category->name }}</td>
-                        <td class="p-4">{{ $product->measure->name }}</td>
 
                         <td class="p-4">
                             <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium

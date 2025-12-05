@@ -10,7 +10,7 @@ class Reports extends Component
 {
     public function pdf(Sale $sale)
     {
-        $sale->load(['client', 'user', 'details.product.measure']);
+        $sale->load(['client', 'user', 'details.product.category.measure']);
 
         $pdf = Pdf::loadView('livewire.sales.reports', [
             'sale' => $sale,
@@ -29,7 +29,7 @@ class Reports extends Component
 
     public function download(Sale $sale)
     {
-        $sale->load(['client', 'user', 'details.product.measure']);
+        $sale->load(['client', 'user', 'details.product.category.measure']);
 
         $pdf = Pdf::loadView('livewire.sales.reports', [
             'sale' => $sale,

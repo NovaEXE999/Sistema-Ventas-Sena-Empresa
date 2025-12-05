@@ -20,10 +20,13 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        // 'identification',
         'name',
         'email',
-        'password', 
-        'status'
+        'password',
+        // 'phone_number',
+        'status',
+        // 'role_id',
     ];
     protected $casts = [
         'status' => 'boolean',
@@ -70,5 +73,10 @@ class User extends Authenticatable
     public function sales()
     {
         return $this->hasMany(Sale::class);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

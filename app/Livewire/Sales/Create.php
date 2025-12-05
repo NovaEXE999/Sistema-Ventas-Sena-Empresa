@@ -6,6 +6,7 @@ use App\Models\Sale;
 use App\Models\SaleDetail;
 use App\Models\Product;
 use App\Models\Client;
+use App\Models\PaymentMethod;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +21,10 @@ class Create extends Component
     public ?int $client_id = null;
     public bool $clientNotFound = false;
     public ?string $pendingClientName = null;
+
+    // Metodo de pago
+    public array $paymentMethods = [];
+    public ?int $payment_method_id = null;
 
     // Productos y lineas de venta
     public string $productSearch = '';
@@ -41,6 +46,15 @@ class Create extends Component
         $this->user_id = $user?->id;
         $this->sellerName = $user?->name ?? 'Usuario';
         $this->date = now()->toDateString();
+
+        $this->paymentMethods = PaymentMethod::query()
+            ->where('status', true)
+            ->select('id', 'name')
+            ->orderBy('name')
+            ->get()
+            ->toArray();
+
+        $this->payment_method_id = $this->paymentMethods[0]['id'] ?? null;
     }
 
     protected function rules(): array
@@ -50,6 +64,7 @@ class Create extends Component
             'user_id' => 'required|exists:users,id',
             'clientSearch' => 'required|string',
             'total_value' => 'required|numeric|min:0',
+            'payment_method_id' => 'required|exists:payment_methods,id',
             'lineItems' => 'array|min:1',
             'lineItems.*.quantity' => 'integer|min:1',
             'lineItems.*.product_id' => 'integer|exists:products,id',
@@ -128,7 +143,7 @@ class Create extends Component
     protected function persistSale(Client $client): void
     {
         $products = Product::whereIn('id', array_keys($this->lineItems))
-            ->select('id', 'price', 'quantity')
+            ->select('id', 'price', 'stock')
             ->get()
             ->keyBy('id');
 
@@ -139,8 +154,8 @@ class Create extends Component
                 return;
             }
 
-            if ($item['quantity'] > $product->quantity) {
-                $this->addError('lineItems', "Stock insuficiente para {$item['name']}. Disponible: {$product->quantity}.");
+            if ($item['quantity'] > $product->stock) {
+                $this->addError('lineItems', "Stock insuficiente para {$item['name']}. Disponible: {$product->stock}.");
                 return;
             }
         }
@@ -151,6 +166,7 @@ class Create extends Component
                 'date' => $this->date,
                 'user_id' => $this->user_id,
                 'client_id' => $client->id,
+                'payment_method_id' => $this->payment_method_id,
             ]);
 
             foreach ($this->lineItems as $item) {
@@ -159,12 +175,12 @@ class Create extends Component
 
                 SaleDetail::create([
                     'quantity' => $quantity,
-                    'total' => $price * $quantity,
+                    'subtotal' => $price * $quantity,
                     'product_id' => $item['product_id'],
                     'sale_id' => $sale->id,
                 ]);
 
-                $products[$item['product_id']]->decrement('quantity', $quantity);
+                $products[$item['product_id']]->decrement('stock', $quantity);
             }
         });
 
@@ -200,9 +216,9 @@ class Create extends Component
         $this->productResults = Product::query()
             ->where('name', 'like', '%'.$this->productSearch.'%')
             ->where('status', true)
-            ->where('quantity', '>', 0)
+            ->where('stock', '>', 0)
             ->limit(5)
-            ->get(['id','name','price','quantity'])
+            ->get(['id','name','price','stock'])
             ->toArray();
 
         $this->selectedProductId = null;
@@ -210,7 +226,7 @@ class Create extends Component
 
     public function selectProduct(int $id): void
     {
-        $product = Product::select('id', 'name', 'price', 'quantity')->find($id);
+        $product = Product::select('id', 'name', 'price', 'stock')->find($id);
         if (!$product) {
             return;
         }
@@ -229,15 +245,15 @@ class Create extends Component
             return;
         }
 
-        $product = Product::select('id', 'name', 'price', 'quantity')->find($this->selectedProductId);
+        $product = Product::select('id', 'name', 'price', 'stock')->find($this->selectedProductId);
         if (!$product) {
             $this->addError('productSearch', 'Producto no encontrado.');
             return;
         }
 
         $quantity = max(1, (int) $this->productQuantity);
-        if ($quantity > $product->quantity) {
-            $this->addError('productQuantity', "Solo hay {$product->quantity} unidades en stock.");
+        if ($quantity > $product->stock) {
+            $this->addError('productQuantity', "Solo hay {$product->stock} unidades en stock.");
             return;
         }
 
@@ -246,7 +262,7 @@ class Create extends Component
             'name' => $product->name,
             'quantity' => $quantity,
             'price' => (float) $product->price,
-            'stock' => $product->quantity,
+            'stock' => $product->stock,
             'subtotal' => (float) $product->price * $quantity,
         ];
 

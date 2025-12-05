@@ -29,7 +29,10 @@
         <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
             <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
                 <tr>
+                    <th scope="col" class="p-4">Identificación</th>
                     <th scope="col" class="p-4">Nombre</th>
+                    <th scope="col" class="p-4">Teléfono</th>
+                    <th scope="col" class="p-4">Tipo de persona</th>
                     <th scope="col" class="p-4">Estado</th>
                     <th scope="col" class="p-4 text-center">Acciones</th>
                 </tr>
@@ -38,8 +41,16 @@
                 @forelse ($providers as $provider)
                     <tr>
                         <td class="p-4">
+                            {{ $provider->identification }}
+                        </td>
+                        <td class="p-4">
                             {{ $provider->name }}
-
+                        </td>
+                        <td class="p-4">
+                            {{ $provider->phone_number }}
+                        </td>
+                        <td class="p-4">
+                            {{ $provider->personType->name }}
                         </td>
 
                         <td class="p-4">

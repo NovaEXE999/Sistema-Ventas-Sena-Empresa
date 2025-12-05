@@ -16,11 +16,16 @@ class SaleFactory extends Factory
      */
     public function definition(): array
     {
+        $userId = \App\Models\User::query()->inRandomOrder()->value('id') ?? \App\Models\User::factory();
+        $clientId = \App\Models\Client::query()->inRandomOrder()->value('id') ?? \App\Models\Client::factory();
+        $paymentMethodId = \App\Models\PaymentMethod::query()->inRandomOrder()->value('id') ?? \App\Models\PaymentMethod::factory();
+
         return [
             'total_value' => $this->faker->randomFloat(2, 10000, 5000000),
             'date' => $this->faker->dateTimeThisMonth(),
-            'user_id' => $this->faker->numberBetween(2, 10),
-            'client_id' => $this->faker->numberBetween(2, 10)
+            'user_id' => $userId,
+            'client_id' => $clientId,
+            'payment_method_id' => $paymentMethodId,
         ];
     }
 }

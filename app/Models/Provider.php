@@ -9,8 +9,11 @@ class Provider extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 
-        'status'
+        'identification',
+        'name',
+        'phone_number',
+        'status',
+        'person_type_id',
     ];
     protected $casts = [
         'status' => 'boolean',
@@ -19,5 +22,10 @@ class Provider extends Model
     public function deliveries()
     {
         return $this->hasMany(ProductDelivery::class);
+    }
+
+    public function personType()
+    {
+        return $this->belongsTo(PersonType::class);
     }
 }

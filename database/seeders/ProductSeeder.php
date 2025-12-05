@@ -13,14 +13,15 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        $product = new Product();
+        $products = [
+            ['name' => 'Jabon', 'stock' => 200, 'price' => 9000.00, 'status' => true, 'category_id' => 1],
+            ['name' => 'Detergente', 'stock' => 150, 'price' => 12000.00, 'status' => true, 'category_id' => 1],
+            ['name' => 'Arroz 500g', 'stock' => 300, 'price' => 3500.00, 'status' => true, 'category_id' => 2],
+            ['name' => 'Gaseosa 1.5Lt', 'stock' => 80, 'price' => 4500.00, 'status' => true, 'category_id' => 3],
+        ];
 
-        $product->name = 'Jabon';
-        $product->quantity = '200';
-        $product->price = '9000.00';
-        $product->category_id = '1';
-        $product->measure_id = '1';
-
-        $product->save();
+        foreach ($products as $product) {
+            Product::create($product);
+        }
     }
 }

@@ -9,8 +9,11 @@ class Client extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 
-        'status'
+        'identification',
+        'name',
+        'phone_number',
+        'status',
+        'client_type_id',
     ];
 
     protected $casts = [
@@ -22,4 +25,8 @@ class Client extends Model
         return $this->hasMany(Sale::class);
     }
 
+    public function clientType()
+    {
+        return $this->belongsTo(ClientType::class);
+    }
 }

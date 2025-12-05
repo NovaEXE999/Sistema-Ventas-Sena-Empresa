@@ -12,7 +12,8 @@ class Sale extends Model
         'total_value',
         'date',
         'user_id',
-        'client_id'
+        'client_id',
+        'payment_method_id',
     ];
 
     public function user()
@@ -23,6 +24,11 @@ class Sale extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function paymentMethod()
+    {
+        return $this->belongsTo(PaymentMethod::class);
     }
 
     public function details()

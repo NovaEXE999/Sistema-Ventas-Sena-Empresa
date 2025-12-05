@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('providers', function (Blueprint $table) {
             $table->id();
+            $table->string('identification', 10)->unique();
             $table->string('name', 200);
+            $table->string('phone_number', 20);
             $table->boolean('status')->default(true);
+            $table->foreignId('person_type_id')->constrained('person_types')->onDelete('cascade');
             $table->timestamps();
         });
     }

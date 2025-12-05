@@ -13,12 +13,20 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $categories = [
+            ['name' => 'Limpieza y Desinfeccion', 'measure_id' => 1, 'status' => true],
+            ['name' => 'Abarrotes', 'measure_id' => 1, 'status' => true],
+            ['name' => 'Bebidas', 'measure_id' => 3, 'status' => true],
+            ['name' => 'Lacteos y Huevos', 'measure_id' => 5, 'status' => true],
+            ['name' => 'Verduras', 'measure_id' => 4, 'status' => true],
+            ['name' => 'Mekatos', 'measure_id' => 1, 'status' => true],
+            ['name' => 'Entretenimiento', 'measure_id' => 1, 'status' => true],
+            ['name' => 'Deportes', 'measure_id' => 1, 'status' => true],
+            ['name' => 'Carnes Frias', 'measure_id' => 2, 'status' => true],
+        ];
 
-        $category = new Category();
-
-        $category->name = 'Limpieza y Desinfeccion';
-
-        $category->save();
+        foreach ($categories as $category) {
+            Category::create($category);
+        }
     }
 }

@@ -10,6 +10,9 @@ class Index extends Component
 {
     use WithPagination;
 
+    public function mount(){
+        $client = Client::with(['clienttype'])->get();
+    }
     public function toggleStatus(Client $client)
     {
         // 1 = Activo, 0 = Inactivo

@@ -14,35 +14,23 @@
 
     <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
         <x-form.input wire:model="name" label="Nombre" name="name" placeholder="Ingresa el nombre del producto"/>
-        <x-form.input wire:model="quantity" label="Cantidad" name="quantity" placeholder="Ingresa la cantidad"/>
+        <x-form.input wire:model="stock" type="number" min="0" label="Stock" name="stock" placeholder="Ingresa el stock"/>
         <x-form.input wire:model="price" label="Precio" name="price" placeholder="Ingresa el precio"/>
+        <label class="inline-flex items-center gap-2 text-sm">
+            <input type="checkbox" wire:model="status" class="rounded border-outline">
+            <span>Activo</span>
+        </label>
 
         {{-- Categoría --}}
         <div class="space-y-1">
             <x-form.input wire:model.live.debounce.300ms="categorySearch"
                           label="Categoría" name="categorySearch" placeholder="Escribe para buscar..." />
             @if($categoryResults)
-                <ul class="border rounded shadow-sm bg-black">
+                <ul class="border rounded shadow-sm bg-white text-gray-900 max-h-48 overflow-y-auto">
                     @foreach($categoryResults as $cat)
-                        <li wire:click="selectCategory({{ $cat['id'] }}, '{{ $cat['name'] }}')"
+                        <li wire:click="selectCategory({{ $cat['id'] }}, @js($cat['name']))"
                             class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
                             {{ $cat['name'] }}
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
-
-        {{-- Medida --}}
-        <div class="space-y-1 mt-3">
-            <x-form.input wire:model.live.debounce.300ms="measureSearch"
-                          label="Unidad de medida" name="measureSearch" placeholder="Escribe para buscar..." />
-            @if($measureResults)
-                <ul class="border rounded shadow-sm bg-black">
-                    @foreach($measureResults as $m)
-                        <li wire:click="selectMeasure({{ $m['id'] }}, '{{ $m['name'] }}')"
-                            class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                            {{ $m['name'] }}
                         </li>
                     @endforeach
                 </ul>

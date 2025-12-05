@@ -4,6 +4,7 @@ namespace App\Livewire\Sales;
 
 use Livewire\Component;
 use App\Models\Sale;
+use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
 
 class Index extends Component
@@ -13,12 +14,19 @@ class Index extends Component
     public $sale;
 
     public function mount(){
-        $sale = Sale::with(['user', 'client'])->get();
+        $sale = Sale::with(['user', 'client', 'paymentmethod'])->get();
     }
 
     public function delete(Sale $sale)
     {
-        $sale->delete();
+        DB::transaction(function () use ($sale) {
+            foreach ($sale->details as $detail) {
+                $detail->product?->increment('stock', $detail->quantity);
+            }
+
+            $sale->details()->delete();
+            $sale->delete();
+        });
 
         session()->flash('success', 'Venta eliminada satisfactoriamente.');
         $this->redirectRoute('sales.index', navigate: true);
