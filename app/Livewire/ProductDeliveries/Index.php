@@ -11,10 +11,15 @@ class Index extends Component
 {
     use WithPagination;
 
-    public $delivery;
+    public string $order = 'date_desc';
+    public ?string $filterDate = null;
+    public string $search = '';
 
-    public function mount(){
-        $delivery = ProductDelivery::with('provider', 'product')->get();
+    public function updated($propertyName): void
+    {
+        if (in_array($propertyName, ['order', 'filterDate', 'search'], true)) {
+            $this->resetPage();
+        }
     }
 
     public function delete(ProductDelivery $delivery)
@@ -33,8 +38,35 @@ class Index extends Component
 
     public function render()
     {
+        $deliveriesQuery = ProductDelivery::with(['provider', 'product.category.measure']);
+
+        if ($this->filterDate) {
+            $deliveriesQuery->whereDate('date', $this->filterDate);
+        }
+
+        if (trim($this->search) !== '') {
+            $term = trim($this->search);
+            $deliveriesQuery->where(function ($query) use ($term) {
+                $query->whereHas('provider', function ($q) use ($term) {
+                    $q->where('name', 'like', "%{$term}%")
+                        ->orWhere('identification', 'like', "%{$term}%");
+                })->orWhereHas('product', function ($q) use ($term) {
+                    $q->where('name', 'like', "%{$term}%");
+                });
+            });
+        }
+
+        switch ($this->order) {
+            case 'date_asc':
+                $deliveriesQuery->orderBy('date', 'asc')->orderBy('id', 'asc');
+                break;
+            default:
+                $deliveriesQuery->orderBy('date', 'desc')->orderBy('id', 'desc');
+                break;
+        }
+
         return view('livewire.product-deliveries.index', [
-            'deliveries' => ProductDelivery::latest()->paginate(10),
+            'deliveries' => $deliveriesQuery->paginate(10),
         ]);
     }
 }

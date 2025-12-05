@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Livewire\PaymentMethods;
+namespace App\Livewire\ClientTypes;
 
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use App\Models\PaymentMethod;
+use App\Models\ClientType;
 
 class Create extends Component
 {
@@ -14,16 +14,16 @@ class Create extends Component
     public function save(){
         $this->validate();
 
-        PaymentMethod::create([
+        ClientType::create([
             'name' => $this->name
         ]);
 
-        session()->flash('success', 'Método de pago creado satisfactoriamente.');
-        $this->redirectRoute('paymentmethods.index', navigate:true);
+        session()->flash('success', 'Tipo de cliente creado satisfactoriamente.');
+        $this->redirectRoute('clienttypes.index', navigate:true);
     }
 
     public function render()
     {
-        return view('livewire.payment-methods.create');
+        return view('livewire.client-types.create');
     }
 }

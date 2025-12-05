@@ -4,6 +4,8 @@ namespace App\Livewire\Sales;
 
 use Livewire\Component;
 use App\Models\Sale;
+use App\Models\PaymentMethod;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
 
@@ -11,10 +13,31 @@ class Index extends Component
 {
     use WithPagination;
 
-    public $sale;
+    public string $order = 'date_desc';
+    public ?string $filterDate = null;
+    public string $paymentMethod = 'all';
+    public string $seller = 'all';
+    public string $search = '';
+    public array $paymentMethods = [];
+    public array $sellers = [];
 
-    public function mount(){
-        $sale = Sale::with(['user', 'client', 'paymentmethod'])->get();
+    public function mount(): void
+    {
+        $this->paymentMethods = PaymentMethod::where('status', true)
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->toArray();
+
+        $this->sellers = User::orderBy('name')
+            ->get(['id', 'name'])
+            ->toArray();
+    }
+
+    public function updated($propertyName): void
+    {
+        if (in_array($propertyName, ['order', 'filterDate', 'paymentMethod', 'seller', 'search'], true)) {
+            $this->resetPage();
+        }
     }
 
     public function delete(Sale $sale)
@@ -34,8 +57,41 @@ class Index extends Component
 
     public function render()
     {
+        $salesQuery = Sale::with(['user', 'client', 'paymentmethod']);
+
+        if ($this->filterDate) {
+            $salesQuery->whereDate('date', $this->filterDate);
+        }
+
+        if ($this->paymentMethod !== 'all') {
+            $salesQuery->where('payment_method_id', $this->paymentMethod);
+        }
+
+        if ($this->seller !== 'all') {
+            $salesQuery->where('user_id', $this->seller);
+        }
+
+        if (trim($this->search) !== '') {
+            $term = trim($this->search);
+            $salesQuery->whereHas('client', function ($query) use ($term) {
+                $query->where('name', 'like', "%{$term}%")
+                    ->orWhere('identification', 'like', "%{$term}%");
+            });
+        }
+
+        switch ($this->order) {
+            case 'date_asc':
+                $salesQuery->orderBy('date', 'asc')->orderBy('id', 'asc');
+                break;
+            default:
+                $salesQuery->orderBy('date', 'desc')->orderBy('id', 'desc');
+                break;
+        }
+
         return view('livewire.sales.index', [
-            'sales' => Sale::latest()->paginate(10),
+            'sales' => $salesQuery->paginate(10),
+            'paymentMethods' => $this->paymentMethods,
+            'sellers' => $this->sellers,
         ]);
     }
 }

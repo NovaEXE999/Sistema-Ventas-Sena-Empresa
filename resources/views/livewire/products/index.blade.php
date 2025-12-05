@@ -20,12 +20,57 @@
             </div>
         </div>
     @endif
-        {{-- {{ route('products.create') }} --}}
-    <a href="{{route('products.create')}}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
-        Registrar un producto
-    </a>
+    <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
+        <a href="{{route('products.create')}}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
+            Registrar un producto
+        </a>
+        <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="absolute left-2.5 top-1/2 size-5 -translate-y-1/2 text-on-surface/50 dark:text-on-surface-dark/50"> 
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+            <input 
+            type="search" wire:model.live.debounce.300ms="search" class="w-full rounded-radius border border-outline bg-surface-alt py-2 pl-10 pr-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark" name="search" placeholder="Buscar producto..." aria-label="search"/>
+        </div>
+    </div>
+
+    <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+        <div class="flex flex-col gap-1 text-sm">
+            <label class="text-on-surface dark:text-on-surface-dark">Orden</label>
+            <select wire:model.live="order" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+                <option value="created_desc">Creacion: nuevo a antiguo</option>
+                <option value="created_asc">Creacion: antiguo a nuevo</option>
+                <option value="name_asc">Nombre: A a Z</option>
+            </select>
+        </div>
+        <div class="flex flex-col gap-1 text-sm">
+            <label class="text-on-surface dark:text-on-surface-dark">Stock</label>
+            <select wire:model.live="stockOrder" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+                <option value="none">Sin ordenar por stock</option>
+                <option value="stock_desc">Stock: mas a menos</option>
+                <option value="stock_asc">Stock: menos a mas</option>
+            </select>
+        </div>
+        <div class="flex flex-col gap-1 text-sm">
+            <label class="text-on-surface dark:text-on-surface-dark">Estado</label>
+            <select wire:model.live="status" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+                <option value="all">Todos</option>
+                <option value="active">Activos</option>
+                <option value="inactive">Inactivos</option>
+            </select>
+        </div>
+        <div class="flex flex-col gap-1 text-sm">
+            <label class="text-on-surface dark:text-on-surface-dark">Categoria</label>
+            <select wire:model.live="category" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+                <option value="all">Todas</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat['id'] }}">{{ $cat['name'] }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
 
     <div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
+        <h2 class="text-center p-4">Productos</h2>
         <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
             <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
                 <tr>

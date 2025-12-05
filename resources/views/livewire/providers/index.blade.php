@@ -14,24 +14,68 @@
                 </div>
                 <button type="button" @click="alertIsVisible = false" class="ml-auto" aria-label="dismiss alert">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2.5" class="w-4 h-4 shrink-0">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
         </div>
     @endif
-        {{-- {{ route('products.create') }} --}}
-    <a href="{{route('providers.create')}}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
-        Registrar un proveedor
-    </a>
+
+    <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
+        <a href="{{ route('providers.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
+            Registrar un proveedor
+        </a>
+        <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="absolute left-2.5 top-1/2 size-5 -translate-y-1/2 text-on-surface/50 dark:text-on-surface-dark/50"> 
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+            <input 
+                type="search"
+                wire:model.live.debounce.300ms="search"
+                class="w-full rounded-radius border border-outline bg-surface-alt py-2 pl-10 pr-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+                name="search"
+                placeholder="Buscar proveedor..."
+                aria-label="search"
+            />
+        </div>
+    </div>
+
+    <div class="grid gap-3 md:grid-cols-3 lg:grid-cols-4">
+        <div class="flex flex-col gap-1 text-sm">
+            <label class="text-on-surface dark:text-on-surface-dark">Orden</label>
+            <select wire:model.live="order" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+                <option value="created_desc">Creacion: nuevo a antiguo</option>
+                <option value="created_asc">Creacion: antiguo a nuevo</option>
+                <option value="name_asc">Nombre: A a Z</option>
+            </select>
+        </div>
+        <div class="flex flex-col gap-1 text-sm">
+            <label class="text-on-surface dark:text-on-surface-dark">Tipo de persona</label>
+            <select wire:model.live="personType" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+                <option value="all">Todos</option>
+                @foreach($personTypes as $type)
+                    <option value="{{ $type['id'] }}">{{ $type['name'] }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="flex flex-col gap-1 text-sm">
+            <label class="text-on-surface dark:text-on-surface-dark">Estado</label>
+            <select wire:model.live="status" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+                <option value="all">Todos</option>
+                <option value="active">Activos</option>
+                <option value="inactive">Inactivos</option>
+            </select>
+        </div>
+    </div>
 
     <div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
+        <h2 class="text-center p-4">Proveedores</h2>
         <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
             <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
                 <tr>
-                    <th scope="col" class="p-4">Identificación</th>
+                    <th scope="col" class="p-4">IdentificaciИn</th>
                     <th scope="col" class="p-4">Nombre</th>
-                    <th scope="col" class="p-4">Teléfono</th>
+                    <th scope="col" class="p-4">Telゼfono</th>
                     <th scope="col" class="p-4">Tipo de persona</th>
                     <th scope="col" class="p-4">Estado</th>
                     <th scope="col" class="p-4 text-center">Acciones</th>
@@ -62,9 +106,7 @@
 
 
                         <td class="p-4 flex justify-center items-center gap-2">
-                            {{-- {{ route('products.edit', $product) }} --}}
-                            <a href="{{route('providers.update', $provider)}}" wire:navigate>
-                                <!-- alternate Button with Icon -->
+                            <a href="{{ route('providers.update', $provider) }}" wire:navigate>
                                 <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
@@ -74,10 +116,9 @@
                             </a>
 
                             @if ($provider->status)
-                                {{-- Botón para inhabilitar --}}
                                 <button
                                     wire:click="toggleStatus({{ $provider->id }})"
-                                    wire:confirm="¿Estás seguro de inhabilitar al proveedor {{ $provider->name }}?"
+                                    wire:confirm="隅Estケs seguro de inhabilitar al proveedor {{ $provider->name }}?"
                                     type="button"
                                     class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
                                 >
@@ -87,10 +128,9 @@
                                     Inhabilitar
                                 </button>
                             @else
-                                {{-- Botón para habilitar --}}
                                 <button
                                     wire:click="toggleStatus({{ $provider->id }})"
-                                    wire:confirm="¿Estás seguro de habilitar al proveedor {{ $provider->name }}?"
+                                    wire:confirm="隅Estケs seguro de habilitar al proveedor {{ $provider->name }}?"
                                     type="button"
                                     class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
                                 >
@@ -104,13 +144,13 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="2">No hay proveedores registrados.</td>
+                        <td colspan="6">No hay proveedores registrados.</td>
                     </tr>
                 @endforelse
                   
             </tbody>
         </table>
-        {{-- Esto es para la paginación de la tabla. --}}
+        {{-- Esto es para la paginaciИn de la tabla. --}}
         <div class="p-4">
             {{ $providers->links() }}
         </div>

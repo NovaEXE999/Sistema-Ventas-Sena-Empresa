@@ -38,10 +38,22 @@ use App\Livewire\PaymentMethods\Index as PaymentMethodsIndex;
 use App\Livewire\PaymentMethods\Create as PaymentMethodsCreate;
 use App\Livewire\PaymentMethods\Update as PaymentMethodsUpdate;
 
+use App\Livewire\ClientTypes\Index as ClientTypesIndex;
+use App\Livewire\ClientTypes\Create as ClientTypesCreate;
+use App\Livewire\ClientTypes\Update as ClientTypesUpdate;
+
+use App\Livewire\PersonTypes\Index as PersonTypesIndex;
+use App\Livewire\PersonTypes\Create as PersonTypesCreate;
+use App\Livewire\PersonTypes\Update as PersonTypesUpdate;
+
+use App\Livewire\Users\Index as UsersIndex;
+use App\Livewire\Users\Create as UsersCreate;
+use App\Livewire\Users\Update as UsersUpdate;
+
 use App\Livewire\Reports\Index as ReportsIndex;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('livewire.auth.login');
 })->name('home');
 
 Route::view('dashboard', 'dashboard')
@@ -100,5 +112,17 @@ Route::get('measures/{measure}/update', MeasuresUpdate::class)->name('measures.u
 Route::get('paymentmethods', PaymentMethodsIndex::class)->name('paymentmethods.index');
 Route::get('paymentmethods/create', PaymentMethodsCreate::class)->name('paymentmethods.create');
 Route::get('paymentmethods/{payment}/update', PaymentMethodsUpdate::class)->name('paymentmethods.update');
+
+Route::get('clienttypes', ClientTypesIndex::class)->name('clienttypes.index');
+Route::get('clienttypes/create', ClientTypesCreate::class)->name('clienttypes.create');
+Route::get('clienttypes/{clienttype}/update', ClientTypesUpdate::class)->name('clienttypes.update');
+
+Route::get('persontypes', PersonTypesIndex::class)->name('persontypes.index');
+Route::get('persontypes/create', PersonTypesCreate::class)->name('persontypes.create');
+Route::get('persontypes/{persontype}/update', PersonTypesUpdate::class)->name('persontypes.update');
+
+Route::get('users', UsersIndex::class)->name('users.index');
+Route::get('users/create', UsersCreate::class)->name('users.create');
+Route::get('users/{user}/update', UsersUpdate::class)->name('users.update');
 
 Route::get('reports', ReportsIndex::class)->name('reports.index');

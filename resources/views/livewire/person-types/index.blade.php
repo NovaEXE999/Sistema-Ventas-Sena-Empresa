@@ -10,7 +10,7 @@
                     </svg>
                 </div>
                 <div class="ml-2">
-                    <h3 class="text-sm font-semibold text-success">Mensajes de Metodos de pago</h3>
+                    <h3 class="text-sm font-semibold text-success">Mensajes de Tipos de personas</h3>
                     <p class="text-xs font-medium sm:text-sm">{{ session('success') }}</p>
                 </div>
                 <button type="button" @click="alertIsVisible = false" class="ml-auto" aria-label="dismiss alert">
@@ -23,8 +23,8 @@
     @endif
 
     <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
-        <a href="{{ route('paymentmethods.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
-            Registrar un metodo de pago
+        <a href="{{ route('persontypes.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
+            Registrar un tipo de persona
         </a>
 
     </div>
@@ -35,9 +35,9 @@
 
         {{-- TABLA DE UNIDADES DE MEDIDA --}}
         <div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
-            <h2 class="text-center p-4">Metodos de pago</h2>
+            <h2 class="text-center p-4">Tipos de persona</h2>
             <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
-                <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
+                <thead class="border-b border-outline bg-surface-alt text-sm text-personas-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
                     <tr>
                         <th scope="col" class="p-4">Nombre</th>
                         <th scope="col" class="p-4">Estado</th>
@@ -45,19 +45,19 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-outline dark:divide-outline-dark">
-                    @forelse ($payments as $payment)
+                    @forelse ($persontypes as $persontype)
                         <tr>
-                            <td class="p-4">{{ $payment->name }}</td>
+                            <td class="p-4">{{ $persontype->name }}</td>
 
                             <td class="p-4">
                                 <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium
-                                    {{ $payment->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
-                                    {{ $payment->status ? 'Activa' : 'Inactiva' }}
+                                    {{ $persontype->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
+                                    {{ $persontype->status ? 'Activa' : 'Inactiva' }}
                                 </span>
                             </td>
 
                             <td class="p-4 flex justify-center items-center gap-2">
-                                <a href="{{route('paymentmethods.update', $payment)}}" wire:navigate>
+                                <a href="{{route('persontypes.update', $persontype)}}" wire:navigate>
                                     <!-- alternate Button with Icon -->
                                     <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
@@ -67,11 +67,11 @@
                                     </button>
                                 </a>
 
-                                @if ($payment->status)
+                                @if ($persontype->status)
                                     {{-- Botón para inhabilitar --}}
                                     <button 
-                                        wire:click="toggleStatus({{ $payment->id }})" 
-                                        wire:confirm="¿Estás seguro de inhabilitar el metodo de pago {{ $payment->name }}?"
+                                        wire:click="toggleStatus({{ $persontype->id }})" 
+                                        wire:confirm="¿Estás seguro de inhabilitar el tipo de persona {{ $persontype->name }}?"
                                         type="button" 
                                         class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
                                     >
@@ -83,8 +83,8 @@
                                 @else
                                     {{-- Botón para habilitar --}}
                                     <button 
-                                        wire:click="toggleStatus({{ $payment->id }})" 
-                                        wire:confirm="¿Estás seguro de habilitar el metodo de pago {{ $payment->name }}?"
+                                        wire:click="toggleStatus({{ $persontype->id }})" 
+                                        wire:confirm="¿Estás seguro de habilitar el tipo de persona {{ $persontype->name }}?"
                                         type="button" 
                                         class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
                                     >
@@ -98,7 +98,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3">No hay metodos de pago registrados.</td>
+                            <td colspan="3">No hay tipos de personas registradas.</td>
                         </tr>
                     @endforelse
                     
@@ -106,7 +106,7 @@
             </table>
             {{-- Esto es para la paginación de la tabla. --}}
             <div class="p-4">
-                {{ $payments->links() }}
+                {{ $persontypes->links() }}
             </div>
         </div>
     </div>

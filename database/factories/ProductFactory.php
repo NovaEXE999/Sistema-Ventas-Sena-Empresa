@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,12 +19,12 @@ class ProductFactory extends Factory
     {
 
         $opProducts = ["Manzanas", "Plケtanos", "Naranjas", "Uvas", "Zanahorias", "Papas", "Tomates", "Cebollas", "Pechuga de pollo", "Carne molida", "SalmИn", "Arroz", "Frijoles", "Azカcar", "Harina", "Huevos", "Refrescos", "Yogures", "Latas de atカn", "Botellas de agua", "Pan de caja", "Leche", "Queso", "Mantequilla", "JabИn de baヵo", "Shampoo", "Pasta dental", "Cepillo de dientes"];
-        $categoryId = \App\Models\Category::query()->inRandomOrder()->value('id') ?? \App\Models\Category::factory();
+        $categoryId = Category::query()->inRandomOrder()->value('id') ?? Category::factory();
 
         return [
             'name' => $this->faker->randomElement($opProducts),
             'stock' => $this->faker->numberBetween(1, 200),
-            'price' => $this->faker->randomFloat(2, 10000, 5000000),
+            'price' => $this->faker->randomFloat(2, 10000, 50000),
             'status' => true,
             'category_id' => $categoryId,
         ];

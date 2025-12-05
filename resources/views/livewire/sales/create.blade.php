@@ -42,7 +42,12 @@
                     @foreach($clientResults as $client)
                         <li wire:click="selectClient({{ $client['id'] }}, @js($client['name']))"
                             class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                            {{ $client['name'] }}
+                            <div class="flex flex-col">
+                                <span class="font-medium">{{ $client['name'] }}</span>
+                                @if(!empty($client['identification']))
+                                    <span class="text-xs text-gray-600">ID: {{ $client['identification'] }}</span>
+                                @endif
+                            </div>
                         </li>
                     @endforeach
                 </ul>
@@ -56,7 +61,6 @@
                     </div>
                 </div>
             @endif
-            @error('clientSearch') <p class="text-sm text-danger">{{ $message }}</p> @enderror
         </div>
 
         {{-- Productos --}}
@@ -84,8 +88,6 @@
                     Insertar
                 </button>
             </div>
-            @error('productSearch') <p class="text-sm text-danger">{{ $message }}</p> @enderror
-            @error('productQuantity') <p class="text-sm text-danger">{{ $message }}</p> @enderror
 
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-on-surface">
@@ -102,16 +104,18 @@
                         @forelse($lineItems as $item)
                             <tr wire:key="product-{{ $item['product_id'] }}" class="border-b border-outline/50">
                                 <td class="p-2">
-                                    <button type="button" wire:click="removeLine({{ $item['product_id'] }})" class="text-danger font-bold">-</button>
+                                    <button aria-label="Quitar producto" type="button" wire:click="removeLine({{ $item['product_id'] }})" class="inline-flex justify-center items-center aspect-square whitespace-nowrap rounded-full border border-danger bg-danger p-2 text-sm font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:border-danger dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger">
+                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-5 stroke-on-danger dark:stroke-on-danger" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M6 6l12 12M6 18L18 6" />
+                                        </svg>
+                                    </button>
                                 </td>
                                 <td class="p-2">
                                     <span class="text-primary font-semibold">{{ $item['name'] }}</span>
                                     <p class="text-xs text-gray-500">Stock: {{ $item['stock'] }}</p>
                                 </td>
                                 <td class="p-2">
-                                    <input type="number" min="1" class="w-24 rounded-radius border border-outline px-2 py-1 text-sm"
-                                           value="{{ $item['quantity'] }}"
-                                           wire:change="updateLineQuantity({{ $item['product_id'] }}, $event.target.value)">
+                                    <span class="text-sm text-on-surface">{{ $item['quantity'] }}</span>
                                 </td>
                                 <td class="p-2">${{ number_format($item['price'], 2) }}</td>
                                 <td class="p-2 font-semibold">${{ number_format($item['subtotal'], 2) }}</td>

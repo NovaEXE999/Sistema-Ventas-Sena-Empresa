@@ -21,6 +21,9 @@
                     <flux:navlist.item icon="user" :href="route('providers.index')" :current="request()->routeIs('providers.*')" wire:navigate>Proveedores</flux:navlist.item>
                     <flux:navlist.item icon="truck" :href="route('productdeliveries.index')" :current="request()->routeIs('productdeliveries.*')" wire:navigate>Inventario</flux:navlist.item>
                     <flux:navlist.item icon="truck" :href="route('paymentmethods.index')" :current="request()->routeIs('paymentmethods.*')" wire:navigate>Metodos de pago</flux:navlist.item>
+                    <flux:navlist.item icon="truck" :href="route('clienttypes.index')" :current="request()->routeIs('clienttypes.*')" wire:navigate>Tipos de cliente</flux:navlist.item>
+                    <flux:navlist.item icon="truck" :href="route('persontypes.index')" :current="request()->routeIs('persontypes.*')" wire:navigate>Tipos de Persona</flux:navlist.item>
+                    <flux:navlist.item icon="truck" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>Gestión de usuarios</flux:navlist.item>
                     <flux:navlist.item icon="document" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>Reportes</flux:navlist.item>
                     <flux:navlist.item icon="information-circle" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Acerca de</flux:navlist.item>
                 </flux:navlist.group>
@@ -70,7 +73,7 @@
                     <flux:menu.separator />
 
                     <flux:menu.radio.group>
-                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>{{ __('Settings') }}</flux:menu.item>
+                        <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>{{ __('Configuraciones') }}</flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
@@ -78,7 +81,7 @@
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full" data-test="logout-button">
-                            {{ __('Log Out') }}
+                            {{ __('Cerrar sesión') }}
                         </flux:menu.item>
                     </form>
                 </flux:menu>

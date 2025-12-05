@@ -191,11 +191,16 @@ class Create extends Component
     // Busqueda de cliente
     public function updatedClientSearch(): void
     {
+        $term = trim($this->clientSearch);
+
         $this->clientResults = Client::query()
-            ->where('name', 'like', '%'.$this->clientSearch.'%')
+            ->where(function ($query) use ($term) {
+                $query->where('name', 'like', '%'.$term.'%')
+                    ->orWhere('identification', 'like', '%'.$term.'%');
+            })
             ->where('status', true)
             ->limit(5)
-            ->get(['id','name'])
+            ->get(['id','name','identification'])
             ->toArray();
 
         $this->client_id = null;
@@ -213,8 +218,13 @@ class Create extends Component
     // Busqueda de producto
     public function updatedProductSearch(): void
     {
+        $term = trim($this->productSearch);
+
         $this->productResults = Product::query()
-            ->where('name', 'like', '%'.$this->productSearch.'%')
+            ->where(function ($query) use ($term) {
+                $query->where('name', 'like', '%'.$term.'%')
+                    ->orWhere('id', 'like', '%'.$term.'%');
+            })
             ->where('status', true)
             ->where('stock', '>', 0)
             ->limit(5)
@@ -257,13 +267,21 @@ class Create extends Component
             return;
         }
 
+        $existingQuantity = $this->lineItems[$product->id]['quantity'] ?? 0;
+        $newQuantity = $existingQuantity + $quantity;
+
+        if ($newQuantity > $product->stock) {
+            $this->addError('lineItems', "No puedes agregar {$quantity} unidades mas de {$product->name}. Stock disponible: {$product->stock}.");
+            return;
+        }
+
         $this->lineItems[$product->id] = [
             'product_id' => $product->id,
             'name' => $product->name,
-            'quantity' => $quantity,
+            'quantity' => $newQuantity,
             'price' => (float) $product->price,
             'stock' => $product->stock,
-            'subtotal' => (float) $product->price * $quantity,
+            'subtotal' => (float) $product->price * $newQuantity,
         ];
 
         $this->recalculateTotals();
