@@ -20,6 +20,7 @@
                     <flux:navlist.item icon="user" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>Clientes</flux:navlist.item>
                     <flux:navlist.item icon="user" :href="route('providers.index')" :current="request()->routeIs('providers.*')" wire:navigate>Proveedores</flux:navlist.item>
                     <flux:navlist.item icon="truck" :href="route('productdeliveries.index')" :current="request()->routeIs('productdeliveries.*')" wire:navigate>Inventario</flux:navlist.item>
+                    <flux:navlist.item icon="truck" :href="route('paymentmethods.index')" :current="request()->routeIs('paymentmethods.*')" wire:navigate>Metodos de pago</flux:navlist.item>
                     <flux:navlist.item icon="document" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>Reportes</flux:navlist.item>
                     <flux:navlist.item icon="information-circle" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Acerca de</flux:navlist.item>
                 </flux:navlist.group>
@@ -27,7 +28,7 @@
 
             <flux:spacer />
 
-            <flux:navlist variant="outline">
+            {{-- <flux:navlist variant="outline">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                 {{ __('Repository') }}
                 </flux:navlist.item>
@@ -35,7 +36,7 @@
                 <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
                 {{ __('Documentation') }}
                 </flux:navlist.item>
-            </flux:navlist>
+            </flux:navlist> --}}
 
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">
