@@ -6,11 +6,7 @@
         <h2 class="text-lg font-semibold">Registrar usuario</h2>
     </div>
 
-    @if ($errors->any())
-        <div class="rounded-radius border border-danger/40 bg-danger/10 p-3 text-sm text-danger">
-            {{ __('Por favor corrige los errores e inténtalo de nuevo.') }}
-        </div>
-    @endif
+    <x-form.error-alert />
 
     <form wire:submit.prevent="save" class="flex flex-col gap-5">
         <flux:input
@@ -19,6 +15,10 @@
             :label="__('Identification')"
             type="text"
             required
+            minlength="3"
+            maxlength="10"
+            pattern="^[0-9]{3,10}$"
+            title="Solo números, entre 3 y 10 dígitos, sin signos."
             autocomplete="off"
             :placeholder="__('Identification number')"
             :error="$errors->first('identification')"

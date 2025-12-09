@@ -11,6 +11,7 @@
             Registro de ventas 
         </h1>
     </div>
+    <x-form.error-alert />
     <form wire:submit.prevent="save" class="space-y-6 p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
         <div class="grid gap-4 md:grid-cols-2">
             <div>
@@ -29,7 +30,7 @@
                         <option value="{{ $method['id'] }}">{{ $method['name'] }}</option>
                     @endforeach
                 </select>
-                @error('payment_method_id') <p class="text-sm text-danger">{{ $message }}</p> @enderror
+                <x-form.field-error for="payment_method_id" />
             </div>
         </div>
 
@@ -54,6 +55,7 @@
                     @endforeach
                 </ul>
             @endif
+            <x-form.field-error for="clientSearch" />
         </div>
 
         {{-- Productos --}}
@@ -74,10 +76,12 @@
                             @endforeach
                         </ul>
                     @endif
+                    <x-form.field-error for="productSearch" />
                 </div>
                 <div>
                     <x-form.input wire:model="productQuantity" type="number" min="1"
                                   label="Cantidad" name="productQuantity" placeholder="0" />
+                    <x-form.field-error for="productQuantity" />
                 </div>
                 <button type="button" wire:click="addProductLine" class="h-10 self-end whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-90">
                     Insertar
@@ -122,7 +126,7 @@
                         @endforelse
                     </tbody>
                 </table>
-                @error('lineItems') <p class="text-sm text-danger mt-2">{{ $message }}</p> @enderror
+                <x-form.field-error for="lineItems" />
             </div>
 
             <div class="flex justify-end text-lg font-semibold text-primary">

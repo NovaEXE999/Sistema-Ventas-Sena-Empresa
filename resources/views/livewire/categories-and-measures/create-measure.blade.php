@@ -11,6 +11,7 @@
             Registro de unidades de medida
         </h1>
     </div>
+    <x-form.error-alert />
     <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
 
         <x-form.input wire:model.live.debounce.250ms="name"

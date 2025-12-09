@@ -13,6 +13,7 @@
             Registro de clientes
         </h1>
     </div>
+    <x-form.error-alert />
     <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
 
         <div class="flex flex-col gap-1 text-sm">
@@ -30,7 +31,7 @@
                 class="w-full rounded-radius border border-outline px-3 py-2 text-sm text-on-surface focus:outline-none dark:border-outline-dark dark:bg-surface-dark-alt/50"
                 @if (request()->routeIs('clients.update')) disabled @endif
             />
-            @error('identification') <p class="text-sm text-danger">{{ $message }}</p> @enderror
+            <x-form.field-error for="identification" />
         </div>
 
         <x-form.input
@@ -65,7 +66,7 @@
                     <option value="{{ $type['id'] }}">{{ $type['name'] }}</option>
                 @endforeach
             </select>
-            @error('client_type_id') <p class="text-sm text-danger">{{ $message }}</p> @enderror
+            <x-form.field-error for="client_type_id" />
         </div>
 
         <button type="submit" class="whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-primary-dark dark:border-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark">

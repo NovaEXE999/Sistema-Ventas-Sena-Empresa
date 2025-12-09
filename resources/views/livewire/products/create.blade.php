@@ -12,6 +12,7 @@
         </h1>
     </div>
 
+    <x-form.error-alert />
     <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
         <x-form.input
             wire:model.live.debounce.300ms="name"
@@ -28,9 +29,10 @@
             wire:model.lazy="stock"
             type="number"
             min="0"
-            max="2147483647"
+            max="1000"
             step="1"
             inputmode="numeric"
+            pattern="\\d{1,4}"
             label="Stock"
             name="stock"
             placeholder="Ingresa el stock"
@@ -40,9 +42,10 @@
             wire:model.lazy="price"
             type="number"
             min="0"
-            max="99999999.99"
+            max="500000"
             step="0.01"
             inputmode="decimal"
+            pattern="\\d{1,6}(\\.\\d{1,2})?"
             label="Precio"
             name="price"
             placeholder="Ingresa el precio"
@@ -64,6 +67,7 @@
                     @endforeach
                 </ul>
             @endif
+            <x-form.field-error for="category_id" />
         </div>
 
         @php

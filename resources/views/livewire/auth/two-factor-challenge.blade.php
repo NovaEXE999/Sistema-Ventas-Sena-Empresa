@@ -40,6 +40,8 @@
             <form method="POST" action="{{ route('two-factor.login.store') }}">
                 @csrf
 
+                <x-form.error-alert />
+
                 <div class="space-y-5 text-center">
                     <div x-show="!showRecoveryInput">
                         <div class="flex items-center justify-center my-5">
@@ -51,11 +53,7 @@
                             />
                         </div>
 
-                        @error('code')
-                            <flux:text color="red">
-                                {{ $message }}
-                            </flux:text>
-                        @enderror
+                        <x-form.field-error for="code" />
                     </div>
 
                     <div x-show="showRecoveryInput">
@@ -70,11 +68,7 @@
                             />
                         </div>
 
-                        @error('recovery_code')
-                            <flux:text color="red">
-                                {{ $message }}
-                            </flux:text>
-                        @enderror
+                        <x-form.field-error for="recovery_code" />
                     </div>
 
                     <flux:button

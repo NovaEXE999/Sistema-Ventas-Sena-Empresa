@@ -40,6 +40,7 @@ new class extends Component {
     @include('partials.settings-heading')
 
     <x-settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
+        <x-form.error-alert />
         <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
             <flux:input
                 wire:model="current_password"
@@ -47,6 +48,7 @@ new class extends Component {
                 type="password"
                 required
                 autocomplete="current-password"
+                :error="$errors->first('current_password')"
             />
             <flux:input
                 wire:model="password"
@@ -54,6 +56,7 @@ new class extends Component {
                 type="password"
                 required
                 autocomplete="new-password"
+                :error="$errors->first('password')"
             />
             <flux:input
                 wire:model="password_confirmation"
@@ -61,6 +64,7 @@ new class extends Component {
                 type="password"
                 required
                 autocomplete="new-password"
+                :error="$errors->first('password_confirmation')"
             />
 
             <div class="flex items-center gap-4">

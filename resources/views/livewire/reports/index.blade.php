@@ -14,6 +14,7 @@
                     </button>
                 </div>
                 <!-- Dialog Body -->
+                <x-form.error-alert />
                 <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
                     <div class="px-4 py-8"> 
                         <x-form.input wire:model="identification" label="Identificación" name="identification" placeholder="Documento del cliente"/>
@@ -26,6 +27,7 @@
                                 <option value="">Seleccione...</option>
 
                             </select>
+                            <x-form.field-error for="client_type_id" />
                         </div>
                     </div>
                     <!-- Dialog Footer -->
@@ -39,4 +41,3 @@
         </div>
     </div>
 </div>
-

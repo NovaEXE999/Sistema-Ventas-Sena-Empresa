@@ -7,6 +7,8 @@
 
         <x-auth-session-status class="text-center" :status="session('status')" />
 
+        <x-form.error-alert />
+
         <form method="POST" action="{{ route('password.confirm.store') }}" class="flex flex-col gap-6">
             @csrf
 
@@ -18,6 +20,7 @@
                 autocomplete="current-password"
                 :placeholder="__('Password')"
                 viewable
+                :error="$errors->first('password')"
             />
 
             <flux:button variant="primary" type="submit" class="w-full" data-test="confirm-password-button">

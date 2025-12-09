@@ -18,7 +18,5 @@
         name="{{ $name }}" 
     />
 
-    @error($name)
-        <span class="text-sm text-red-600 dark:text-red-400">{{ $message }}</span>
-    @enderror
+    <x-form.field-error :for="$name" />
 </div>

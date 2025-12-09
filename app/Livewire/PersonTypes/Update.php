@@ -10,7 +10,7 @@ class Update extends Component
 {
     public ?PersonType $persontype;
 
-    #[Validate('required|string|max:255')]
+    #[Validate('required|string|max:200|regex:/^[\\pL\\s]+$/u')]
     public $name = '';
 
     public function mount(PersonType $persontype): void

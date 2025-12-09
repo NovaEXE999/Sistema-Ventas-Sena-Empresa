@@ -33,8 +33,8 @@ class Create extends Component
                     fn ($query) => $query->whereRaw('LOWER(name) = ?', [$normalizedName])
                 ),
             ],
-            'stock' => ['required', 'integer', 'min:0', 'max:2147483647'],
-            'price' => ['required', 'numeric', 'regex:/^\\d+(\\.\\d{1,2})?$/', 'min:0', 'max:99999999.99'],
+            'stock' => ['required', 'integer', 'min:0', 'max:1000'],
+            'price' => ['required', 'numeric', 'regex:/^\\d{1,6}(\\.\\d{1,2})?$/', 'min:0', 'max:500000'],
             'category_id' => ['required', 'exists:categories,id'],
         ];
     }

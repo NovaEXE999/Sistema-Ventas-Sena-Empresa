@@ -18,9 +18,9 @@ class Update extends Component
 
     #[Validate('required|string|max:255')]
     public $name = '';
-    #[Validate('required|integer|min:0')]
+    #[Validate('required|integer|min:0|max:1000')]
     public $stock = 0;
-    #[Validate('required|numeric|min:0')]
+    #[Validate('required|numeric|min:0|max:500000|regex:/^\\d{1,6}(\\.\\d{1,2})?$/')]
     public $price = 0;
     #[Validate('required|exists:categories,id')]
     public $category_id = null;

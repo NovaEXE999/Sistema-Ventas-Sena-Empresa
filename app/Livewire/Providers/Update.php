@@ -2,25 +2,18 @@
 
 namespace App\Livewire\Providers;
 
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use App\Models\Provider;
 use App\Models\PersonType;
-
 
 class Update extends Component
 {
     public ?Provider $provider;
 
-    #[Validate('required|string|max:10')]
     public $identification = '';
-    #[Validate('required|string|max:255')]
     public $name = '';
-    #[Validate('required|string|max:20')]
     public $phone_number = '';
-    #[Validate('boolean')]
     public $status = true;
-    #[Validate('required|exists:person_types,id')]
     public $person_type_id = null;
 
     public array $personTypes = [];
@@ -40,6 +33,28 @@ class Update extends Component
         $this->person_type_id = $provider->person_type_id;
     }
 
+    protected function rules(): array
+    {
+        return [
+            'identification' => ['required', 'digits_between:3,10', 'regex:/^[0-9]+$/'],
+            'name' => ['required', 'max:255', 'regex:/^[\\p{L} ]+$/u'],
+            'phone_number' => ['required', 'regex:/^3\\d{9}$/'],
+            'status' => ['boolean'],
+            'person_type_id' => ['required', 'exists:person_types,id'],
+        ];
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'identification.required' => 'La identificación es obligatoria (3 a 10 dígitos numéricos).',
+            'identification.digits_between' => 'La identificación debe tener entre 3 y 10 dígitos.',
+            'identification.regex' => 'La identificación solo puede contener números (3 a 10 dígitos).',
+            'name.regex' => 'El nombre solo puede contener letras y espacios.',
+            'phone_number.regex' => 'El teléfono debe iniciar en 3 y tener 10 dígitos.',
+        ];
+    }
+
     public function update(){
         if (! auth()->user()?->isAdmin()) {
             abort(403);
@@ -51,7 +66,7 @@ class Update extends Component
             'identification' => $this->identification,
             'name' => $this->name,
             'phone_number' => $this->phone_number,
-            'status' => $this->status,
+            'status' => (bool) $this->status,
             'person_type_id' => $this->person_type_id,
         ]);
     }

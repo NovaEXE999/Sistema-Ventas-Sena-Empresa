@@ -22,8 +22,7 @@ class CreateNewUser implements CreatesNewUsers
             'identification' => [
                 'required',
                 'string',
-                'size:10',
-                'regex:/^[0-9]{10}$/',
+                'regex:/^[0-9]{3,10}$/',
                 Rule::unique(User::class, 'identification'),
             ],
             'name' => ['required', 'string', 'max:255'],
@@ -47,8 +46,7 @@ class CreateNewUser implements CreatesNewUsers
             ],
             'password' => $this->passwordRules(),
         ], [
-            'identification.size' => __('La identificación debe tener exactamente 10 dígitos.'),
-            'identification.regex' => __('La identificación solo puede contener números.'),
+            'identification.regex' => __('La identificación solo puede contener números (entre 3 y 10 dígitos).'),
             'phone_number.size' => __('El número de teléfono debe tener exactamente 10 dígitos.'),
             'phone_number.regex' => __('El número de teléfono debe iniciar con 3 y contener solo números.'),
         ])->validate();

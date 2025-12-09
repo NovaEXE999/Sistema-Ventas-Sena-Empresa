@@ -5,6 +5,8 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
+        <x-form.error-alert />
+
         <form method="POST" action="{{ route('password.update') }}" class="flex flex-col gap-6">
             @csrf
             <!-- Token -->
@@ -18,6 +20,7 @@
                 type="email"
                 required
                 autocomplete="email"
+                :error="$errors->first('email')"
             />
 
             <!-- Password -->
@@ -29,6 +32,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Password')"
                 viewable
+                :error="$errors->first('password')"
             />
 
             <!-- Confirm Password -->
@@ -40,6 +44,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Confirm password')"
                 viewable
+                :error="$errors->first('password_confirmation')"
             />
 
             <div class="flex items-center justify-end">

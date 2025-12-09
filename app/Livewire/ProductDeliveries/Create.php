@@ -5,7 +5,6 @@ namespace App\Livewire\ProductDeliveries;
 use App\Models\ProductDelivery;
 use App\Models\Product;
 use App\Models\Provider;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 
@@ -15,8 +14,6 @@ class Create extends Component
     public string $providerSearch = '';
     public array $providerResults = [];
     public ?int $provider_id = null;
-    public bool $providerNotFound = false;
-    public ?string $pendingProviderName = null;
 
     public string $productSearch = '';
     public array $productResults = [];
@@ -28,7 +25,7 @@ class Create extends Component
     {
         return [
             'date' => 'required|date',
-            'provider_id' => 'nullable|exists:providers,id',
+            'provider_id' => 'required|exists:providers,id',
             'lineItems' => 'array|min:1',
             'lineItems.*.quantity' => 'integer|min:1',
             'lineItems.*.product_id' => 'integer|exists:products,id',
@@ -87,7 +84,12 @@ class Create extends Component
             ->toArray();
 
         $this->provider_id = null;
-        $this->providerNotFound = false;
+
+        if (trim($this->providerSearch) !== '' && empty($this->providerResults)) {
+            $this->addError('provider_id', 'El proveedor no existe o está inactivo. Selecciona uno de la lista.');
+        } else {
+            $this->resetErrorBag(['provider_id', 'providerSearch']);
+        }
     }
 
     public function selectProvider(int $id, string $name): void
@@ -101,7 +103,20 @@ class Create extends Component
         $this->provider_id = $id;
         $this->providerSearch = $name;
         $this->providerResults = [];
-        $this->providerNotFound = false;
+        $this->resetErrorBag(['provider_id', 'providerSearch']);
+    }
+
+    public function hideProviderResults(): void
+    {
+        $this->providerResults = [];
+    }
+
+    public function ensureProviderSelected(): void
+    {
+        $this->providerResults = [];
+        if (!$this->provider_id) {
+            $this->addError('provider_id', 'Selecciona un proveedor de la lista.');
+        }
     }
 
     protected function resolveProvider(): ?Provider
@@ -119,48 +134,8 @@ class Create extends Component
             return $provider;
         }
 
-        $name = trim($this->providerSearch);
-        if ($name === '') {
-            $this->addError('providerSearch', 'Ingresa un proveedor.');
-            return null;
-        }
-
-        $existing = Provider::where('name', $name)->first();
-        if ($existing && !$existing->status) {
-            $this->addError('providerSearch', 'El proveedor existe pero está inactivo. Actívalo antes de registrar.');
-            return null;
-        }
-        if ($existing) {
-            $this->provider_id = $existing->id;
-            return $existing;
-        }
-
-        $this->pendingProviderName = $name;
-        $this->providerNotFound = true;
+        $this->addError('provider_id', 'Selecciona un proveedor de la lista.');
         return null;
-    }
-
-    public function confirmProviderCreation(): void
-    {
-        if (!$this->pendingProviderName) {
-            return;
-        }
-
-        $provider = Provider::firstOrCreate(['name' => $this->pendingProviderName], ['status' => true]);
-        $this->provider_id = $provider->id;
-        $this->providerSearch = $provider->name;
-        $this->providerResults = [];
-        $this->providerNotFound = false;
-        $this->pendingProviderName = null;
-
-        // reintenta guardar si ya estaba en flujo de validación
-        $this->resetErrorBag(['providerSearch', 'provider_id']);
-    }
-
-    public function resetProviderPrompt(): void
-    {
-        $this->providerNotFound = false;
-        $this->pendingProviderName = null;
     }
 
     // Busqueda de producto
@@ -174,6 +149,18 @@ class Create extends Component
             ->toArray();
 
         $this->selectedProductId = null;
+
+        $this->resetErrorBag(['productSearch']);
+        $term = trim($this->productSearch);
+        if ($term !== '' && empty($this->productResults)) {
+            $this->addError('productSearch', 'El producto no existe o está inactivo. Selecciona uno de la lista.');
+        }
+    }
+
+    public function ensureProductSelected(): void
+    {
+        $this->productResults = [];
+        // no-op if no selección; mensaje ya lo maneja updatedProductSearch/addProductLine
     }
 
     public function selectProduct(int $id, string $name): void
@@ -184,12 +171,21 @@ class Create extends Component
         $this->resetErrorBag(['productSearch']);
     }
 
+    public function hideProductResults(): void
+    {
+        $this->productResults = [];
+    }
+
     public function addProductLine(): void
     {
         $this->resetErrorBag(['productQuantity', 'productSearch', 'lineItems']);
 
         if (!$this->selectedProductId) {
-            $this->addError('productSearch', 'Selecciona un producto de la lista.');
+            $message = $this->productSearch !== ''
+                ? 'El producto no existe o está inactivo. Selecciona uno de la lista.'
+                : 'Selecciona un producto de la lista.';
+            $this->resetErrorBag(['productSearch']);
+            $this->addError('productSearch', $message);
             return;
         }
 

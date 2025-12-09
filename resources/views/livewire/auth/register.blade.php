@@ -5,6 +5,8 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
+        <x-form.error-alert />
+
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
 
@@ -17,6 +19,7 @@
                 required
                 autocomplete="off"
                 :placeholder="__('Identification number')"
+                :error="$errors->first('identification')"
             />
 
             <!-- Name -->
@@ -29,6 +32,7 @@
                 autofocus
                 autocomplete="name"
                 :placeholder="__('Full name')"
+                :error="$errors->first('name')"
             />
 
             <!-- Email Address -->
@@ -40,6 +44,7 @@
                 required
                 autocomplete="email"
                 placeholder="email@example.com"
+                :error="$errors->first('email')"
             />
 
             <!-- Phone Number -->
@@ -51,6 +56,7 @@
                 required
                 autocomplete="tel"
                 :placeholder="__('Phone number')"
+                :error="$errors->first('phone_number')"
             />
 
             <!-- Role -->
@@ -66,9 +72,7 @@
                         <option value="{{ $role->id }}" @selected(old('role_id') == $role->id)>{{ $role->name }}</option>
                     @endforeach
                 </select>
-                @error('role_id')
-                    <span class="text-sm text-red-600">{{ $message }}</span>
-                @enderror
+                <x-form.field-error for="role_id" />
             </div>
 
             <!-- Password -->
@@ -80,6 +84,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Password')"
                 viewable
+                :error="$errors->first('password')"
             />
 
             <!-- Confirm Password -->
@@ -91,6 +96,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Confirm password')"
                 viewable
+                :error="$errors->first('password_confirmation')"
             />
 
             <div class="flex items-center justify-end">

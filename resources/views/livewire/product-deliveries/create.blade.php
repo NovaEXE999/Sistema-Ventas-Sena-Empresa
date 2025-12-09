@@ -11,48 +11,44 @@
             Registro de Entrada de inventario
         </h1>
     </div>
+    <x-form.error-alert />
+    @php($isEdit = property_exists($this, 'delivery') && $this->delivery?->exists)
     <form wire:submit.prevent="save" class="space-y-6 p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
         <div class="grid gap-4 md:grid-cols-2">
             <div>
                 <label class="block text-sm font-medium text-on-surface mb-1">Fecha</label>
                 <input type="date" wire:model="date" disabled class="w-full rounded-radius border border-outline bg-gray-100 px-3 py-2 text-sm text-on-surface-strong focus:outline-none disabled:cursor-not-allowed">
             </div>
-            <div class="space-y-2">
+            <div class="space-y-2" x-data @click.outside="$wire.hideProviderResults()">
                 <x-form.input wire:model.live.debounce.300ms="providerSearch"
+                              wire:blur="ensureProviderSelected"
+                              autocomplete="off"
                               label="Proveedor" name="providerSearch" placeholder="Busca proveedor activo..." />
                 @if($providerResults)
-                    <ul class="border rounded shadow-sm bg-white text-gray-900">
+                    <ul class="border rounded shadow-sm bg-white text-gray-900 max-h-48 overflow-y-auto">
                         @foreach($providerResults as $prov)
-                            <li wire:click="selectProvider({{ $prov['id'] }}, @js($prov['name']))"
+                            <li wire:mousedown.prevent="selectProvider({{ $prov['id'] }}, @js($prov['name']))"
                                 class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
                                 {{ $prov['name'] }}
                             </li>
                         @endforeach
                     </ul>
                 @endif
-                @if($providerNotFound && $pendingProviderName)
-                    <div class="flex items-center gap-3 rounded-radius border border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-700">
-                        <span>El proveedor "{{ $pendingProviderName }}" no existe. ¿Deseas crearlo?</span>
-                        <div class="flex gap-2">
-                            <button type="button" wire:click="confirmProviderCreation" class="rounded-radius bg-amber-500 px-3 py-1 text-white text-xs font-semibold">Crear</button>
-                            <button type="button" wire:click="resetProviderPrompt" class="rounded-radius border border-outline px-3 py-1 text-xs font-semibold text-on-surface">Cancelar</button>
-                        </div>
-                    </div>
-                @endif
-                @error('providerSearch') <p class="text-sm text-danger">{{ $message }}</p> @enderror
-                @error('provider_id') <p class="text-sm text-danger">{{ $message }}</p> @enderror
+                <x-form.field-error for="provider_id" />
             </div>
         </div>
 
         <div class="space-y-2 rounded-radius border border-outline p-4">
             <div class="grid gap-3 md:grid-cols-[2fr_140px_auto] items-end">
-                <div>
+                <div x-data @click.outside="$wire.hideProductResults()">
                     <x-form.input wire:model.live.debounce.250ms="productSearch"
+                                  wire:blur="ensureProductSelected"
+                                  autocomplete="off"
                                   label="Producto" name="productSearch" placeholder="Busca producto activo..." />
                     @if($productResults)
                         <ul class="border rounded shadow-sm bg-white text-gray-900 max-h-48 overflow-y-auto">
                             @foreach($productResults as $product)
-                                <li wire:click="selectProduct({{ $product['id'] }}, @js($product['name']))"
+                                <li wire:mousedown.prevent="selectProduct({{ $product['id'] }}, @js($product['name']))"
                                     class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
                                     {{ $product['name'] }}
                                 </li>
@@ -61,15 +57,13 @@
                     @endif
                 </div>
                 <div>
-                    <x-form.input wire:model="productQuantity" type="number" min="1"
+                    <x-form.input wire:model="productQuantity" type="number" min="1" step="1" inputmode="numeric" pattern="\d+"
                                   label="Cantidad" name="productQuantity" placeholder="0" />
                 </div>
                 <button type="button" wire:click="addProductLine" class="h-10 self-end whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-90">
                     Insertar
                 </button>
             </div>
-            @error('productSearch') <p class="text-sm text-danger">{{ $message }}</p> @enderror
-            @error('productQuantity') <p class="text-sm text-danger">{{ $message }}</p> @enderror
 
             <div class="overflow-x-auto">
                 <table class="w-full text-sm text-on-surface">
@@ -84,15 +78,17 @@
                         @forelse($lineItems as $item)
                             <tr wire:key="product-{{ $item['product_id'] }}" class="border-b border-outline/50">
                                 <td class="p-2">
-                                    <button type="button" wire:click="removeLine({{ $item['product_id'] }})" class="text-danger font-bold">-</button>
+                                    <button aria-label="Quitar producto" type="button" wire:click="removeLine({{ $item['product_id'] }})" class="inline-flex justify-center items-center aspect-square whitespace-nowrap rounded-full border border-danger bg-danger p-2 text-sm font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:border-danger dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger">
+                                        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-5 stroke-on-danger dark:stroke-on-danger" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M6 6l12 12M6 18L18 6" />
+                                        </svg>
+                                    </button>
                                 </td>
                                 <td class="p-2">
                                     <span class="text-primary font-semibold">{{ $item['name'] }}</span>
                                 </td>
                                 <td class="p-2">
-                                    <input type="number" min="1" class="w-24 rounded-radius border border-outline px-2 py-1 text-sm"
-                                           value="{{ $item['quantity'] }}"
-                                           wire:change="updateLineQuantity({{ $item['product_id'] }}, $event.target.value)">
+                                    <span class="text-sm text-on-surface">{{ $item['quantity'] }}</span>
                                 </td>
                             </tr>
                         @empty
@@ -102,13 +98,9 @@
                         @endforelse
                     </tbody>
                 </table>
-                @error('lineItems') <p class="text-sm text-danger mt-2">{{ $message }}</p> @enderror
+                <x-form.field-error for="lineItems" />
             </div>
         </div>
-
-        @php
-            $isEdit = property_exists($this, 'delivery') && $this->delivery?->exists;
-        @endphp
         <button type="submit" class="whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-primary-dark dark:border-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark">
             {{ $isEdit ? 'Actualizar entrada de inventario' : 'Registrar entrada de inventario' }}
         </button>

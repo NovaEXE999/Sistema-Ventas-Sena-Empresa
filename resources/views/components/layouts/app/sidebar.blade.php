@@ -15,17 +15,29 @@
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     @php($isAdmin = auth()->user()?->isAdmin())
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                    <flux:navlist.item icon="gift" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>Productos</flux:navlist.item>
+
+                    <flux:navlist.item icon="shopping-cart" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>Productos</flux:navlist.item>
+
                     <flux:navlist.item icon="currency-dollar" :href="route('sales.index')" :current="request()->routeIs('sales.*')" wire:navigate>Ventas</flux:navlist.item>
-                    <flux:navlist.item icon="gift" :href="route('categoriesandmeasures.index')" :current="request()->routeIs('categoriesandmeasures.*')" wire:navigate>Categorias y Medidas</flux:navlist.item>
-                    <flux:navlist.item icon="user" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>Clientes</flux:navlist.item>
-                    <flux:navlist.item icon="user" :href="route('providers.index')" :current="request()->routeIs('providers.*')" wire:navigate>Proveedores</flux:navlist.item>
-                    <flux:navlist.item icon="truck" :href="route('productdeliveries.index')" :current="request()->routeIs('productdeliveries.*')" wire:navigate>Inventario</flux:navlist.item>
-                    <flux:navlist.item icon="truck" :href="route('paymentmethods.index')" :current="request()->routeIs('paymentmethods.*')" wire:navigate>Metodos de pago</flux:navlist.item>
-                    <flux:navlist.item icon="truck" :href="route('clienttypes.index')" :current="request()->routeIs('clienttypes.*')" wire:navigate>Tipos de cliente</flux:navlist.item>
-                    <flux:navlist.item icon="truck" :href="route('persontypes.index')" :current="request()->routeIs('persontypes.*')" wire:navigate>Tipos de Persona</flux:navlist.item>
+
+                    <flux:navlist.item icon="tag" :href="route('categoriesandmeasures.index')" :current="request()->routeIs('categoriesandmeasures.*')" wire:navigate>Categorias y Medidas</flux:navlist.item>
+                    
+                    <flux:navlist.group heading="Gestion de clientes" expandable>
+                        <flux:navlist.item icon="user" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>Clientes</flux:navlist.item>
+                        <flux:navlist.item icon="users" :href="route('clienttypes.index')" :current="request()->routeIs('clienttypes.*')" wire:navigate>Tipos de cliente</flux:navlist.item>
+                    </flux:navlist.group>
+
+                    <flux:navlist.group heading="Gestion de proveedores" expandable>
+                        <flux:navlist.item icon="truck" :href="route('providers.index')" :current="request()->routeIs('providers.*')" wire:navigate>Proveedores</flux:navlist.item>
+                        <flux:navlist.item icon="identification" :href="route('persontypes.index')" :current="request()->routeIs('persontypes.*')" wire:navigate>Tipos de Persona</flux:navlist.item>
+                    </flux:navlist.group>
+  
+                    <flux:navlist.item icon="building-storefront" :href="route('productdeliveries.index')" :current="request()->routeIs('productdeliveries.*')" wire:navigate>Inventario</flux:navlist.item>
+
+                    <flux:navlist.item icon="credit-card" :href="route('paymentmethods.index')" :current="request()->routeIs('paymentmethods.*')" wire:navigate>Metodos de pago</flux:navlist.item>
+                      
                     @if ($isAdmin)
-                        <flux:navlist.item icon="truck" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>Gestion de usuarios</flux:navlist.item>
+                        <flux:navlist.item icon="user-group" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>Gestion de usuarios</flux:navlist.item>
                         <flux:navlist.item icon="document" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>Reportes</flux:navlist.item>
                     @endif
                     <flux:navlist.item icon="information-circle" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Acerca de</flux:navlist.item>

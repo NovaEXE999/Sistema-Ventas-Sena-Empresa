@@ -73,11 +73,12 @@ new class extends Component {
     @include('partials.settings-heading')
 
     <x-settings.layout :heading="__('Perfil')" :subheading="__('Actualiza tu nombre y correo electrónico')">
+        <x-form.error-alert />
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Nombre')" type="text" required autofocus autocomplete="name" />
+            <flux:input wire:model="name" :label="__('Nombre')" type="text" required autofocus autocomplete="name" :error="$errors->first('name')" />
 
             <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" :error="$errors->first('email')" />
 
                 @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
                     <div>

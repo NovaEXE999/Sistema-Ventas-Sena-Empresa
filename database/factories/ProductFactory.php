@@ -18,7 +18,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
 
-        $opProducts = ["Manzanas", "Plケtanos", "Naranjas", "Uvas", "Zanahorias", "Papas", "Tomates", "Cebollas", "Pechuga de pollo", "Carne molida", "SalmИn", "Arroz", "Frijoles", "Azカcar", "Harina", "Huevos", "Refrescos", "Yogures", "Latas de atカn", "Botellas de agua", "Pan de caja", "Leche", "Queso", "Mantequilla", "JabИn de baヵo", "Shampoo", "Pasta dental", "Cepillo de dientes"];
+        $opProducts = ["Manzanas", "Platanos", "Naranjas", "Uvas", "Zanahorias", "Papas", "Tomates", "Cebollas", "Pechuga de pollo", "Carne molida", "Salmón", "Arroz", "Frijoles", "Azカcar", "Harina", "Huevos", "Refrescos", "Yogures", "Latas de atun", "Botellas de agua", "Pan de caja", "Leche", "Queso", "Mantequilla", "Jabon de baño", "Shampoo", "Pasta dental", "Cepillo de dientes"];
         $categoryId = Category::query()->inRandomOrder()->value('id') ?? Category::factory();
 
         return [
