@@ -13,17 +13,25 @@
     </div>
     <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
 
-        <x-form.input wire:model="name" label="Nombre" name="name" placeholder="Ingresa el nombre de la categoria"/>
+        <x-form.input wire:model.live.debounce.250ms="name"
+                      label="Nombre"
+                      name="name"
+                      placeholder="Ingresa el nombre de la categoria"
+                      pattern="[A-Za-zÀ-ÿ\s]+"
+                      title="Solo letras y espacios"
+                      autocomplete="off"/>
 
-        <div class="relative">
+        <div class="relative" x-data @click.outside="$wire.hideMeasureResults()">
             <x-form.input wire:model.live.debounce.250ms="measureSearch"
+                          wire:blur="ensureMeasureSelected"
+                          autocomplete="off"
                           label="Unidad de medida"
                           name="measureSearch"
                           placeholder="Busca una medida..." />
             @if($measureResults)
                 <ul class="absolute z-10 w-full border rounded shadow-sm bg-white text-gray-900 max-h-48 overflow-y-auto">
                     @foreach($measureResults as $measure)
-                        <li wire:click="selectMeasure({{ $measure['id'] }}, @js($measure['name']))"
+                        <li wire:mousedown.prevent="selectMeasure({{ $measure['id'] }}, @js($measure['name']))"
                             class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
                             {{ $measure['name'] }}
                         </li>
@@ -33,14 +41,12 @@
             @error('measure_id') <p class="text-sm text-danger">{{ $message }}</p> @enderror
         </div>
 
-        <label class="inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" wire:model="status" class="rounded border-outline">
-            <span>Activo</span>
-        </label>
-
+        @php
+            $isEdit = property_exists($this, 'category') && $this->category?->exists;
+        @endphp
         <!-- primary Button -->
         <button type="submit" class="whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-primary-dark dark:border-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark">
-            {{ request()->routeIs('categories.create') ? 'Crear categoria' : 'Actualizar categoria' }}
+            {{ $isEdit ? 'Actualizar categoria' : 'Crear categoria' }}
         </button>
 
 

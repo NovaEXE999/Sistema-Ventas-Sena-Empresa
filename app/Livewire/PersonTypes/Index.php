@@ -11,6 +11,10 @@ class Index extends Component
     use WithPagination;
     public function toggleStatus(PersonType $persontype)
     {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         // 1 = Activo, 0 = Inactivo
         $persontype->status = ! $persontype->status;
         $persontype->save();

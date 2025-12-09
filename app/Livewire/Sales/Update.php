@@ -13,6 +13,10 @@ class Update extends Create
 
     public function mount($sale = null): void
     {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         parent::mount();
 
         if (!$sale) {

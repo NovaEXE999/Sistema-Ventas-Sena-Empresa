@@ -12,6 +12,10 @@ class Create extends Component
     public $name = '';
 
     public function save(){
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         $this->validate();
 
         PaymentMethod::create([

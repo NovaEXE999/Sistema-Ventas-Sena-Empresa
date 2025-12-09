@@ -3,23 +3,18 @@
 namespace App\Livewire\Clients;
 
 use App\Models\Client;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 use App\Models\ClientType;
 
 class Update extends Component
 {
     public ?Client $client;
+    public bool $showIdentification = false;
 
-    #[Validate('required|string|max:10')]
     public $identification = '';
-    #[Validate('required|string|max:255')]
     public $name = '';
-    #[Validate('required|string|max:20')]
     public $phone_number = '';
-    #[Validate('boolean')]
     public $status = true;
-    #[Validate('required|exists:client_types,id')]
     public $client_type_id = null;
 
     public array $clientTypes = [];
@@ -29,6 +24,7 @@ class Update extends Component
     {
         $this->clientTypes = ClientType::where('status', true)->get(['id','name'])->toArray();
         $this->setClient($client);
+        $this->showIdentification = auth()->user()?->isAdmin() ?? false;
     }
 
     public function setClient (Client $client){
@@ -40,17 +36,49 @@ class Update extends Component
         $this->client_type_id = $client->client_type_id;
     }
 
+    protected function rules(): array
+    {
+        $isAdmin = auth()->user()?->isAdmin() ?? false;
+
+        $rules = [
+            'name' => ['required', 'max:255', 'regex:/^[\\p{L} ]+$/u'],
+            'phone_number' => ['required', 'regex:/^3\\d{9}$/'],
+        ];
+
+        if ($isAdmin) {
+            $rules['status'] = 'boolean';
+            $rules['client_type_id'] = 'required|exists:client_types,id';
+        } else {
+            $rules['status'] = 'prohibited';
+            $rules['client_type_id'] = 'prohibited';
+        }
+
+        return $rules;
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'name.regex' => 'El nombre solo puede contener letras y espacios.',
+            'phone_number.regex' => 'El teléfono debe iniciar en 3 y tener 10 dígitos.',
+        ];
+    }
+
     public function update()
     {
-        $this->validate();
-        
-        $this->client->update([
-            'identification' => $this->identification,
+        $data = $this->validate();
+
+        $payload = [
             'name' => $this->name,
             'phone_number' => $this->phone_number,
-            'status' => $this->status,
-            'client_type_id' => $this->client_type_id,
-        ]);
+        ];
+
+        if (auth()->user()?->isAdmin()) {
+            $payload['status'] = (bool) $this->status;
+            $payload['client_type_id'] = $this->client_type_id;
+        }
+
+        $this->client->update($payload);
     }
 
      public function save()
@@ -63,6 +91,8 @@ class Update extends Component
 
     public function render()
     {
-        return view('livewire.clients.create');
+        return view('livewire.clients.create', [
+            'showIdentification' => $this->showIdentification,
+        ]);
     }
 }

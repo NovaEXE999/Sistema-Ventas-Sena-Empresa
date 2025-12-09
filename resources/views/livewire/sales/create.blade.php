@@ -34,13 +34,15 @@
         </div>
 
         {{-- Cliente --}}
-        <div class="space-y-2">
+        <div class="space-y-2" x-data @click.outside="$wire.hideClientResults()">
             <x-form.input wire:model.live.debounce.300ms="clientSearch"
+                          wire:blur="ensureClientSelected"
+                          autocomplete="off"
                           label="Cliente" name="clientSearch" placeholder="Busca o escribe el cliente..." />
             @if($clientResults)
-                <ul class="border rounded shadow-sm bg-white text-gray-900">
+                <ul class="border rounded shadow-sm bg-white text-gray-900 max-h-48 overflow-y-auto">
                     @foreach($clientResults as $client)
-                        <li wire:click="selectClient({{ $client['id'] }}, @js($client['name']))"
+                        <li wire:mousedown.prevent="selectClient({{ $client['id'] }}, @js($client['name']))"
                             class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
                             <div class="flex flex-col">
                                 <span class="font-medium">{{ $client['name'] }}</span>
@@ -52,27 +54,20 @@
                     @endforeach
                 </ul>
             @endif
-            @if($clientNotFound && $pendingClientName)
-                <div class="flex items-center gap-3 rounded-radius border border-amber-400 bg-amber-50 px-3 py-2 text-sm text-amber-700">
-                    <span>El cliente "{{ $pendingClientName }}" no existe. ¿Deseas crearlo?</span>
-                    <div class="flex gap-2">
-                        <button type="button" wire:click="confirmClientCreation" class="rounded-radius bg-amber-500 px-3 py-1 text-white text-xs font-semibold">Crear</button>
-                        <button type="button" wire:click="resetClientPrompt" class="rounded-radius border border-outline px-3 py-1 text-xs font-semibold text-on-surface">Cancelar</button>
-                    </div>
-                </div>
-            @endif
         </div>
 
         {{-- Productos --}}
         <div class="space-y-2 rounded-radius border border-outline p-4">
             <div class="grid gap-3 md:grid-cols-[2fr_120px_auto] items-end">
-                <div>
+                <div x-data @click.outside="$wire.hideProductResults()">
                     <x-form.input wire:model.live.debounce.250ms="productSearch"
+                                  wire:blur="hideProductResults"
+                                  autocomplete="off"
                                   label="Producto" name="productSearch" placeholder="Busca el producto..." />
                     @if($productResults)
                         <ul class="border rounded shadow-sm bg-white text-gray-900 max-h-48 overflow-y-auto">
                             @foreach($productResults as $product)
-                                <li wire:click="selectProduct({{ $product['id'] }})"
+                                <li wire:mousedown.prevent="selectProduct({{ $product['id'] }})"
                                     class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
                                     {{ $product['name'] }} — ${{ number_format($product['price'], 2) }} (Stock: {{ $product['stock'] }})
                                 </li>

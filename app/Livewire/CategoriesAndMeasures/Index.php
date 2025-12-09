@@ -16,6 +16,10 @@ class Index extends Component
     }
     public function toggleCategoryStatus(Category $category)
     {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         $category->status = ! $category->status;
         $category->save();
 
@@ -30,6 +34,10 @@ class Index extends Component
 
     public function toggleMeasureStatus(Measure $measure)
     {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         $measure->status = ! $measure->status;
         $measure->save();
 

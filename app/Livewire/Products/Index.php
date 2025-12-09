@@ -27,6 +27,10 @@ class Index extends Component
 
     public function toggleStatus(Product $product): void
     {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         $product->status = ! $product->status;
         $product->save();
 

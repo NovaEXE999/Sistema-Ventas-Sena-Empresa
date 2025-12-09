@@ -34,6 +34,10 @@ class Index extends Component
 
     public function toggleStatus(Client $client)
     {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         // 1 = Activo, 0 = Inactivo
         $client->status = ! $client->status;
         $client->save();

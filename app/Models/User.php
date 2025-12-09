@@ -20,18 +20,14 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        // 'identification',
+        'identification',
         'name',
         'email',
         'password',
-        // 'phone_number',
+        'phone_number',
         'status',
-        // 'role_id',
+        'role_id',
     ];
-    protected $casts = [
-        'status' => 'boolean',
-    ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -55,6 +51,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => 'boolean',
+            'role_id' => 'integer',
         ];
     }
 
@@ -73,6 +71,21 @@ class User extends Authenticatable
     public function sales()
     {
         return $this->hasMany(Sale::class);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role?->name === 'Administrador';
+    }
+
+    public function isVendor(): bool
+    {
+        return $this->role?->name === 'Vendedor';
+    }
+
+    public function hasRole(string ...$roles): bool
+    {
+        return in_array($this->role?->name, $roles, true);
     }
 
     public function role()

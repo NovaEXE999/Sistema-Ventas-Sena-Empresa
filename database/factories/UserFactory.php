@@ -24,8 +24,10 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $roleId = Role::query()->inRandomOrder()->value('id') ?? Role::factory();
+
         return [
-            /* 'identification' => $this->faker->unique()->numerify('##########'), */
+            'identification' => $this->faker->unique()->numerify('##########'),
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_verified_at' => now(),
@@ -34,9 +36,9 @@ class UserFactory extends Factory
             'two_factor_secret' => Str::random(10),
             'two_factor_recovery_codes' => Str::random(10),
             'two_factor_confirmed_at' => now(),
-            /* 'phone_number' => $this->faker->numerify('3#########'), */
+            'phone_number' => $this->faker->numerify('3#########'),
             'status' => true,
-            /* 'role_id' => Role::factory(), */
+            'role_id' => $roleId,
         ];
     }
 

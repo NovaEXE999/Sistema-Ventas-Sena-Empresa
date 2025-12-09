@@ -11,6 +11,10 @@ class Index extends Component
     use WithPagination;
     public function toggleStatus(PaymentMethod $payment)
     {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         // 1 = Activo, 0 = Inactivo
         $payment->status = ! $payment->status;
         $payment->save();

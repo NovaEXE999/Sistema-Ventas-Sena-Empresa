@@ -41,6 +41,10 @@ class Update extends Component
     }
 
     public function update(){
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         $this->validate();
         
         $this->provider->update([

@@ -19,8 +19,7 @@ class Create extends Component
     public string $clientSearch = '';
     public array $clientResults = [];
     public ?int $client_id = null;
-    public bool $clientNotFound = false;
-    public ?string $pendingClientName = null;
+    public string $clientNotice = '';
 
     // Metodo de pago
     public array $paymentMethods = [];
@@ -63,6 +62,7 @@ class Create extends Component
             'date' => 'required|date',
             'user_id' => 'required|exists:users,id',
             'clientSearch' => 'required|string',
+            'client_id' => 'required|exists:clients,id',
             'total_value' => 'required|numeric|min:0',
             'payment_method_id' => 'required|exists:payment_methods,id',
             'lineItems' => 'array|min:1',
@@ -81,63 +81,13 @@ class Create extends Component
             return;
         }
 
-        $client = $this->resolveClient();
+        $client = Client::find($this->client_id);
         if (!$client) {
-            $this->clientNotFound = true;
+            $this->addError('clientSearch', 'El cliente seleccionado ya no existe.');
             return;
         }
 
         $this->persistSale($client);
-    }
-
-    protected function resolveClient(): ?Client
-    {
-        if ($this->client_id) {
-            $client = Client::find($this->client_id);
-
-            if (!$client) {
-                $this->addError('clientSearch', 'El cliente seleccionado ya no existe.');
-            }
-
-            return $client;
-        }
-
-        $clientName = trim($this->clientSearch);
-        if ($clientName === '') {
-            $this->addError('clientSearch', 'Ingresa un cliente.');
-            return null;
-        }
-
-        $existing = Client::where('name', $clientName)->first();
-        if ($existing) {
-            $this->client_id = $existing->id;
-            return $existing;
-        }
-
-        $this->pendingClientName = $clientName;
-        return null;
-    }
-
-    public function confirmClientCreation(): void
-    {
-        if (!$this->pendingClientName) {
-            return;
-        }
-
-        $client = Client::firstOrCreate(['name' => $this->pendingClientName]);
-        $this->client_id = $client->id;
-        $this->clientSearch = $client->name;
-        $this->clientResults = [];
-        $this->clientNotFound = false;
-        $this->pendingClientName = null;
-
-        $this->persistSale($client);
-    }
-
-    public function resetClientPrompt(): void
-    {
-        $this->clientNotFound = false;
-        $this->pendingClientName = null;
     }
 
     protected function persistSale(Client $client): void
@@ -204,7 +154,24 @@ class Create extends Component
             ->toArray();
 
         $this->client_id = null;
-        $this->clientNotFound = false;
+        $this->clientNotice = '';
+
+        if ($term !== '' && empty($this->clientResults)) {
+            $this->clientNotice = 'El cliente que intentas usar no existe. Regístralo primero en la sección "Clientes".';
+        }
+    }
+
+    public function hideClientResults(): void
+    {
+        $this->clientResults = [];
+    }
+
+    public function ensureClientSelected(): void
+    {
+        if (!$this->client_id) {
+            $this->clientNotice = 'Selecciona un cliente de la lista. Si no existe, regístralo en "Clientes".';
+            $this->addError('clientSearch', $this->clientNotice);
+        }
     }
 
     public function selectClient(int $id, string $name): void
@@ -212,7 +179,8 @@ class Create extends Component
         $this->client_id = $id;
         $this->clientSearch = $name;
         $this->clientResults = [];
-        $this->clientNotFound = false;
+        $this->clientNotice = '';
+        $this->resetErrorBag(['clientSearch']);
     }
 
     // Busqueda de producto
@@ -232,6 +200,15 @@ class Create extends Component
             ->toArray();
 
         $this->selectedProductId = null;
+
+        if ($term !== '' && empty($this->productResults)) {
+            $this->addError('productSearch', 'El producto no existe. Regístralo en la sección "Productos".');
+        }
+    }
+
+    public function hideProductResults(): void
+    {
+        $this->productResults = [];
     }
 
     public function selectProduct(int $id): void
@@ -244,6 +221,7 @@ class Create extends Component
         $this->selectedProductId = $product->id;
         $this->productSearch = $product->name;
         $this->productResults = [];
+        $this->resetErrorBag(['productSearch']);
     }
 
     public function addProductLine(): void
@@ -251,7 +229,11 @@ class Create extends Component
         $this->resetErrorBag(['productQuantity', 'productSearch', 'lineItems']);
 
         if (!$this->selectedProductId) {
-            $this->addError('productSearch', 'Selecciona un producto de la lista.');
+            $message = $this->productSearch !== ''
+                ? 'El producto no existe. Regístralo en la sección "Productos".'
+                : 'Selecciona un producto de la lista.';
+
+            $this->addError('productSearch', $message);
             return;
         }
 

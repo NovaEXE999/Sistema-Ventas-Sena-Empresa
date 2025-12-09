@@ -175,9 +175,9 @@
         </div>
 
         <div class="strong-notice">
-            Este tiquete es indispensable para<br>
+            Este tiquete es indispensable para la<br>
             salida del complejo,<br>
-            cambios o devoluciones por favor<br>
+            por favor<br>
             conservelo
         </div>
 

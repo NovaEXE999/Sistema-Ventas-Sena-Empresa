@@ -1,6 +1,5 @@
 <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
     @if (session('success'))
-        <!-- success Alert -->
         <div x-data="{ alertIsVisible: true }" x-show="alertIsVisible" class="relative w-full overflow-hidden rounded-radius border border-success bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark" role="alert" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90">
             <div class="flex w-full items-center gap-2 bg-success/10 p-4">
                 <div class="bg-success/15 text-success rounded-full p-1" aria-hidden="true">
@@ -21,15 +20,19 @@
         </div>
     @endif
 
+    @php($isAdmin = auth()->user()?->isAdmin())
+
     <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
-        <a href="{{ route('providers.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
-            Registrar un proveedor
-        </a>
+        @if ($isAdmin)
+            <a href="{{ route('providers.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
+                Registrar un proveedor
+            </a>
+        @endif
         <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="absolute left-2.5 top-1/2 size-5 -translate-y-1/2 text-on-surface/50 dark:text-on-surface-dark/50"> 
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="absolute left-2.5 top-1/2 size-5 -translate-y-1/2 text-on-surface/50 dark:text-on-surface-dark/50">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
-            <input 
+            <input
                 type="search"
                 wire:model.live.debounce.300ms="search"
                 class="w-full rounded-radius border border-outline bg-surface-alt py-2 pl-10 pr-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
@@ -73,87 +76,76 @@
         <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
             <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
                 <tr>
-                    <th scope="col" class="p-4">IdentificaciИn</th>
+                    <th scope="col" class="p-4">Identificacion</th>
                     <th scope="col" class="p-4">Nombre</th>
-                    <th scope="col" class="p-4">Telゼfono</th>
+                    <th scope="col" class="p-4">Telefono</th>
                     <th scope="col" class="p-4">Tipo de persona</th>
                     <th scope="col" class="p-4">Estado</th>
-                    <th scope="col" class="p-4 text-center">Acciones</th>
+                    @if ($isAdmin)
+                        <th scope="col" class="p-4 text-center">Acciones</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="divide-y divide-outline dark:divide-outline-dark">
                 @forelse ($providers as $provider)
                     <tr>
+                        <td class="p-4">{{ $provider->identification }}</td>
+                        <td class="p-4">{{ $provider->name }}</td>
+                        <td class="p-4">{{ $provider->phone_number }}</td>
+                        <td class="p-4">{{ $provider->personType->name }}</td>
                         <td class="p-4">
-                            {{ $provider->identification }}
-                        </td>
-                        <td class="p-4">
-                            {{ $provider->name }}
-                        </td>
-                        <td class="p-4">
-                            {{ $provider->phone_number }}
-                        </td>
-                        <td class="p-4">
-                            {{ $provider->personType->name }}
-                        </td>
-
-                        <td class="p-4">
-                            <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium
-                                {{ $provider->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
+                            <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium {{ $provider->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
                                 {{ $provider->status ? 'Activo' : 'Inactivo' }}
                             </span>
                         </td>
+                        @if ($isAdmin)
+                            <td class="p-4 flex justify-center items-center gap-2">
+                                <a href="{{ route('providers.update', $provider) }}" wire:navigate>
+                                    <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                        </svg>
+                                        Editar
+                                    </button>
+                                </a>
 
-
-                        <td class="p-4 flex justify-center items-center gap-2">
-                            <a href="{{ route('providers.update', $provider) }}" wire:navigate>
-                                <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                                    </svg>
-                                    Editar
-                                </button>
-                            </a>
-
-                            @if ($provider->status)
-                                <button
-                                    wire:click="toggleStatus({{ $provider->id }})"
-                                    wire:confirm="隅Estケs seguro de inhabilitar al proveedor {{ $provider->name }}?"
-                                    type="button"
-                                    class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                    </svg>
-                                    Inhabilitar
-                                </button>
-                            @else
-                                <button
-                                    wire:click="toggleStatus({{ $provider->id }})"
-                                    wire:confirm="隅Estケs seguro de habilitar al proveedor {{ $provider->name }}?"
-                                    type="button"
-                                    class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
-                                    </svg>
-                                    Habilitar
-                                </button>
-                            @endif
-                        </td>
+                                @if ($provider->status)
+                                    <button
+                                        wire:click="toggleStatus({{ $provider->id }})"
+                                        wire:confirm="¿Estás seguro de inhabilitar al proveedor {{ $provider->name }}?"
+                                        type="button"
+                                        class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                        </svg>
+                                        Inhabilitar
+                                    </button>
+                                @else
+                                    <button
+                                        wire:click="toggleStatus({{ $provider->id }})"
+                                        wire:confirm="¿Estás seguro de habilitar al proveedor {{ $provider->name }}?"
+                                        type="button"
+                                        class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                                        </svg>
+                                        Habilitar
+                                    </button>
+                                @endif
+                            </td>
+                        @endif
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6">No hay proveedores registrados.</td>
+                        <td colspan="{{ $isAdmin ? 6 : 5 }}">No hay proveedores registrados.</td>
                     </tr>
                 @endforelse
-                  
             </tbody>
         </table>
-        {{-- Esto es para la paginaciИn de la tabla. --}}
         <div class="p-4">
             {{ $providers->links() }}
         </div>
     </div>
-
 </div>

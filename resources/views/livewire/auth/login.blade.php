@@ -306,10 +306,6 @@
                     </div>
 
                     <button class="login-btn" type="submit">ENTRAR</button>
-
-                    @if (Route::has('register'))
-                        <a class="register-btn d-inline-block text-center mt-3" href="{{ route('register') }}">REGISTRAR</a>
-                    @endif
                 </form>
 
             </div>

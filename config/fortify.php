@@ -144,7 +144,7 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // Features::registration(), // Registro público deshabilitado: solo el admin crea usuarios
         Features::resetPasswords(),
         Features::emailVerification(),
         // Features::updateProfileInformation(),

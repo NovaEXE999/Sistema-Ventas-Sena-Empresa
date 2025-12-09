@@ -4,7 +4,8 @@ namespace App\Livewire\Products;
 
 use App\Models\Product;
 use App\Models\Category;
-use Livewire\Attributes\Validate;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class Create extends Component
@@ -14,25 +15,46 @@ class Create extends Component
     public string $categoryLabel = '';
     public array $categoryResults = [];
 
-    #[Validate('required|string|max:255')]
     public $name = '';
-    #[Validate('required|integer|min:0')]
     public $stock = 0;
-    #[Validate('required|numeric|min:0')]
     public $price = 0;
-    #[Validate('required|exists:categories,id')]
     public $category_id = null;
-    #[Validate('boolean')]
-    public $status = true;
+
+    protected function rules(): array
+    {
+        $normalizedName = Str::of($this->name ?? '')->squish()->lower()->toString();
+
+        return [
+            'name' => [
+                'required',
+                'max:255',
+                'regex:/^[\\p{L} ]+$/u',
+                Rule::unique('products', 'name')->where(
+                    fn ($query) => $query->whereRaw('LOWER(name) = ?', [$normalizedName])
+                ),
+            ],
+            'stock' => ['required', 'integer', 'min:0', 'max:2147483647'],
+            'price' => ['required', 'numeric', 'regex:/^\\d+(\\.\\d{1,2})?$/', 'min:0', 'max:99999999.99'],
+            'category_id' => ['required', 'exists:categories,id'],
+        ];
+    }
 
     public function updatedCategorySearch(): void
     {
+        $this->category_id = null;
+        $this->categoryLabel = '';
+
         $this->categoryResults = Category::query()
             ->where('name', 'like', '%'.$this->categorySearch.'%')
             ->where('status', true)
             ->limit(5)
             ->get(['id','name'])
             ->toArray();
+    }
+
+    public function hideCategoryResults(): void
+    {
+        $this->categoryResults = [];
     }
 
     public function selectCategory(int $id, string $name): void
@@ -45,14 +67,18 @@ class Create extends Component
 
     public function save()
     {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+
         $this->validate();
 
         Product::create([
-            'name' => $this->name,
-            'stock' => $this->stock,
-            'price' => $this->price,
+            'name' => Str::of($this->name ?? '')->squish()->toString(),
+            'stock' => (int) $this->stock,
+            'price' => round((float) $this->price, 2),
             'category_id' => $this->category_id,
-            'status' => $this->status,
+            'status' => true,
         ]);
 
         session()->flash('success', 'Producto creado satisfactoriamente.');

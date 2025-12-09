@@ -1,7 +1,6 @@
 <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
 
     @if (session('success'))
-        <!-- success Alert -->
         <div x-data="{ alertIsVisible: true }" x-show="alertIsVisible" class="relative w-full overflow-hidden rounded-radius border border-success bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark" role="alert" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90">
             <div class="flex w-full items-center gap-2 bg-success/10 p-4">
                 <div class="bg-success/15 text-success rounded-full p-1" aria-hidden="true">
@@ -22,18 +21,17 @@
         </div>
     @endif
 
-    <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
-        <a href="{{ route('paymentmethods.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
-            Registrar un metodo de pago
-        </a>
+    @php($isAdmin = auth()->user()?->isAdmin())
 
+    <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
+        @if ($isAdmin)
+            <a href="{{ route('paymentmethods.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
+                Registrar un metodo de pago
+            </a>
+        @endif
     </div>
 
     <div class="flex h-full w-full flex-1 flex-row gap-4 rounded-xl">
-        
-
-
-        {{-- TABLA DE UNIDADES DE MEDIDA --}}
         <div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
             <h2 class="text-center p-4">Metodos de pago</h2>
             <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
@@ -41,14 +39,15 @@
                     <tr>
                         <th scope="col" class="p-4">Nombre</th>
                         <th scope="col" class="p-4">Estado</th>
-                        <th scope="col" class="p-4 text-center">Acciones</th>
+                        @if ($isAdmin)
+                            <th scope="col" class="p-4 text-center">Acciones</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-outline dark:divide-outline-dark">
                     @forelse ($payments as $payment)
                         <tr>
                             <td class="p-4">{{ $payment->name }}</td>
-
                             <td class="p-4">
                                 <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium
                                     {{ $payment->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
@@ -56,55 +55,53 @@
                                 </span>
                             </td>
 
-                            <td class="p-4 flex justify-center items-center gap-2">
-                                <a href="{{route('paymentmethods.update', $payment)}}" wire:navigate>
-                                    <!-- alternate Button with Icon -->
-                                    <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                                        </svg>
-                                        Editar
-                                    </button>
-                                </a>
+                            @if ($isAdmin)
+                                <td class="p-4 flex justify-center items-center gap-2">
+                                    <a href="{{route('paymentmethods.update', $payment)}}" wire:navigate>
+                                        <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                            </svg>
+                                            Editar
+                                        </button>
+                                    </a>
 
-                                @if ($payment->status)
-                                    {{-- Botón para inhabilitar --}}
-                                    <button 
-                                        wire:click="toggleStatus({{ $payment->id }})" 
-                                        wire:confirm="¿Estás seguro de inhabilitar el metodo de pago {{ $payment->name }}?"
-                                        type="button" 
-                                        class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                        </svg>
-                                        Inhabilitar
-                                    </button>
-                                @else
-                                    {{-- Botón para habilitar --}}
-                                    <button 
-                                        wire:click="toggleStatus({{ $payment->id }})" 
-                                        wire:confirm="¿Estás seguro de habilitar el metodo de pago {{ $payment->name }}?"
-                                        type="button" 
-                                        class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
-                                        </svg>
-                                        Habilitar
-                                    </button>
-                                @endif
-                            </td>
+                                    @if ($payment->status)
+                                        <button 
+                                            wire:click="toggleStatus({{ $payment->id }})" 
+                                            wire:confirm="¿Estás seguro de inhabilitar el metodo de pago {{ $payment->name }}?"
+                                            type="button" 
+                                            class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                            </svg>
+                                            Inhabilitar
+                                        </button>
+                                    @else
+                                        <button 
+                                            wire:click="toggleStatus({{ $payment->id }})" 
+                                            wire:confirm="¿Estás seguro de habilitar el metodo de pago {{ $payment->name }}?"
+                                            type="button" 
+                                            class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                                            </svg>
+                                            Habilitar
+                                        </button>
+                                    @endif
+                                </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="3">No hay metodos de pago registrados.</td>
+                            <td colspan="{{ $isAdmin ? 3 : 2 }}">No hay metodos de pago registrados.</td>
                         </tr>
                     @endforelse
                     
                 </tbody>
             </table>
-            {{-- Esto es para la paginación de la tabla. --}}
             <div class="p-4">
                 {{ $payments->links() }}
             </div>

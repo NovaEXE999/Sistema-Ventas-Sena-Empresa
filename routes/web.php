@@ -77,52 +77,56 @@ Route::middleware(['auth'])->group(function () {
             ),
         )
         ->name('two-factor.show');
+
+    Route::get('clients', ClientsIndex::class)->name('clients.index');
+    Route::get('clients/create', ClientsCreate::class)->name('clients.create');
+    Route::get('clients/{client}/update', ClientsUpdate::class)->name('clients.update');
+
+    Route::get('products', ProductsIndex::class)->name('products.index');
+
+    Route::get('sales', SalesIndex::class)->name('sales.index');
+    Route::get('sales/create', SalesCreate::class)->name('sales.create');
+    Route::get('sales/{sale}/show', SalesShow::class)->name('sales.show');
+    Route::get('sales/{sale}/reports/pdf', [SalesReport::class, 'pdf'])->name('sales.reports.pdf');
+    Route::get('sales/{sale}/reports/download', [SalesReport::class, 'download'])->name('sales.reports.download');
+
+    Route::get('providers', ProvidersIndex::class)->name('providers.index');
+    Route::get('productdeliveries', ProductDeliveriesIndex::class)->name('productdeliveries.index');
+    Route::get('productdeliveries/create', ProductDeliveriesCreate::class)->name('productdeliveries.create');
+    Route::get('categoriesandmeasures', CategoriesAndMeasuresIndex::class)->name('categoriesandmeasures.index');
+    Route::get('paymentmethods', PaymentMethodsIndex::class)->name('paymentmethods.index');
+    Route::get('clienttypes', ClientTypesIndex::class)->name('clienttypes.index');
+    Route::get('persontypes', PersonTypesIndex::class)->name('persontypes.index');
+
+    Route::middleware('role:Administrador')->group(function () {
+        Route::get('products/create', ProductsCreate::class)->name('products.create');
+        Route::get('products/{product}/update', ProductsUpdate::class)->name('products.update');
+
+        Route::get('sales/{sale}/update', SalesUpdate::class)->name('sales.update');
+
+        Route::get('providers/create', ProvidersCreate::class)->name('providers.create');
+        Route::get('providers/{provider}/update', ProvidersUpdate::class)->name('providers.update');
+
+        Route::get('productdeliveries/{delivery}/update', ProductDeliveriesUpdate::class)->name('productdeliveries.update');
+
+        Route::get('categories/create', CategoriesCreate::class)->name('categories.create');
+        Route::get('categories/{category}/update', CategoriesUpdate::class)->name('categories.update');
+        Route::get('measures/create', MeasuresCreate::class)->name('measures.create');
+        Route::get('measures/{measure}/update', MeasuresUpdate::class)->name('measures.update');
+
+        Route::get('paymentmethods/create', PaymentMethodsCreate::class)->name('paymentmethods.create');
+        Route::get('paymentmethods/{payment}/update', PaymentMethodsUpdate::class)->name('paymentmethods.update');
+
+        Route::get('clienttypes/create', ClientTypesCreate::class)->name('clienttypes.create');
+        Route::get('clienttypes/{clienttype}/update', ClientTypesUpdate::class)->name('clienttypes.update');
+
+        Route::get('persontypes/create', PersonTypesCreate::class)->name('persontypes.create');
+        Route::get('persontypes/{persontype}/update', PersonTypesUpdate::class)->name('persontypes.update');
+
+        Route::get('users', UsersIndex::class)->name('users.index');
+        Route::get('users/create', UsersCreate::class)->name('users.create');
+        Route::get('users/{user}/update', UsersUpdate::class)->name('users.update');
+
+        Route::get('reports', ReportsIndex::class)->name('reports.index');
+    });
 });
-
-
-Route::get('clients', ClientsIndex::class)->name('clients.index');
-Route::get('clients/create', ClientsCreate::class)->name('clients.create');
-Route::get('clients/{client}/update', ClientsUpdate::class)->name('clients.update');
-
-Route::get('products', ProductsIndex::class)->name('products.index');
-Route::get('products/create', ProductsCreate::class)->name('products.create');
-Route::get('products/{product}/update', ProductsUpdate::class)->name('products.update');
-
-Route::get('sales', SalesIndex::class)->name('sales.index');
-Route::get('sales/create', SalesCreate::class)->name('sales.create');
-Route::get('sales/{sale}/update', SalesUpdate::class)->name('sales.update');
-Route::get('sales/{sale}/show', SalesShow::class)->name('sales.show');
-Route::get('sales/{sale}/reports/pdf', [SalesReport::class, 'pdf'])->name('sales.reports.pdf');
-Route::get('sales/{sale}/reports/download', [SalesReport::class, 'download'])->name('sales.reports.download');
-
-Route::get('providers', ProvidersIndex::class)->name('providers.index');
-Route::get('providers/create', ProvidersCreate::class)->name('providers.create');
-Route::get('providers/{provider}/update', ProvidersUpdate::class)->name('providers.update');
-
-Route::get('productdeliveries', ProductDeliveriesIndex::class)->name('productdeliveries.index');
-Route::get('productdeliveries/create', ProductDeliveriesCreate::class)->name('productdeliveries.create');
-Route::get('productdeliveries/{delivery}/update', ProductDeliveriesUpdate::class)->name('productdeliveries.update');
-
-Route::get('categoriesandmeasures', CategoriesAndMeasuresIndex::class)->name('categoriesandmeasures.index');
-Route::get('categories/create', CategoriesCreate::class)->name('categories.create');
-Route::get('categories/{category}/update', CategoriesUpdate::class)->name('categories.update');
-Route::get('measures/create', MeasuresCreate::class)->name('measures.create');
-Route::get('measures/{measure}/update', MeasuresUpdate::class)->name('measures.update');
-
-Route::get('paymentmethods', PaymentMethodsIndex::class)->name('paymentmethods.index');
-Route::get('paymentmethods/create', PaymentMethodsCreate::class)->name('paymentmethods.create');
-Route::get('paymentmethods/{payment}/update', PaymentMethodsUpdate::class)->name('paymentmethods.update');
-
-Route::get('clienttypes', ClientTypesIndex::class)->name('clienttypes.index');
-Route::get('clienttypes/create', ClientTypesCreate::class)->name('clienttypes.create');
-Route::get('clienttypes/{clienttype}/update', ClientTypesUpdate::class)->name('clienttypes.update');
-
-Route::get('persontypes', PersonTypesIndex::class)->name('persontypes.index');
-Route::get('persontypes/create', PersonTypesCreate::class)->name('persontypes.create');
-Route::get('persontypes/{persontype}/update', PersonTypesUpdate::class)->name('persontypes.update');
-
-Route::get('users', UsersIndex::class)->name('users.index');
-Route::get('users/create', UsersCreate::class)->name('users.create');
-Route::get('users/{user}/update', UsersUpdate::class)->name('users.update');
-
-Route::get('reports', ReportsIndex::class)->name('reports.index');

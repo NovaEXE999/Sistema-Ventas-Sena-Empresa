@@ -18,6 +18,7 @@ use App\Models\Sale;
 use App\Models\SaleDetail;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -55,5 +56,23 @@ class DatabaseSeeder extends Seeder
             SaleSeeder::class,
             SaleDetailSeeder::class,
         ]);
+
+        // Usuario administrador predeterminado
+        $adminRole = Role::firstWhere('name', 'Administrador') ?? Role::create([
+            'name' => 'Administrador',
+            'status' => true,
+        ]);
+
+        User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'identification' => '1234567890',
+                'name' => 'admin',
+                'phone_number' => '3001234567',
+                'status' => true,
+                'role_id' => $adminRole->id,
+                'password' => Hash::make('admin1234'),
+            ]
+        );
     }
 }
