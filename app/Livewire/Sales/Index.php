@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Sale;
 use App\Models\PaymentMethod;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\WithPagination;
 
@@ -15,6 +16,7 @@ class Index extends Component
 
     public string $order = 'date_desc';
     public ?string $filterDate = null;
+    public string $filterDateType = 'date'; // date | month | year
     public string $paymentMethod = 'all';
     public string $seller = 'all';
     public string $search = '';
@@ -43,7 +45,11 @@ class Index extends Component
 
     public function updated($propertyName): void
     {
-        if (in_array($propertyName, ['order', 'filterDate', 'paymentMethod', 'seller', 'search'], true)) {
+        if ($propertyName === 'filterDateType') {
+            $this->filterDate = null;
+        }
+
+        if (in_array($propertyName, ['order', 'filterDate', 'filterDateType', 'paymentMethod', 'seller', 'search'], true)) {
             $this->resetPage();
         }
     }
@@ -71,8 +77,26 @@ class Index extends Component
     {
         $salesQuery = Sale::with(['user', 'client', 'paymentmethod']);
 
-        if ($this->filterDate) {
-            $salesQuery->whereDate('date', $this->filterDate);
+        $dateValue = trim((string) $this->filterDate);
+        switch ($this->filterDateType) {
+            case 'month':
+                if (preg_match('/^\d{4}-\d{2}$/', $dateValue)) {
+                    $carbon = Carbon::createFromFormat('Y-m', $dateValue);
+                    $salesQuery->whereYear('date', $carbon->year)
+                        ->whereMonth('date', $carbon->month);
+                }
+                break;
+            case 'year':
+                if (preg_match('/^\d{4}$/', $dateValue)) {
+                    $salesQuery->whereYear('date', (int) $dateValue);
+                }
+                break;
+            case 'date':
+            default:
+                if (! empty($dateValue)) {
+                    $salesQuery->whereDate('date', $dateValue);
+                }
+                break;
         }
 
         if ($this->paymentMethod !== 'all') {

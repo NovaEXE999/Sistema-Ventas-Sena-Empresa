@@ -18,7 +18,8 @@ class SaleDetailSeeder extends Seeder
         $saleDetail = new SaleDetail();
 
         $saleDetail->quantity = '20';
-        $saleDetail->subtotal = '180000.00';
+        $saleDetail->price = '9000.00';
+        $saleDetail->subtotal = $saleDetail->price * $saleDetail->quantity;
         $saleDetail->product_id = 1;
         $saleDetail->sale_id = 1;
 

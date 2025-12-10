@@ -13,7 +13,7 @@ class CreateMeasure extends Component
     protected function rules(): array
     {
         return [
-            'name' => ['required', 'max:255', 'regex:/^[\\p{L} ]+$/u', Rule::unique('measures', 'name')],
+            'name' => ['required', 'max:256', 'regex:/^[\\p{L} ]+$/u', Rule::unique('measures', 'name')],
         ];
     }
 

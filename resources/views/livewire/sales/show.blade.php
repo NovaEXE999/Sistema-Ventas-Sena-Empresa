@@ -31,7 +31,7 @@
                     <tr>
                         <td class="p-4">{{ $detail->product->name }}</td>
                         <td class="p-4">{{ $detail->quantity }}</td>
-                        <td class="p-4">{{ $detail->product->price }}</td>
+                        <td class="p-4">{{ $detail->price }}</td>
                         {{-- Debido a que productos viene con categoria y nombre, podemos llamar las variables de esas tablas
                         por cualquier campo dentro de estas y mostrarla en la vista. --}}
                         <td class="p-4">{{ $detail->subtotal }}</td>

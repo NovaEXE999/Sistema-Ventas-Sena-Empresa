@@ -8,7 +8,7 @@ use App\Models\PaymentMethod;
 
 class Create extends Component
 {
-    #[Validate('required|string|max:200|regex:/^[\\pL\\s]+$/u')]
+    #[Validate('required|string|max:256|regex:/^[\\pL\\s]+$/u')]
     public $name = '';
 
     public function save(){

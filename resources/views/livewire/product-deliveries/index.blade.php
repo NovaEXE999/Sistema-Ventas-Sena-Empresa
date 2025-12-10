@@ -47,8 +47,27 @@
             </select>
         </div>
         <div class="flex flex-col gap-1 text-sm">
-            <label class="text-on-surface dark:text-on-surface-dark">Fecha especifica</label>
-            <input type="date" wire:model.live="filterDate" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+            <label class="text-on-surface dark:text-on-surface-dark">Tipo de filtro</label>
+            <select wire:model.live="filterDateType" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+                <option value="date">Fecha específica</option>
+                <option value="month">Mes</option>
+                <option value="year">Año</option>
+            </select>
+        </div>
+        <div class="flex flex-col gap-1 text-sm" x-data="{ filterType: @entangle('filterDateType') }">
+            <label class="text-on-surface dark:text-on-surface-dark">Valor</label>
+            <input
+                x-bind:type="filterType === 'date' ? 'date' : (filterType === 'month' ? 'month' : 'number')"
+                x-bind:placeholder="filterType === 'year' ? 'YYYY' : ''"
+                x-bind:min="filterType === 'year' ? '1900' : null"
+                x-bind:max="filterType === 'year' ? '2100' : null"
+                x-bind:step="filterType === 'year' ? '1' : null"
+                wire:model.live="filterDate"
+                class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50"
+            >
+            <p class="text-xs text-on-surface/70 dark:text-on-surface-dark/70">
+                Usa fecha exacta, un mes (YYYY-MM) o solo año.
+            </p>
         </div>
     </div>
 
@@ -62,32 +81,33 @@
                     <th scope="col" class="p-4">Producto Entregado</th>
                     <th scope="col" class="p-4">Cantidad Entregada</th>
                     <th scope="col" class="p-4">Fecha</th>
-                    @if ($isAdmin)
-                        <th scope="col" class="p-4 text-center">Acciones</th>
-                    @endif
+                    <th scope="col" class="p-4 text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-outline dark:divide-outline-dark">
                 @forelse ($deliveries as $delivery)
                     <tr>
-                        <td class="p-4">{{ $delivery->provider->identification}}</td>
+                        <td class="p-4">{{ $delivery->provider->identification }}</td>
                         <td class="p-4">{{ $delivery->provider->name }}</td>
                         <td class="p-4">{{ $delivery->product->name }} </td>
                         <td class="p-4">{{ $delivery->delivered_amount }} {{ $delivery->product->category->measure->name }}</td>
                         <td class="p-4">{{ $delivery->date }}</td>
-                        @if ($isAdmin)
-                            <td class="p-4 flex justify-center items-center gap-2">
-                                <a href="{{ route('productdeliveries.update', $delivery)}}" wire:navigate>
-                                    <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                                        </svg>
-                                        Editar
-                                    </button>
-                                </a>
+                        <td class="p-4 flex justify-center items-center gap-2">
+                            {{-- Edición deshabilitada --}}
+                            <a href="{{ route('productdeliveries.reports.pdf', $delivery) }}" target="_blank">
+                                <button type="button" class="whitespace-nowrap rounded-radius bg-info border border-info px-4 py-2 text-sm font-medium tracking-wide text-onInfo transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-info active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-info dark:border-info dark:text-onInfo dark:focus-visible:outline-info">
+                                    PDF
+                                </button>
+                            </a>
+                            <a href="{{ route('productdeliveries.reports.download', $delivery) }}">
+                                <button type="button" class="whitespace-nowrap rounded-radius bg-success border border-success px-4 py-2 text-sm font-medium tracking-wide text-onSuccess transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:border-success dark:text-onSuccess dark:focus-visible:outline-success">
+                                    Descargar
+                                </button>
+                            </a>
+                            @if ($isAdmin)
                                 <button
                                     wire:click='delete({{ $delivery->id }})'
-                                    wire:confirm="¿Estás seguro de borrar la entrada de inventario del producto {{ $delivery->product->name }} en la fecha {{ $delivery->date }}?"
+                                    wire:confirm="Estas seguro de borrar la entrada de inventario del producto {{ $delivery->product->name }} en la fecha {{ $delivery->date }}?"
                                     type="button"
                                     class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
                                 >
@@ -96,12 +116,12 @@
                                     </svg>
                                     Borrar
                                 </button>
-                            </td>
-                        @endif
+                            @endif
+                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="{{ $isAdmin ? 6 : 5 }}">No hay entradas de inventario registradas.</td>
+                        <td colspan="6">No hay entradas de inventario registradas.</td>
                     </tr>
                 @endforelse
             </tbody>

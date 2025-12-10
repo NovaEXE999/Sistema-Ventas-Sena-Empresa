@@ -120,11 +120,12 @@ class Create extends Component
             ]);
 
             foreach ($this->lineItems as $item) {
-                $price = $products[$item['product_id']]->price;
+                $price = $item['price'];
                 $quantity = $item['quantity'];
 
                 SaleDetail::create([
                     'quantity' => $quantity,
+                    'price' => $price,
                     'subtotal' => $price * $quantity,
                     'product_id' => $item['product_id'],
                     'sale_id' => $sale->id,

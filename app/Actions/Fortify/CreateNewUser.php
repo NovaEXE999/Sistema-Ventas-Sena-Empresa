@@ -25,12 +25,18 @@ class CreateNewUser implements CreatesNewUsers
                 'regex:/^[0-9]{3,10}$/',
                 Rule::unique(User::class, 'identification'),
             ],
-            'name' => ['required', 'string', 'max:255'],
+            'name' => [
+                'required',
+                'string',
+                'max:256',
+                'regex:/^[A-Za-zÀ-ÿ ]{1,256}$/',
+            ],
             'email' => [
                 'required',
                 'string',
                 'email',
-                'max:255',
+                'max:254',
+                'regex:/^[A-Za-z0-9._%+-]+@(gmail\\.com|hotmail\\.com|msn\\.com|outlook\\.com|yahoo\\.com|yahoo\\.es|icloud\\.com|live\\.com)$/i',
                 Rule::unique(User::class),
             ],
             'phone_number' => [
@@ -47,8 +53,12 @@ class CreateNewUser implements CreatesNewUsers
             'password' => $this->passwordRules(),
         ], [
             'identification.regex' => __('La identificación solo puede contener números (entre 3 y 10 dígitos).'),
+            'name.regex' => __('El nombre solo puede contener letras y espacios (máximo 256 caracteres).'),
+            'email.regex' => __('El correo debe ser de un dominio permitido: gmail.com, hotmail.com, msn.com, outlook.com, yahoo.com, yahoo.es, icloud.com o live.com.'),
             'phone_number.size' => __('El número de teléfono debe tener exactamente 10 dígitos.'),
             'phone_number.regex' => __('El número de teléfono debe iniciar con 3 y contener solo números.'),
+            'role_id.required' => __('El nombre del rol es requerido.'),
+            'role_id.exists' => __('El rol seleccionado no es válido.'),
         ])->validate();
 
         return User::create([

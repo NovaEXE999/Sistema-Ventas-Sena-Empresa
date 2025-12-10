@@ -27,7 +27,7 @@ class Create extends Component
             'date' => 'required|date',
             'provider_id' => 'required|exists:providers,id',
             'lineItems' => 'array|min:1',
-            'lineItems.*.quantity' => 'integer|min:1',
+            'lineItems.*.quantity' => 'integer|min:1|max:1000',
             'lineItems.*.product_id' => 'integer|exists:products,id',
         ];
     }
@@ -49,6 +49,25 @@ class Create extends Component
         $provider = $this->resolveProvider();
         if (!$provider) {
             return;
+        }
+
+        $products = Product::whereIn('id', array_keys($this->lineItems))
+            ->select('id', 'name', 'stock', 'status')
+            ->get()
+            ->keyBy('id');
+
+        foreach ($this->lineItems as $item) {
+            $product = $products[$item['product_id']] ?? null;
+            if (!$product || !$product->status) {
+                $this->addError('lineItems', 'Un producto seleccionado ya no existe o está inactivo.');
+                return;
+            }
+
+            $totalAfterEntry = (int) $product->stock + (int) $item['quantity'];
+            if ($totalAfterEntry > 1000) {
+                $this->addError('lineItems', "No puedes registrar más de 1000 unidades de {$product->name}. Stock actual: {$product->stock}.");
+                return;
+            }
         }
 
         $this->persistEntries($provider);
@@ -76,16 +95,21 @@ class Create extends Component
     // Busqueda de proveedor
     public function updatedProviderSearch(): void
     {
+        $term = trim($this->providerSearch);
+
         $this->providerResults = Provider::query()
-            ->where('name', 'like', '%'.$this->providerSearch.'%')
+            ->where(function ($query) use ($term) {
+                $query->where('name', 'like', '%'.$term.'%')
+                    ->orWhere('identification', 'like', '%'.$term.'%');
+            })
             ->where('status', true)
             ->limit(5)
-            ->get(['id','name'])
+            ->get(['id','name','identification'])
             ->toArray();
 
         $this->provider_id = null;
 
-        if (trim($this->providerSearch) !== '' && empty($this->providerResults)) {
+        if ($term !== '' && empty($this->providerResults)) {
             $this->addError('provider_id', 'El proveedor no existe o está inactivo. Selecciona uno de la lista.');
         } else {
             $this->resetErrorBag(['provider_id', 'providerSearch']);
@@ -144,8 +168,9 @@ class Create extends Component
         $this->productResults = Product::query()
             ->where('name', 'like', '%'.$this->productSearch.'%')
             ->where('status', true)
+            ->where('stock', '<', 1000)
             ->limit(5)
-            ->get(['id','name'])
+            ->get(['id','name','stock'])
             ->toArray();
 
         $this->selectedProductId = null;
@@ -153,7 +178,7 @@ class Create extends Component
         $this->resetErrorBag(['productSearch']);
         $term = trim($this->productSearch);
         if ($term !== '' && empty($this->productResults)) {
-            $this->addError('productSearch', 'El producto no existe o está inactivo. Selecciona uno de la lista.');
+            $this->addError('productSearch', 'El producto no existe, está inactivo o ya alcanzó el límite de stock (1000).');
         }
     }
 
@@ -161,6 +186,19 @@ class Create extends Component
     {
         $this->productResults = [];
         // no-op if no selección; mensaje ya lo maneja updatedProductSearch/addProductLine
+    }
+
+    public function updatedProductQuantity($value): void
+    {
+        $clean = (int) filter_var($value, FILTER_SANITIZE_NUMBER_INT);
+        if ($clean < 1) {
+            $clean = 1;
+        } elseif ($clean > 1000) {
+            $clean = 1000;
+        }
+
+        $this->productQuantity = $clean;
+        $this->resetErrorBag(['productQuantity', 'lineItems']);
     }
 
     public function selectProduct(int $id, string $name): void
@@ -189,24 +227,49 @@ class Create extends Component
             return;
         }
 
-        $product = Product::select('id', 'name')->where('status', true)->find($this->selectedProductId);
+        $product = Product::select('id', 'name', 'stock')->where('status', true)->find($this->selectedProductId);
         if (!$product) {
             $this->addError('productSearch', 'Producto no encontrado o inactivo.');
             return;
         }
 
-        $quantity = max(1, (int) $this->productQuantity);
-
-        // si ya existe en la lista, sumamos cantidades
-        if (isset($this->lineItems[$product->id])) {
-            $this->lineItems[$product->id]['quantity'] += $quantity;
-        } else {
-            $this->lineItems[$product->id] = [
-                'product_id' => $product->id,
-                'name' => $product->name,
-                'quantity' => $quantity,
-            ];
+        $currentStock = (int) $product->stock;
+        if ($currentStock >= 1000) {
+            $this->addError('productSearch', "El producto {$product->name} ya está en el límite de stock (1000).");
+            return;
         }
+
+        $quantity = (int) $this->productQuantity;
+        if ($quantity < 1) {
+            $this->addError('productQuantity', 'La cantidad debe ser mayor que 0.');
+            return;
+        }
+
+        if ($quantity > 1000) {
+            $this->addError('productQuantity', 'La cantidad máxima que puede entregar un proveedor es 1000.');
+            return;
+        }
+
+        $existingQuantity = $this->lineItems[$product->id]['quantity'] ?? 0;
+        $newQuantity = $existingQuantity + $quantity;
+
+        $availableForEntry = 1000 - $currentStock - $existingQuantity;
+        if ($availableForEntry <= 0) {
+            $this->addError('lineItems', "El producto {$product->name} alcanzará el límite de 1000 con su stock actual. Quita esta línea.");
+            return;
+        }
+
+        if ($quantity > $availableForEntry) {
+            $this->addError('productQuantity', "Solo puedes agregar {$availableForEntry} unidades para {$product->name} (stock actual: {$currentStock}).");
+            return;
+        }
+
+        $this->lineItems[$product->id] = [
+            'product_id' => $product->id,
+            'name' => $product->name,
+            'quantity' => $newQuantity,
+            'stock' => $currentStock,
+        ];
 
         $this->productQuantity = 1;
     }
@@ -218,7 +281,18 @@ class Create extends Component
         }
 
         $quantity = (int) $quantity;
-        $quantity = $quantity < 1 ? 1 : $quantity;
+        if ($quantity < 1) {
+            $this->addError('lineItems', 'La cantidad debe ser mayor que 0.');
+            $quantity = 1;
+        }
+
+        $baseStock = (int) ($this->lineItems[$productId]['stock'] ?? 0);
+        $maxAllowed = max(0, 1000 - $baseStock);
+
+        if ($quantity > $maxAllowed) {
+            $this->addError('lineItems', "La cantidad supera el límite de 1000 con el stock actual ({$baseStock}). Máximo permitido: {$maxAllowed}.");
+            $quantity = $maxAllowed;
+        }
 
         $this->lineItems[$productId]['quantity'] = $quantity;
     }

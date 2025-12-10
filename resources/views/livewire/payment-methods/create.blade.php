@@ -7,7 +7,7 @@
             Volver
         </a>
         <h1 class="p-4 text-center">
-            Gestión de métodos de pago
+            GestiÇün de mÇ¸todos de pago
         </h1>
     </div>
     <x-form.error-alert />
@@ -16,14 +16,15 @@
             wire:model="name"
             label="Nombre"
             name="name"
-            placeholder="Ingresa el método de pago"
-            maxlength="200"
-            pattern="^[A-Za-zÀ-ÿ\s]+$"
+            placeholder="Ingresa el mÇ¸todo de pago"
+            maxlength="256"
+            pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]{1,256}$"
+            x-on:keydown="if ($event.ctrlKey || $event.metaKey || $event.altKey) { return; } if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]$/.test($event.key) && !['Backspace','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Delete','Home','End','Enter'].includes($event.key)) { $event.preventDefault(); }"
             title="Solo se permiten letras y espacios"
         />
 
         <button type="submit" class="whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-primary-dark dark:border-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark">
-            {{ request()->routeIs('paymentmethods.create') ? 'Crear método de pago' : 'Actualizar método de pago' }}
+            {{ request()->routeIs('paymentmethods.create') ? 'Crear mÇ¸todo de pago' : 'Actualizar mÇ¸todo de pago' }}
         </button>
     </form>
 </div>

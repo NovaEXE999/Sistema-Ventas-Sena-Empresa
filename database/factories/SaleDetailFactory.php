@@ -18,10 +18,15 @@ class SaleDetailFactory extends Factory
     {
         $productId = \App\Models\Product::query()->inRandomOrder()->value('id') ?? \App\Models\Product::factory();
         $saleId = \App\Models\Sale::query()->inRandomOrder()->value('id') ?? \App\Models\Sale::factory();
+        $price = is_numeric($productId)
+            ? \App\Models\Product::find($productId)?->price ?? $this->faker->randomFloat(2, 1000, 500000)
+            : $this->faker->randomFloat(2, 1000, 500000);
+        $quantity = $this->faker->numberBetween(1, 30);
 
         return [
-            'quantity' => $this->faker->numberBetween(1, 30),
-            'subtotal' => $this->faker->randomFloat(2, 10000, 5000000),
+            'quantity' => $quantity,
+            'price' => $price,
+            'subtotal' => $price * $quantity,
             'product_id' => $productId,
             'sale_id' => $saleId,
         ];

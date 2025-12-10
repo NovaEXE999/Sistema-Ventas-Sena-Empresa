@@ -28,6 +28,12 @@ class Create extends Component
             ->toArray();
     }
 
+    public function updated(string $propertyName): void
+    {
+        // Clear error for the field as soon as it changes
+        $this->resetErrorBag($propertyName);
+    }
+
     public function save(CreateNewUser $creator)
     {
         try {

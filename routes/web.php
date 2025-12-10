@@ -25,6 +25,7 @@ use App\Livewire\Sales\Reports as SalesReport;
 use App\Livewire\ProductDeliveries\Index as ProductDeliveriesIndex;
 use App\Livewire\ProductDeliveries\Create as ProductDeliveriesCreate;
 use App\Livewire\ProductDeliveries\Update as ProductDeliveriesUpdate;
+use App\Livewire\ProductDeliveries\Reports as ProductDeliveriesReport;
 
 use App\Livewire\CategoriesAndMeasures\Index as CategoriesAndMeasuresIndex;
 
@@ -93,6 +94,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('providers', ProvidersIndex::class)->name('providers.index');
     Route::get('productdeliveries', ProductDeliveriesIndex::class)->name('productdeliveries.index');
     Route::get('productdeliveries/create', ProductDeliveriesCreate::class)->name('productdeliveries.create');
+    Route::get('productdeliveries/{delivery}/reports/pdf', [ProductDeliveriesReport::class, 'pdf'])->name('productdeliveries.reports.pdf');
+    Route::get('productdeliveries/{delivery}/reports/download', [ProductDeliveriesReport::class, 'download'])->name('productdeliveries.reports.download');
     Route::get('categoriesandmeasures', CategoriesAndMeasuresIndex::class)->name('categoriesandmeasures.index');
     Route::get('paymentmethods', PaymentMethodsIndex::class)->name('paymentmethods.index');
     Route::get('clienttypes', ClientTypesIndex::class)->name('clienttypes.index');
@@ -107,7 +110,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('providers/create', ProvidersCreate::class)->name('providers.create');
         Route::get('providers/{provider}/update', ProvidersUpdate::class)->name('providers.update');
 
-        Route::get('productdeliveries/{delivery}/update', ProductDeliveriesUpdate::class)->name('productdeliveries.update');
+        // Route deshabilitada: edición de entradas de inventario
+        // Route::get('productdeliveries/{delivery}/update', ProductDeliveriesUpdate::class)->name('productdeliveries.update');
 
         Route::get('categories/create', CategoriesCreate::class)->name('categories.create');
         Route::get('categories/{category}/update', CategoriesUpdate::class)->name('categories.update');

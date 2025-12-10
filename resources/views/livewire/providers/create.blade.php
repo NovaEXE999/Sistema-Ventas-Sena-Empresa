@@ -24,14 +24,21 @@
                       minlength="3"
                       maxlength="10"
                       inputmode="numeric"
-                      title="Solo números, 3 a 10 dígitos" />
+                      required
+                      title="Solo números, 3 a 10 dígitos"
+                      onkeydown="return window.allowDigitsOnly(event);"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" />
 
         <x-form.input wire:model.live.debounce.250ms="name"
                       label="Nombre del proveedor"
                       name="name"
                       placeholder="Ingresa el nombre del proveedor"
-                      pattern="[A-Za-zÀ-ÿ\s]+"
-                      title="Solo letras y espacios"
+                      pattern="[A-Za-zÀ-ÿ0-9\s\.]+"
+                      maxlength="256"
+                      required
+                      title="Solo letras, números, espacios y puntos"
+                      onkeydown="return window.allowLettersSpacesDots(event);"
+                      oninput="this.value = this.value.replace(/[^A-Za-zÀ-ÿ0-9\\.\\s]/g, '').slice(0, 256);"
                       autocomplete="off" />
 
         <x-form.input wire:model="phone_number"
@@ -41,11 +48,15 @@
                       pattern="3\d{9}"
                       maxlength="10"
                       inputmode="numeric"
-                      title="Debe iniciar en 3 y tener 10 dígitos" />
+                      minlength="10"
+                      required
+                      title="Debe iniciar en 3 y tener 10 dígitos"
+                      onkeydown="return window.allowDigitsOnly(event);"
+                      oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" />
 
         <div>
             <label class="block text-sm font-medium text-on-surface mb-1">Tipo de persona</label>
-            <select wire:model="person_type_id" class="w-full rounded-radius border border-outline px-3 py-2 text-sm text-on-surface focus:outline-none">
+            <select wire:model="person_type_id" required class="w-full rounded-radius border border-outline px-3 py-2 text-sm text-on-surface focus:outline-none">
                 <option value="">Seleccione...</option>
                 @foreach($personTypes as $type)
                     <option value="{{ $type['id'] }}">{{ $type['name'] }}</option>
@@ -61,4 +72,27 @@
 
 
     </form>
+    <script>
+        window.allowDigitsOnly = function(event) {
+            const navigationKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End', 'Enter'];
+            if (event.ctrlKey || event.metaKey) {
+                return true;
+            }
+            if (navigationKeys.includes(event.key)) {
+                return true;
+            }
+            return /^[0-9]$/.test(event.key);
+        };
+
+        window.allowLettersSpacesDots = function(event) {
+            const navigationKeys = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End', 'Enter'];
+            if (event.ctrlKey || event.metaKey) {
+                return true;
+            }
+            if (navigationKeys.includes(event.key)) {
+                return true;
+            }
+            return /^[A-Za-zÀ-ÿ0-9\\. ]$/.test(event.key);
+        };
+    </script>
 </div>

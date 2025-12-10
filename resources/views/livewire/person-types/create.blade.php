@@ -7,7 +7,7 @@
             Volver
         </a>
         <h1 class="p-4 text-center">
-            Gestión de tipos de persona
+            GestiÇün de tipos de persona
         </h1>
     </div>
     <x-form.error-alert />
@@ -17,8 +17,9 @@
             label="Nombre"
             name="name"
             placeholder="Ingresa el tipo de persona"
-            maxlength="200"
-            pattern="^[A-Za-zÀ-ÿ\s]+$"
+            maxlength="256"
+            pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]{1,256}$"
+            x-on:keydown="if ($event.ctrlKey || $event.metaKey || $event.altKey) { return; } if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]$/.test($event.key) && !['Backspace','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Delete','Home','End','Enter'].includes($event.key)) { $event.preventDefault(); }"
             title="Solo se permiten letras y espacios"
         />
 

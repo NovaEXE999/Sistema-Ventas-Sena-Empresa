@@ -295,15 +295,7 @@
                     </div>
                     @error('password') <div class="error-text">{{ $message }}</div> @enderror
 
-                    <div class="d-flex justify-content-between mb-3 align-items-center">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="1" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
-                            <label class="form-check-label" for="remember">Recordarme</label>
-                        </div>
-                        @if (Route::has('password.request'))
-                            <a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
-                        @endif
-                    </div>
+                    {{-- Link de recuperar contrasena deshabilitado --}}
 
                     <button class="login-btn" type="submit">ENTRAR</button>
                 </form>

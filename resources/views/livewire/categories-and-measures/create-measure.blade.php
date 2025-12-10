@@ -18,7 +18,9 @@
                       label="Nombre"
                       name="name"
                       placeholder="Ingresa el nombre de la unidad de medida"
-                      pattern="[A-Za-zÀ-ÿ\s]+"
+                      maxlength="256"
+                      pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]{1,256}$"
+                      x-on:keydown="if ($event.ctrlKey || $event.metaKey || $event.altKey) { return; } if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]$/.test($event.key) && !['Backspace','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Delete','Home','End','Enter'].includes($event.key)) { $event.preventDefault(); }"
                       title="Solo letras y espacios"
                       autocomplete="off"/>
         <!-- primary Button -->

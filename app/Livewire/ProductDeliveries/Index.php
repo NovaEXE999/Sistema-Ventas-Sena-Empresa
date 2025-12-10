@@ -4,6 +4,7 @@ namespace App\Livewire\ProductDeliveries;
 
 use App\Models\ProductDelivery;
 use App\Models\Product;
+use Illuminate\Support\Carbon;
 use Livewire\WithPagination;
 use Livewire\Component;
 
@@ -13,11 +14,16 @@ class Index extends Component
 
     public string $order = 'date_desc';
     public ?string $filterDate = null;
+    public string $filterDateType = 'date'; // date | month | year
     public string $search = '';
 
     public function updated($propertyName): void
     {
-        if (in_array($propertyName, ['order', 'filterDate', 'search'], true)) {
+        if ($propertyName === 'filterDateType') {
+            $this->filterDate = null;
+        }
+
+        if (in_array($propertyName, ['order', 'filterDate', 'filterDateType', 'search'], true)) {
             $this->resetPage();
         }
     }
@@ -40,8 +46,26 @@ class Index extends Component
     {
         $deliveriesQuery = ProductDelivery::with(['provider', 'product.category.measure']);
 
-        if ($this->filterDate) {
-            $deliveriesQuery->whereDate('date', $this->filterDate);
+        $dateValue = trim((string) $this->filterDate);
+        switch ($this->filterDateType) {
+            case 'month':
+                if (preg_match('/^\d{4}-\d{2}$/', $dateValue)) {
+                    $carbon = Carbon::createFromFormat('Y-m', $dateValue);
+                    $deliveriesQuery->whereYear('date', $carbon->year)
+                        ->whereMonth('date', $carbon->month);
+                }
+                break;
+            case 'year':
+                if (preg_match('/^\d{4}$/', $dateValue)) {
+                    $deliveriesQuery->whereYear('date', (int) $dateValue);
+                }
+                break;
+            case 'date':
+            default:
+                if (!empty($dateValue)) {
+                    $deliveriesQuery->whereDate('date', $dateValue);
+                }
+                break;
         }
 
         if (trim($this->search) !== '') {

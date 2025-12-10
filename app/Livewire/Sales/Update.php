@@ -46,9 +46,9 @@ class Update extends Create
                 'product_id' => $product->id,
                 'name' => $product->name,
                 'quantity' => $detail->quantity,
-                'price' => (float) $product->price,
+                'price' => (float) $detail->price,
                 'stock' => $product->stock + $detail->quantity,
-                'subtotal' => (float) $product->price * $detail->quantity,
+                'subtotal' => (float) $detail->price * $detail->quantity,
             ];
         }
 
@@ -97,11 +97,12 @@ class Update extends Create
             $this->sale->details()->delete();
 
             foreach ($this->lineItems as $item) {
-                $price = $products[$item['product_id']]->price;
+                $price = $item['price'];
                 $quantity = $item['quantity'];
 
                 $this->sale->details()->create([
                     'quantity' => $quantity,
+                    'price' => $price,
                     'subtotal' => $price * $quantity,
                     'product_id' => $item['product_id'],
                 ]);

@@ -27,13 +27,13 @@ class Create extends Component
         return [
             'name' => [
                 'required',
-                'max:255',
+                'max:256',
                 'regex:/^[\\p{L} ]+$/u',
                 Rule::unique('products', 'name')->where(
                     fn ($query) => $query->whereRaw('LOWER(name) = ?', [$normalizedName])
                 ),
             ],
-            'stock' => ['required', 'integer', 'min:0', 'max:1000'],
+            'stock' => ['required', 'integer', 'min:1', 'max:1000'],
             'price' => ['required', 'numeric', 'regex:/^\\d{1,6}(\\.\\d{1,2})?$/', 'min:0', 'max:500000'],
             'category_id' => ['required', 'exists:categories,id'],
         ];
@@ -71,6 +71,8 @@ class Create extends Component
             abort(403);
         }
 
+        $this->sanitizeName();
+        $this->sanitizeNumbers();
         $this->validate();
 
         Product::create([
@@ -83,6 +85,28 @@ class Create extends Component
 
         session()->flash('success', 'Producto creado satisfactoriamente.');
         $this->redirectRoute('products.index', navigate:true);
+    }
+
+    private function sanitizeName(): void
+    {
+        $this->name = Str::of($this->name ?? '')
+            ->squish()
+            ->substr(0, 256)
+            ->toString();
+    }
+
+    private function sanitizeNumbers(): void
+    {
+        $this->stock = max(1, min((int) $this->stock, 1000));
+        $this->price = min(max(0, round((float) $this->price, 2)), 500000);
+    }
+
+    public function messages(): array
+    {
+        return [
+            'category_id.required' => 'La categoría es obligatoria.',
+            'category_id.exists' => 'Selecciona una categoría válida.',
+        ];
     }
 
     public function render()

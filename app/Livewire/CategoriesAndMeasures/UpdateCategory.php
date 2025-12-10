@@ -23,7 +23,7 @@ class UpdateCategory extends Component
         return [
             'name' => [
                 'required',
-                'max:255',
+                'max:256',
                 'regex:/^[\\p{L} ]+$/u',
                 Rule::unique('categories', 'name')->ignore($this->category?->id),
             ],

@@ -4,7 +4,6 @@
     <meta charset="utf-8">
     <style>
         @page {
-            /* size: 76mm 3276mm;   para hacerlo alargado*/
             size: 76mm auto; 
             margin: 3mm 2mm;
         }
@@ -17,6 +16,8 @@
         body {
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
             font-family: "DejaVu Sans", Arial, sans-serif;
             color: #111;
             font-size: 11px;
@@ -61,8 +62,10 @@
         }
         .details-table {
             width: 100%;
+            margin: 0 auto;
             border-collapse: collapse;
             font-size: 11px;
+            table-layout: fixed;
         }
         .details-table td:first-child .product-name {
             display: block;
@@ -71,23 +74,37 @@
         }
         .details-table th,
         .details-table td {
-            padding: 1mm 0;
+            padding: 1mm 1.5mm;
             vertical-align: top;
-        }
-        .details-table th {
-            text-align: center;
         }
         .details-table th.product-col,
         .details-table td.product-col {
             text-align: left;
+            width: 40%;
+        }
+        .details-table th.price-col,
+        .details-table td.price-col {
+            text-align: right;
+            width: 20%;
+        }
+        .details-table th.qty-col,
+        .details-table td.qty-col {
+            text-align: center;
+            width: 15%;
+        }
+        .details-table th.subtotal-col,
+        .details-table td.subtotal-col {
+            text-align: right;
+            width: 25%;
         }
         .details-table td {
             word-break: break-word;
         }
         .details-table th {
             font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+            text-transform: none;
+            letter-spacing: 0;
+            font-weight: 700;
         }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
@@ -95,9 +112,11 @@
         .nowrap { white-space: nowrap; }
         .small { font-size: 11px; }
         .total-row td {
-            padding-top: 3mm;
+            padding-top: 4mm;
             font-weight: 700;
             font-size: 11px;
+        }
+        .total-line td {
             border-top: 1px solid #444;
         }
         .notice {
@@ -117,6 +136,9 @@
             text-align: center;
             font-size: 11px;
             margin-top: 8mm;
+        }
+        .separator-row td {
+            padding: 0;
         }
     </style>
 </head>
@@ -139,9 +161,10 @@
         <table class="details-table">
             <thead>
                 <tr>
-                    <th class="product-col" style="width: 55%;">Producto</th>
-                    <th class="text-right" style="width: 15%;">Cant.</th>
-                    <th class="text-right" style="width: 30%;">SubTotal</th>
+                    <th class="product-col">Producto</th>
+                    <th class="price-col">Precio</th>
+                    <th class="qty-col">Cant.</th>
+                    <th class="subtotal-col">SubTotal</th>
                 </tr>
             </thead>
             <tbody>
@@ -155,13 +178,18 @@
                                 x {{ $detail->product->category->measure->name }}
                             @endif
                         </td>
-                        <td class="text-right">{{ number_format($detail->quantity, 0, ',', '.') }}</td>
-                        <td class="text-right">{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                        <td class="price-col">{{ number_format($detail->price, 0, ',', '.') }}</td>
+                        <td class="qty-col">{{ number_format($detail->quantity, 0, ',', '.') }}</td>
+                        <td class="subtotal-col">{{ number_format($detail->subtotal, 0, ',', '.') }}</td>
                     </tr>
                 @endforeach
-                <tr class="total-row">
-                    <td colspan="2" class="bold">TOTAL</td>
+                <tr class="total-row total-line">
+                    <td colspan="3" class="bold">TOTAL</td>
                     <td class="text-right bold nowrap">$ {{ number_format($sale->total_value, 0, ',', '.') }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="3" class="bold">Forma de pago</td>
+                    <td class="text-right bold nowrap">{{ $sale->paymentMethod->name ?? 'N/A' }}</td>
                 </tr>
             </tbody>
         </table>

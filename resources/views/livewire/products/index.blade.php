@@ -20,7 +20,9 @@
         </div>
     @endif
 
-    @php($isAdmin = auth()->user()?->isAdmin())
+    @php
+        $isAdmin = auth()->user()?->isAdmin();
+    @endphp
 
     <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
         @if ($isAdmin)
@@ -98,7 +100,38 @@
                 @forelse ($products as $product)
                     <tr>
                         <td class="p-4">{{ $product->name }}</td>
-                        <td class="p-4">{{ $product->stock }} {{ $product->category->measure->name }}</td>
+                        <td class="p-4">
+                            @php
+                                $maxStock = 1000;
+                                $stock = (int) $product->stock;
+                                if ($stock < 0) {
+                                    $stock = 0;
+                                }
+                                $lowThreshold = (int) floor($maxStock * 0.2);   // < 20%
+                                $midThreshold = (int) floor($maxStock * 0.6);   // < 60%
+
+                                if ($stock === 0) {
+                                    $stockBadge = ['label' => 'Stock agotado', 'classes' => 'bg-danger/10 text-danger', 'icon' => true];
+                                } elseif ($stock < $lowThreshold) {
+                                    $stockBadge = ['label' => 'Stock bajo', 'classes' => 'bg-danger/10 text-danger', 'icon' => false];
+                                } elseif ($stock < $midThreshold) {
+                                    $stockBadge = ['label' => 'Reabastecer pronto', 'classes' => 'bg-warning/10 text-warning', 'icon' => false];
+                                } else {
+                                    $stockBadge = ['label' => 'Stock lleno', 'classes' => 'bg-success/10 text-success', 'icon' => false];
+                                }
+                            @endphp
+                            <div class="flex items-center gap-2">
+                                <span>{{ $product->stock }} {{ $product->category->measure->name }}</span>
+                                <span class="inline-flex items-center gap-1.5 rounded-radius px-2 py-1 text-xs font-medium {{ $stockBadge['classes'] }}">
+                                    @if (!empty($stockBadge['icon']))
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01m-6.938 0h13.856c1.54 0 2.502-1.667 1.732-3L13.732 5c-.77-1.333-2.694-1.333-3.464 0L4.34 14c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                    @endif
+                                    {{ $stockBadge['label'] }}
+                                </span>
+                            </div>
+                        </td>
                         <td class="p-4">{{ $product->price }}</td>
                         <td class="p-4">{{ $product->category->name }}</td>
 
@@ -112,11 +145,11 @@
                             <td class="p-4 flex justify-center items-center gap-2">
                                 <a href="{{ route('products.update', $product)}}" wire:navigate>
                                     <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                                            </svg>
-                                            Editar
-                                        </button>
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                                </svg>
+                                                Editar
+                                            </button>
                                 </a>
                                 @if ($product->status)
                                     <button

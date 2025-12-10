@@ -1,43 +1,136 @@
-<div>
-    <div x-data="{modalIsOpen: false}">
-        <button x-on:click="modalIsOpen = true" type="button" class="whitespace-nowrap rounded-radius border border-primary dark:border-primary-dark bg-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark">Open Modal</button>
-        <div x-cloak x-show="modalIsOpen" x-transition.opacity.duration.200ms x-trap.inert.noscroll="modalIsOpen" x-on:keydown.esc.window="modalIsOpen = false" x-on:click.self="modalIsOpen = false" class="fixed inset-0 z-30 flex items-end justify-center bg-black/20 p-4 pb-8 backdrop-blur-md sm:items-center lg:p-8" role="dialog" aria-modal="true" aria-labelledby="defaultModalTitle">
-            <!-- Modal Dialog -->
-            <div x-show="modalIsOpen" x-transition:enter="transition ease-out duration-200 delay-100 motion-reduce:transition-opacity" x-transition:enter-start="opacity-0 scale-50" x-transition:enter-end="opacity-100 scale-100" class="flex max-w-lg flex-col gap-4 overflow-hidden rounded-radius border border-outline bg-surface text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
-                <!-- Dialog Header -->
-                <div class="flex items-center justify-between border-b border-outline bg-surface-alt/60 p-4 dark:border-outline-dark dark:bg-surface-dark/20">
-                    <h3 id="defaultModalTitle" class="font-semibold tracking-wide text-on-surface-strong dark:text-on-surface-dark-strong">Creación de cliente</h3>
-                    <button x-on:click="modalIsOpen = false" aria-label="close modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.4" class="w-5 h-5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-                <!-- Dialog Body -->
-                <x-form.error-alert />
-                <form wire:submit="save" class="space-y-4 max-w-2xl p-4 bg-surface-alt dark:bg-surface-dark-alt rounded-lg shadow-md">
-                    <div class="px-4 py-8"> 
-                        <x-form.input wire:model="identification" label="Identificación" name="identification" placeholder="Documento del cliente"/>
-                        <x-form.input wire:model="name" label="Nombre" name="name" placeholder="Ingresa tu nombre"/>
-                        <x-form.input wire:model="phone_number" label="Teléfono" name="phone_number" placeholder="Teléfono del cliente"/>
-
-                        <div>
-                            <label class="block text-sm font-medium text-on-surface mb-1">Tipo de cliente</label>
-                            <select wire:model="client_type_id" class="w-full rounded-radius border border-outline px-3 py-2 text-sm text-on-surface focus:outline-none">
-                                <option value="">Seleccione...</option>
-
-                            </select>
-                            <x-form.field-error for="client_type_id" />
-                        </div>
-                    </div>
-                    <!-- Dialog Footer -->
-                    <div class="flex flex-col-reverse justify-between gap-2 border-t border-outline bg-surface-alt/60 p-4 dark:border-outline-dark dark:bg-surface-dark/20 sm:flex-row sm:items-center md:justify-end">
-                        <button type="submit" class="whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-primary-dark dark:border-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark">
-                            Crear cliente
-                        </button>    
-                    </div>
-                </form> 
-            </div>
+<div class="flex w-full flex-1 flex-col gap-6 rounded-xl">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex flex-wrap items-center gap-2 text-sm">
+            <label for="monthFilter" class="text-on-surface dark:text-on-surface-dark">Mes</label>
+            <input
+                id="monthFilter"
+                type="month"
+                wire:model.live="month"
+                class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+            >
+        </div>
+        <div class="flex gap-2">
+            <button wire:click="refreshData" class="px-4 py-2 bg-primary text-on-primary rounded-radius border border-primary text-sm font-medium transition hover:opacity-80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary dark:bg-primary-dark dark:text-on-primary-dark dark:border-primary-dark dark:focus-visible:outline-primary-dark">
+                Refrescar datos
+            </button>
         </div>
     </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        @foreach ($summaryCards as $card)
+            <article class="group flex rounded-radius flex-col overflow-hidden border border-outline bg-surface-alt text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
+                <div class="flex flex-col gap-3 p-6">
+                    <h3 class="text-balance text-lg text-center font-semibold text-on-surface-strong dark:text-on-surface-dark-strong">
+                        {{ $card['title'] }}
+                    </h3>
+                    <p class="text-center text-3xl font-bold leading-tight">
+                        {{ $card['value'] }}
+                    </p>
+                    @if (!empty($card['helper']))
+                        <p class="text-center text-xs text-on-surface/70 dark:text-on-surface-dark/70">
+                            {{ $card['helper'] }}
+                        </p>
+                    @endif
+                </div>
+            </article>
+        @endforeach
+    </div>
+
+    <div class="grid gap-4 lg:grid-cols-2">
+        <article class="rounded-radius border border-outline bg-surface-alt text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
+            <header class="border-b border-outline px-4 py-3 text-sm font-semibold dark:border-outline-dark">
+                Ventas por tipo de cliente
+            </header>
+            <div class="p-4">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead class="text-left text-on-surface-strong dark:text-on-surface-dark-strong">
+                            <tr>
+                                <th class="pb-2">Tipo de cliente</th>
+                                <th class="pb-2 text-right">Ventas</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline dark:divide-outline-dark">
+                            @forelse ($salesByClientType as $row)
+                                <tr>
+                                    <td class="py-2 pr-2">{{ $row['name'] }}</td>
+                                    <td class="py-2 pl-2 text-right">{{ $row['total'] ?? 0 }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="py-3 text-center text-xs text-on-surface/70 dark:text-on-surface-dark/70">
+                                        Sin ventas en este mes.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </article>
+
+        <article class="rounded-radius border border-outline bg-surface-alt text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
+            <header class="border-b border-outline px-4 py-3 text-sm font-semibold dark:border-outline-dark">
+                Productos vendidos por categoria
+            </header>
+            <div class="p-4">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead class="text-left text-on-surface-strong dark:text-on-surface-dark-strong">
+                            <tr>
+                                <th class="pb-2">Categoria</th>
+                                <th class="pb-2 text-right">Cantidad</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-outline dark:divide-outline-dark">
+                            @forelse ($salesByCategory as $row)
+                                <tr>
+                                    <td class="py-2 pr-2">{{ $row['name'] }}</td>
+                                    <td class="py-2 pl-2 text-right">{{ $row['total'] ?? 0 }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="2" class="py-3 text-center text-xs text-on-surface/70 dark:text-on-surface-dark/70">
+                                        Sin ventas en este mes.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </article>
+    </div>
+
+    <article class="rounded-radius border border-outline bg-surface-alt text-on-surface dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark">
+        <header class="border-b border-outline px-4 py-3 text-sm font-semibold dark:border-outline-dark">
+            Cantidad de producto entregada por proveedor
+        </header>
+        <div class="p-4">
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead class="text-left text-on-surface-strong dark:text-on-surface-dark-strong">
+                        <tr>
+                            <th class="pb-2">Proveedor</th>
+                            <th class="pb-2 text-right">Cantidad entregada</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline dark:divide-outline-dark">
+                        @forelse ($deliveriesByProvider as $row)
+                            <tr>
+                                <td class="py-2 pr-2">{{ $row['name'] }}</td>
+                                <td class="py-2 pl-2 text-right">{{ $row['total'] ?? 0 }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="2" class="py-3 text-center text-xs text-on-surface/70 dark:text-on-surface-dark/70">
+                                    Sin entregas en este mes.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </article>
 </div>

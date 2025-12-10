@@ -50,8 +50,27 @@
             </select>
         </div>
         <div class="flex flex-col gap-1 text-sm">
-            <label class="text-on-surface dark:text-on-surface-dark">Fecha especifica</label>
-            <input type="date" wire:model.live="filterDate" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+            <label class="text-on-surface dark:text-on-surface-dark">Tipo de filtro</label>
+            <select wire:model.live="filterDateType" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
+                <option value="date">Fecha especifica</option>
+                <option value="month">Mes</option>
+                <option value="year">Ano</option>
+            </select>
+        </div>
+        <div class="flex flex-col gap-1 text-sm" x-data="{ filterType: @entangle('filterDateType') }">
+            <label class="text-on-surface dark:text-on-surface-dark">Valor</label>
+            <input
+                x-bind:type="filterType === 'date' ? 'date' : (filterType === 'month' ? 'month' : 'number')"
+                x-bind:placeholder="filterType === 'year' ? 'YYYY' : ''"
+                x-bind:min="filterType === 'year' ? '1900' : null"
+                x-bind:max="filterType === 'year' ? '2100' : null"
+                x-bind:step="filterType === 'year' ? '1' : null"
+                wire:model.live="filterDate"
+                class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50"
+            >
+            <p class="text-xs text-on-surface/70 dark:text-on-surface-dark/70">
+                Usa fecha exacta, un mes (YYYY-MM) o solo ano.
+            </p>
         </div>
         <div class="flex flex-col gap-1 text-sm">
             <label class="text-on-surface dark:text-on-surface-dark">Metodo de pago</label>

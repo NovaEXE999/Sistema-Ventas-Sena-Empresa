@@ -10,7 +10,7 @@ class UpdateMeasure extends Component
 {
     public ?Measure $measure;
 
-    #[Validate('required|string|max:255')]
+    #[Validate('required|string|max:256|regex:/^[\\p{L}\\s]+$/u')]
     public $name = '';
 
 

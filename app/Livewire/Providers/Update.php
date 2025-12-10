@@ -5,6 +5,7 @@ namespace App\Livewire\Providers;
 use Livewire\Component;
 use App\Models\Provider;
 use App\Models\PersonType;
+use Illuminate\Validation\Rule;
 
 class Update extends Component
 {
@@ -36,9 +37,14 @@ class Update extends Component
     protected function rules(): array
     {
         return [
-            'identification' => ['required', 'digits_between:3,10', 'regex:/^[0-9]+$/'],
-            'name' => ['required', 'max:255', 'regex:/^[\\p{L} ]+$/u'],
-            'phone_number' => ['required', 'regex:/^3\\d{9}$/'],
+            'identification' => [
+                'required',
+                'digits_between:3,10',
+                'regex:/^[0-9]+$/',
+                Rule::unique('providers', 'identification')->ignore($this->provider?->id)
+            ],
+            'name' => ['required', 'max:256', 'regex:/^[\\p{L}\\d\\s\\.]+$/u'],
+            'phone_number' => ['required', 'digits:10', 'regex:/^3\\d{9}$/'],
             'status' => ['boolean'],
             'person_type_id' => ['required', 'exists:person_types,id'],
         ];
@@ -50,8 +56,10 @@ class Update extends Component
             'identification.required' => 'La identificación es obligatoria (3 a 10 dígitos numéricos).',
             'identification.digits_between' => 'La identificación debe tener entre 3 y 10 dígitos.',
             'identification.regex' => 'La identificación solo puede contener números (3 a 10 dígitos).',
-            'name.regex' => 'El nombre solo puede contener letras y espacios.',
+            'identification.unique' => 'Esta identificación ya está registrada.',
+            'name.regex' => 'El nombre solo puede contener letras, espacios y puntos.',
             'phone_number.regex' => 'El teléfono debe iniciar en 3 y tener 10 dígitos.',
+            'phone_number.digits' => 'El teléfono debe tener exactamente 10 dígitos.',
         ];
     }
 

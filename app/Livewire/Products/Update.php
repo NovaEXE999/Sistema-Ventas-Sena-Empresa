@@ -16,9 +16,9 @@ class Update extends Component
     public string $categoryLabel = '';
     public array $categoryResults = [];
 
-    #[Validate('required|string|max:255')]
+    #[Validate('required|string|max:256|regex:/^[\\p{L} ]+$/u')]
     public $name = '';
-    #[Validate('required|integer|min:0|max:1000')]
+    #[Validate('required|integer|min:1|max:1000')]
     public $stock = 0;
     #[Validate('required|numeric|min:0|max:500000|regex:/^\\d{1,6}(\\.\\d{1,2})?$/')]
     public $price = 0;
@@ -63,12 +63,19 @@ class Update extends Component
         $this->categoryResults = [];
     }
 
+    public function hideCategoryResults(): void
+    {
+        $this->categoryResults = [];
+    }
+
     public function update()
     {
         if (! auth()->user()?->isAdmin()) {
             abort(403);
         }
 
+        $this->sanitizeName();
+        $this->sanitizeNumbers();
         $this->validate();
 
         $this->product->update([
@@ -86,6 +93,28 @@ class Update extends Component
 
         session()->flash('success', 'Producto actualizado correctamente.');
         $this->redirectRoute('products.index', navigate:true);
+    }
+
+    private function sanitizeName(): void
+    {
+        $this->name = \Illuminate\Support\Str::of($this->name ?? '')
+            ->squish()
+            ->substr(0, 256)
+            ->toString();
+    }
+
+    private function sanitizeNumbers(): void
+    {
+        $this->stock = max(1, min((int) $this->stock, 1000));
+        $this->price = min(max(0, round((float) $this->price, 2)), 500000);
+    }
+
+    public function messages(): array
+    {
+        return [
+            'category_id.required' => 'La categoría es obligatoria.',
+            'category_id.exists' => 'Selecciona una categoría válida.',
+        ];
     }
 
     public function render()

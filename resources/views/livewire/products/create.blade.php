@@ -21,14 +21,40 @@
             placeholder="Ingresa el nombre del producto"
             pattern="[A-Za-zÀ-ÿ\s]+"
             title="Solo letras y espacios"
-            maxlength="255"
+            maxlength="256"
+            required
             autocomplete="off"
+            x-data
+            x-on:keydown="
+                const allowed = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End','Enter','Escape'];
+                if (allowed.includes($event.key)) { return; }
+                if (($el.value || '').length >= 256) { $event.preventDefault(); return; }
+                if (!/^[A-Za-zÀ-ÿ\s]$/.test($event.key)) { $event.preventDefault(); }
+            "
+            x-on:input="
+                let clean = ($el.value || '').replace(/[^A-Za-zÀ-ÿ\s]/g, '');
+                clean = clean.slice(0, 256);
+                $el.value = clean;
+            "
+            x-on:change="
+                let clean = ($el.value || '').replace(/[^A-Za-zÀ-ÿ\s]/g, '');
+                clean = clean.slice(0, 256);
+                $el.value = clean;
+            "
+            x-on:paste.prevent="
+                let pasted = (event.clipboardData || window.clipboardData).getData('text') || '';
+                pasted = pasted.replace(/[^A-Za-zÀ-ÿ\s]/g, '').slice(0, 256);
+                if (pasted !== '') {
+                    $el.value = pasted;
+                    $el.dispatchEvent(new Event('input'));
+                }
+            "
         />
 
         <x-form.input
             wire:model.lazy="stock"
             type="number"
-            min="0"
+            min="1"
             max="1000"
             step="1"
             inputmode="numeric"
@@ -36,6 +62,48 @@
             label="Stock"
             name="stock"
             placeholder="Ingresa el stock"
+            required
+            x-data
+            x-on:keydown="
+                const allowed = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End','Enter','Escape'];
+                if (allowed.includes($event.key)) { return; }
+                if (!/^[0-9]$/.test($event.key)) { $event.preventDefault(); return; }
+                const selectionStart = $el.selectionStart ?? 0;
+                const selectionEnd = $el.selectionEnd ?? 0;
+                const current = $el.value || '';
+                const nextValue = current.slice(0, selectionStart) + $event.key + current.slice(selectionEnd);
+                const numeric = parseInt(nextValue, 10);
+                if (nextValue.length > 4 || Number.isNaN(numeric) || numeric > 1000) {
+                    $event.preventDefault();
+                }
+            "
+            x-on:input="
+                let val = ($el.value || '').replace(/[^0-9]/g, '').slice(0, 4);
+                if (val === '') { $el.value = ''; return; }
+                let num = parseInt(val, 10);
+                if (Number.isNaN(num) || num < 1) { num = 1; }
+                if (num > 1000) { num = 1000; }
+                $el.value = num;
+            "
+            x-on:change="
+                let val = ($el.value || '').replace(/[^0-9]/g, '').slice(0, 4);
+                if (val === '') { $el.value = ''; return; }
+                let num = parseInt(val, 10);
+                if (Number.isNaN(num) || num < 1) { num = 1; }
+                if (num > 1000) { num = 1000; }
+                $el.value = num;
+            "
+            x-on:paste.prevent="
+                let pasted = (event.clipboardData || window.clipboardData).getData('text') || '';
+                pasted = pasted.replace(/[^0-9]/g, '').slice(0, 4);
+                if (pasted === '') { return; }
+                let num = parseInt(pasted, 10);
+                if (Number.isNaN(num) || num < 1) { num = 1; }
+                if (num > 1000) { num = 1000; }
+                $el.value = num;
+                $el.dispatchEvent(new Event('input'));
+            "
+            maxlength="4"
         />
 
         <x-form.input
@@ -49,6 +117,63 @@
             label="Precio"
             name="price"
             placeholder="Ingresa el precio"
+            required
+            maxlength="9"
+            x-data
+            x-on:keydown="
+                const allowed = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End','Enter','Escape'];
+                if (allowed.includes($event.key)) { return; }
+                if ($event.key === '.' && ($el.value || '').includes('.')) { $event.preventDefault(); return; }
+                if (!/^[0-9.]$/.test($event.key)) { $event.preventDefault(); return; }
+                const [intPart = ''] = ($el.value || '').split('.');
+                if ($event.key !== '.' && !$el.value.includes('.') && intPart.length >= 6) {
+                    $event.preventDefault();
+                }
+            "
+            x-on:input="
+                let val = ($el.value || '').replace(/[^0-9.]/g, '');
+                let [intPart = '', decPart = ''] = val.split('.');
+                intPart = intPart.replace(/^0+(?=\d)/, '').slice(0, 6);
+                decPart = decPart.slice(0, 2);
+                val = decPart ? `${intPart || '0'}.${decPart}` : (intPart || '');
+                let num = parseFloat(val);
+                if (Number.isNaN(num)) { $el.value = ''; return; }
+                if (num > 500000) {
+                    num = 500000;
+                    decPart = '';
+                }
+                const [finalInt, finalDec = ''] = num.toString().split('.');
+                const decimals = decPart !== '' ? decPart : finalDec.slice(0, 2);
+                $el.value = decimals ? `${finalInt}.${decimals}` : finalInt;
+            "
+            x-on:change="
+                let val = ($el.value || '').replace(/[^0-9.]/g, '');
+                let [intPart = '', decPart = ''] = val.split('.');
+                intPart = intPart.replace(/^0+(?=\d)/, '').slice(0, 6);
+                decPart = decPart.slice(0, 2);
+                val = decPart ? `${intPart || '0'}.${decPart}` : (intPart || '');
+                let num = parseFloat(val);
+                if (Number.isNaN(num)) { $el.value = ''; return; }
+                if (num > 500000) { num = 500000; }
+                const [finalInt, finalDec = ''] = num.toString().split('.');
+                const decimals = decPart !== '' ? decPart : finalDec.slice(0, 2);
+                $el.value = decimals ? `${finalInt}.${decimals}` : finalInt;
+            "
+            x-on:paste.prevent="
+                let pasted = (event.clipboardData || window.clipboardData).getData('text') || '';
+                pasted = pasted.replace(/[^0-9.]/g, '');
+                let [intPart = '', decPart = ''] = pasted.split('.');
+                intPart = intPart.replace(/^0+(?=\d)/, '').slice(0, 6);
+                decPart = decPart.slice(0, 2);
+                let sanitized = decPart ? `${intPart || '0'}.${decPart}` : (intPart || '');
+                let num = parseFloat(sanitized);
+                if (Number.isNaN(num)) { sanitized = ''; }
+                if (num > 500000) { sanitized = '500000'; }
+                if (sanitized !== '') {
+                    $el.value = sanitized;
+                    $el.dispatchEvent(new Event('input'));
+                }
+            "
         />
 
         {{-- Categoría --}}
@@ -56,7 +181,7 @@
             <x-form.input wire:model.live.debounce.300ms="categorySearch"
                           wire:blur="hideCategoryResults"
                           autocomplete="off"
-                          label="Categoría" name="categorySearch" placeholder="Escribe para buscar..." />
+                          label="Categoría" name="categorySearch" placeholder="Escribe para buscar..." required />
             @if($categoryResults)
                 <ul class="border rounded shadow-sm bg-white text-gray-900 max-h-48 overflow-y-auto">
                     @foreach($categoryResults as $cat)

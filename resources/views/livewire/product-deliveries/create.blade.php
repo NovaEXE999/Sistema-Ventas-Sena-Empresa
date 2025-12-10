@@ -23,13 +23,18 @@
                 <x-form.input wire:model.live.debounce.300ms="providerSearch"
                               wire:blur="ensureProviderSelected"
                               autocomplete="off"
-                              label="Proveedor" name="providerSearch" placeholder="Busca proveedor activo..." />
+                              label="Proveedor" name="providerSearch" placeholder="Busca proveedor por nombre o identificación..." />
                 @if($providerResults)
                     <ul class="border rounded shadow-sm bg-white text-gray-900 max-h-48 overflow-y-auto">
                         @foreach($providerResults as $prov)
                             <li wire:mousedown.prevent="selectProvider({{ $prov['id'] }}, @js($prov['name']))"
                                 class="px-3 py-2 hover:bg-gray-100 cursor-pointer">
-                                {{ $prov['name'] }}
+                                <div class="flex flex-col">
+                                    <span class="font-medium">{{ $prov['name'] }}</span>
+                                    @if(!empty($prov['identification']))
+                                        <span class="text-xs text-gray-600">ID: {{ $prov['identification'] }}</span>
+                                    @endif
+                                </div>
                             </li>
                         @endforeach
                     </ul>
@@ -56,9 +61,54 @@
                         </ul>
                     @endif
                 </div>
-                <div>
-                    <x-form.input wire:model="productQuantity" type="number" min="1" step="1" inputmode="numeric" pattern="\d+"
-                                  label="Cantidad" name="productQuantity" placeholder="0" />
+                <div x-data>
+                    <x-form.input wire:model="productQuantity"
+                                  type="number"
+                                  min="1"
+                                  max="1000"
+                                  step="1"
+                                  inputmode="numeric"
+                                  pattern="[0-9]*"
+                                  x-on:keydown="
+                                      const allowed = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End','Enter'];
+                                      if (!allowed.includes($event.key) && !/^[0-9]$/.test($event.key)) {
+                                          $event.preventDefault();
+                                      }
+                                  "
+                                  x-on:input="
+                                      let val = ($el.value || '').replace(/[^0-9]/g, '');
+                                      val = val.slice(0, 4);
+                                      if (val === '') {
+                                          $el.value = '';
+                                          return;
+                                      }
+                                      let num = parseInt(val, 10);
+                                      if (Number.isNaN(num) || num < 1) {
+                                          $el.value = '';
+                                          return;
+                                      }
+                                      if (num > 1000) {
+                                          num = 1000;
+                                      }
+                                      $el.value = num;
+                                  "
+                                  x-on:paste.prevent="
+                                      let pasted = (event.clipboardData || window.clipboardData).getData('text');
+                                      pasted = pasted.replace(/[^0-9]/g, '').slice(0,4);
+                                      if (pasted === '') {
+                                          return;
+                                      }
+                                      let num = parseInt(pasted, 10);
+                                      if (Number.isNaN(num) || num < 1) {
+                                          num = 1;
+                                      } else if (num > 1000) {
+                                          num = 1000;
+                                      }
+                                      $el.value = num;
+                                      $el.dispatchEvent(new Event('input'));
+                                  "
+                                  maxlength="4"
+                                  label="Cantidad" name="productQuantity" placeholder="1 - 1000" />
                 </div>
                 <button type="button" wire:click="addProductLine" class="h-10 self-end whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-sm font-medium tracking-wide text-on-primary transition hover:opacity-90">
                     Insertar
