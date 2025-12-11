@@ -28,7 +28,7 @@ class Create extends Component
         return [
             'identification' => ['required', 'digits_between:3,10', 'regex:/^[0-9]+$/', Rule::unique('providers', 'identification')],
             'name' => ['required', 'max:256', 'regex:/^[\\p{L}\\d\\s\\.]+$/u'],
-            'phone_number' => ['required', 'digits:10', 'regex:/^3\\d{9}$/'],
+            'phone_number' => ['required', 'digits:10', 'regex:/^3\\d{9}$/', Rule::unique('providers', 'phone_number')],
             'person_type_id' => ['required', 'exists:person_types,id'],
         ];
     }
@@ -43,6 +43,7 @@ class Create extends Component
             'name.regex' => 'El nombre solo puede contener letras, espacios y puntos.',
             'phone_number.regex' => 'El teléfono debe iniciar en 3 y tener 10 dígitos.',
             'phone_number.digits' => 'El teléfono debe tener exactamente 10 dígitos.',
+            'phone_number.unique' => 'Este teléfono ya está registrada.',
         ];
     }
 

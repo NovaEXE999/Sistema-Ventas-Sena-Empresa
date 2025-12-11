@@ -4,15 +4,28 @@ namespace App\Livewire\CategoriesAndMeasures;
 
 use App\Models\Measure;
 use Livewire\Attributes\Validate;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class UpdateMeasure extends Component
 {
     public ?Measure $measure;
 
-    #[Validate('required|string|max:256|regex:/^[\\p{L}\\s]+$/u')]
     public $name = '';
+    public $status = true;
 
+    protected function rules(): array
+    {
+        return [
+            'name' => [
+                'required',
+                'max:256',
+                'regex:/^[\\p{L} ]+$/u',
+                Rule::unique('measures', 'name')->ignore($this->measure?->id),
+            ],
+            'status' => ['boolean'],
+        ];
+    }
 
     public function mount(Measure $measure)
     {

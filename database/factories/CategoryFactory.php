@@ -17,7 +17,7 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $opCategories = ['Huevos', 'Verduras', 'Mekatos', 'Entretenimiento', 'Deportes', 'Carnes Frias', 'Lacteos'];
+        $opCategories = ['Huevos', 'Verduras', 'Frutas', 'Pescado y Mariscos', 'Carnes Frias'];
         $measureId = Measure::query()->inRandomOrder()->value('id') ?? Measure::factory();
 
         return [

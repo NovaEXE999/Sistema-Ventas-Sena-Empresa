@@ -7,7 +7,7 @@
             Volver
         </a>
         <h1 class="p-4 text-center">
-            GestiÇün de tipos de persona
+            Gestión de tipos de persona
         </h1>
     </div>
     <x-form.error-alert />

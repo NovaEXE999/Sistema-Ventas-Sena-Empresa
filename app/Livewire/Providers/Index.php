@@ -66,7 +66,8 @@ class Index extends Component
             $term = trim($this->search);
             $providersQuery->where(function ($query) use ($term) {
                 $query->where('name', 'like', "%{$term}%")
-                    ->orWhere('identification', 'like', "%{$term}%");
+                    ->orWhere('identification', 'like', "%{$term}%")
+                    ->orWhere('phone_number', 'like', "%{$term}%");
             });
         }
 

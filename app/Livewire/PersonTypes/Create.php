@@ -5,12 +5,18 @@ namespace App\Livewire\PersonTypes;
 use Livewire\Component;
 use Livewire\Attributes\Validate;
 use App\Models\PersonType;
+use Illuminate\Validation\Rule;
 
 class Create extends Component
 {
-    #[Validate('required|string|max:256|regex:/^[\\pL\\s]+$/u')]
     public $name = '';
 
+    protected function rules(): array
+    {
+        return [
+            'name' => ['required', 'max:256', 'regex:/^[\\p{L} ]+$/u', Rule::unique('person_types', 'name')],
+        ];
+    }
     public function save(){
         $this->validate();
 

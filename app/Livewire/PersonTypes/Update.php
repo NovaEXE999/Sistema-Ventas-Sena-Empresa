@@ -3,6 +3,7 @@
 namespace App\Livewire\PersonTypes;
 
 use Livewire\Component;
+use Illuminate\Validation\Rule;
 use App\Models\PersonType;
 use Livewire\Attributes\Validate;
 
@@ -10,8 +11,19 @@ class Update extends Component
 {
     public ?PersonType $persontype;
 
-    #[Validate('required|string|max:256|regex:/^[\\pL\\s]+$/u')]
     public $name = '';
+
+    protected function rules(): array
+    {
+        return [
+            'name' => [
+                'required',
+                'max:256',
+                'regex:/^[\\p{L} ]+$/u',
+                Rule::unique('person_types', 'name')->ignore($this->persontype?->id),
+            ],
+        ];
+    }
 
     public function mount(PersonType $persontype): void
     {

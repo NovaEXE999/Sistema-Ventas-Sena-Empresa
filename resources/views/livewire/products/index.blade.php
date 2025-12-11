@@ -1,20 +1,36 @@
-<div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
+<div class="products-scope flex h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 sm:p-6">
+        @include('partials.sena-ui')
+
     @if (session('success'))
-        <div x-data="{ alertIsVisible: true }" x-show="alertIsVisible" class="relative w-full overflow-hidden rounded-radius border border-success bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark" role="alert" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90">
-            <div class="flex w-full items-center gap-2 bg-success/10 p-4">
-                <div class="bg-success/15 text-success rounded-full p-1" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6" aria-hidden="true">
+        <div
+            x-data="{ alertIsVisible: true }"
+            x-show="alertIsVisible"
+            class="products-alert"
+            role="alert"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-90"
+        >
+            <div class="products-alert-header">
+                <div class="products-alert-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <div class="ml-2">
-                    <h3 class="text-sm font-semibold text-success">Mensajes de producto</h3>
-                    <p class="text-xs font-medium sm:text-sm">{{ session('success') }}</p>
+                <div class="flex flex-col gap-0.5">
+                    <h3 class="products-alert-title">Mensajes de producto</h3>
+                    <p class="products-alert-text">{{ session('success') }}</p>
                 </div>
-                <button type="button" @click="alertIsVisible = false" class="ml-auto" aria-label="dismiss alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2.5" class="w-4 h-4 shrink-0">
+                <button
+                    type="button"
+                    @click="alertIsVisible = false"
+                    class="ml-auto btn-secondary"
+                    aria-label="dismiss alert"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2" class="w-4 h-4 shrink-0">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
+                    Cerrar
                 </button>
             </div>
         </div>
@@ -24,20 +40,24 @@
         $isAdmin = auth()->user()?->isAdmin();
     @endphp
 
-    <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         @if ($isAdmin)
-            <a href="{{ route('products.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
+            <a href="{{ route('products.create') }}" wire:navigate class="btn-primary" role="button">
                 Registrar un producto
             </a>
         @endif
-        <div class="relative flex w-full max-w-xs flex-col gap-1 text-on-surface dark:text-on-surface-dark">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="absolute left-2.5 top-1/2 size-5 -translate-y-1/2 text-on-surface/50 dark:text-on-surface-dark/50">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>
+
+        {{-- BUSCADOR CON ESTILO TIPO BADGE --}}
+        <div class="products-search-wrapper w-full max-w-xs">
+            <span class="products-search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="h-5 w-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+            </span>
             <input
                 type="search"
                 wire:model.live.debounce.300ms="search"
-                class="w-full rounded-radius border border-outline bg-surface-alt py-2 pl-10 pr-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed disabled:opacity-75 dark:border-outline-dark dark:bg-surface-dark-alt/50 dark:focus-visible:outline-primary-dark"
+                class="products-input products-search-input w-full"
                 name="search"
                 placeholder="Buscar producto..."
                 aria-label="search"
@@ -45,84 +65,94 @@
         </div>
     </div>
 
-    <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+    {{-- FILTROS: Orden / Stock / Estado / Categoría con el mismo lenguaje visual --}}
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div class="flex flex-col gap-1 text-sm">
-            <label class="text-on-surface dark:text-on-surface-dark">Orden</label>
-            <select wire:model.live="order" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
-                <option value="created_desc">Creacion: nuevo a antiguo</option>
-                <option value="created_asc">Creacion: antiguo a nuevo</option>
-                <option value="name_asc">Nombre: A a Z</option>
-            </select>
+            <label class="products-label">Orden</label>
+            <div class="products-select-wrapper">
+                <select wire:model.live="order" class="products-select w-full">
+                    <option value="created_desc">Creación: nuevo a antiguo</option>
+                    <option value="created_asc">Creación: antiguo a nuevo</option>
+                    <option value="name_asc">Nombre: A a Z</option>
+                </select>
+            </div>
         </div>
         <div class="flex flex-col gap-1 text-sm">
-            <label class="text-on-surface dark:text-on-surface-dark">Stock</label>
-            <select wire:model.live="stockOrder" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
-                <option value="none">Sin ordenar por stock</option>
-                <option value="stock_desc">Stock: mas a menos</option>
-                <option value="stock_asc">Stock: menos a mas</option>
-            </select>
+            <label class="products-label">Stock</label>
+            <div class="products-select-wrapper">
+                <select wire:model.live="stockOrder" class="products-select w-full">
+                    <option value="none">Sin ordenar por stock</option>
+                    <option value="stock_desc">Stock: más a menos</option>
+                    <option value="stock_asc">Stock: menos a más</option>
+                </select>
+            </div>
         </div>
         <div class="flex flex-col gap-1 text-sm">
-            <label class="text-on-surface dark:text-on-surface-dark">Estado</label>
-            <select wire:model.live="status" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
-                <option value="all">Todos</option>
-                <option value="active">Activos</option>
-                <option value="inactive">Inactivos</option>
-            </select>
+            <label class="products-label">Estado</label>
+            <div class="products-select-wrapper">
+                <select wire:model.live="status" class="products-select w-full">
+                    <option value="all">Todos</option>
+                    <option value="active">Activos</option>
+                    <option value="inactive">Inactivos</option>
+                </select>
+            </div>
         </div>
         <div class="flex flex-col gap-1 text-sm">
-            <label class="text-on-surface dark:text-on-surface-dark">Categoria</label>
-            <select wire:model.live="category" class="rounded-radius border border-outline bg-surface-alt px-3 py-2 text-sm dark:border-outline-dark dark:bg-surface-dark-alt/50">
-                <option value="all">Todas</option>
-                @foreach($categories as $cat)
-                    <option value="{{ $cat['id'] }}">{{ $cat['name'] }}</option>
-                @endforeach
-            </select>
+            <label class="products-label">Categoría</label>
+            <div class="products-select-wrapper">
+                <select wire:model.live="category" class="products-select w-full">
+                    <option value="all">Todas</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat['id'] }}">{{ $cat['name'] }}</option>
+                    @endforeach
+                </select>
+            </div>
         </div>
     </div>
 
-    <div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
-        <h2 class="text-center p-4">Productos</h2>
-        <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
-            <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
+    <div class="products-table-wrapper w-full mt-2">
+        <h2 class="products-table-title">Productos</h2>
+
+        <table class="products-table">
+            <thead>
                 <tr>
-                    <th scope="col" class="p-4">Nombre</th>
-                    <th scope="col" class="p-4">Stock</th>
-                    <th scope="col" class="p-4">Precio</th>
-                    <th scope="col" class="p-4">Categoria</th>
-                    <th scope="col" class="p-4">Estado</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Categoría</th>
+                    <th scope="col">Estado</th>
                     @if ($isAdmin)
-                        <th scope="col" class="p-4 text-center">Acciones</th>
+                        <th scope="col" class="text-center">Acciones</th>
                     @endif
                 </tr>
             </thead>
-            <tbody class="divide-y divide-outline dark:divide-outline-dark">
+            <tbody>
                 @forelse ($products as $product)
                     <tr>
-                        <td class="p-4">{{ $product->name }}</td>
-                        <td class="p-4">
+                        <td>{{ $product->name }}</td>
+                        <td>
                             @php
                                 $maxStock = 1000;
                                 $stock = (int) $product->stock;
                                 if ($stock < 0) {
                                     $stock = 0;
                                 }
-                                $lowThreshold = (int) floor($maxStock * 0.2);   // < 20%
-                                $midThreshold = (int) floor($maxStock * 0.6);   // < 60%
+                                $lowThreshold = (int) floor($maxStock * 0.2);
+                                $midThreshold = (int) floor($maxStock * 0.6);
 
                                 if ($stock === 0) {
-                                    $stockBadge = ['label' => 'Stock agotado', 'classes' => 'bg-danger/10 text-danger', 'icon' => true];
+                                    $stockBadge = ['label' => 'Stock agotado', 'classes' => 'badge badge-stock-error', 'icon' => true];
                                 } elseif ($stock < $lowThreshold) {
-                                    $stockBadge = ['label' => 'Stock bajo', 'classes' => 'bg-danger/10 text-danger', 'icon' => false];
+                                    $stockBadge = ['label' => 'Stock bajo', 'classes' => 'badge badge-stock-error', 'icon' => false];
                                 } elseif ($stock < $midThreshold) {
-                                    $stockBadge = ['label' => 'Reabastecer pronto', 'classes' => 'bg-warning/10 text-warning', 'icon' => false];
+                                    $stockBadge = ['label' => 'Reabastecer pronto', 'classes' => 'badge badge-stock-warning', 'icon' => false];
                                 } else {
-                                    $stockBadge = ['label' => 'Stock lleno', 'classes' => 'bg-success/10 text-success', 'icon' => false];
+                                    $stockBadge = ['label' => 'Stock lleno', 'classes' => 'badge badge-stock-success', 'icon' => false];
                                 }
                             @endphp
                             <div class="flex items-center gap-2">
-                                <span>{{ $product->stock }} {{ $product->category->measure->name }}</span>
-                                <span class="inline-flex items-center gap-1.5 rounded-radius px-2 py-1 text-xs font-medium {{ $stockBadge['classes'] }}">
+                                <span class="text-sm">{{ $product->stock }} {{ $product->category->measure->name }}</span>
+                                <span class="{{ $stockBadge['classes'] }}">
                                     @if (!empty($stockBadge['icon']))
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01m-6.938 0h13.856c1.54 0 2.502-1.667 1.732-3L13.732 5c-.77-1.333-2.694-1.333-3.464 0L4.34 14c-.77 1.333.192 3 1.732 3z" />
@@ -132,62 +162,68 @@
                                 </span>
                             </div>
                         </td>
-                        <td class="p-4">{{ $product->price }}</td>
-                        <td class="p-4">{{ $product->category->name }}</td>
+                        <td>{{ $product->price }}</td>
+                        <td>{{ $product->category->name }}</td>
 
-                        <td class="p-4">
-                            <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium {{ $product->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
+                        <td>
+                            <span class="badge {{ $product->status ? 'badge-status-active' : 'badge-status-inactive' }}">
                                 {{ $product->status ? 'Activo' : 'Inactivo' }}
                             </span>
                         </td>
 
                         @if ($isAdmin)
-                            <td class="p-4 flex justify-center items-center gap-2">
-                                <a href="{{ route('products.update', $product)}}" wire:navigate>
-                                    <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                                                </svg>
-                                                Editar
-                                            </button>
-                                </a>
-                                @if ($product->status)
-                                    <button
-                                        wire:click="toggleStatus({{ $product->id }})"
-                                        wire:confirm="¿Estás seguro de inhabilitar el producto {{ $product->name }}?"
-                                        type="button"
-                                        class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                        </svg>
-                                        Inhabilitar
-                                    </button>
-                                @else
-                                    <button
-                                        wire:click="toggleStatus({{ $product->id }})"
-                                        wire:confirm="¿Estás seguro de habilitar al producto {{ $product->name }}?"
-                                        type="button"
-                                        class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
-                                        </svg>
-                                        Habilitar
-                                    </button>
-                                @endif
+                            <td class="text-center">
+                                <div class="flex justify-center items-center gap-2">
+                                    <a href="{{ route('products.update', $product)}}" wire:navigate>
+                                        <button type="button" class="btn-secondary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                            </svg>
+                                            Editar
+                                        </button>
+                                    </a>
+                                    @if ($product->status)
+                                        <button
+                                            wire:click="toggleStatus({{ $product->id }})"
+                                            wire:confirm="¿Estás seguro de inhabilitar el producto {{ $product->name }}?"
+                                            type="button"
+                                            class="btn-danger"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                            </svg>
+                                            Inhabilitar
+                                        </button>
+                                    @else
+                                        <button
+                                            wire:click="toggleStatus({{ $product->id }})"
+                                            wire:confirm="¿Estás seguro de habilitar al producto {{ $product->name }}?"
+                                            type="button"
+                                            class="btn-success"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                                            </svg>
+                                            Habilitar
+                                        </button>
+                                    @endif
+                                </div>
                             </td>
                         @endif
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="{{ $isAdmin ? 6 : 5 }}">No hay productos registrados.</td>
+                        <td colspan="{{ $isAdmin ? 6 : 5 }}" class="products-muted text-center py-4">
+                            No hay productos registrados.
+                        </td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
+
         <div class="p-4">
             {{ $products->links() }}
         </div>
     </div>
 </div>
+

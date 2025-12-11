@@ -96,12 +96,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('productdeliveries/create', ProductDeliveriesCreate::class)->name('productdeliveries.create');
     Route::get('productdeliveries/{delivery}/reports/pdf', [ProductDeliveriesReport::class, 'pdf'])->name('productdeliveries.reports.pdf');
     Route::get('productdeliveries/{delivery}/reports/download', [ProductDeliveriesReport::class, 'download'])->name('productdeliveries.reports.download');
-    Route::get('categoriesandmeasures', CategoriesAndMeasuresIndex::class)->name('categoriesandmeasures.index');
-    Route::get('paymentmethods', PaymentMethodsIndex::class)->name('paymentmethods.index');
-    Route::get('clienttypes', ClientTypesIndex::class)->name('clienttypes.index');
-    Route::get('persontypes', PersonTypesIndex::class)->name('persontypes.index');
 
     Route::middleware('role:Administrador')->group(function () {
+        Route::get('categoriesandmeasures', CategoriesAndMeasuresIndex::class)->name('categoriesandmeasures.index');
+        Route::get('paymentmethods', PaymentMethodsIndex::class)->name('paymentmethods.index');
+        Route::get('clienttypes', ClientTypesIndex::class)->name('clienttypes.index');
+        Route::get('persontypes', PersonTypesIndex::class)->name('persontypes.index');
+
         Route::get('products/create', ProductsCreate::class)->name('products.create');
         Route::get('products/{product}/update', ProductsUpdate::class)->name('products.update');
 

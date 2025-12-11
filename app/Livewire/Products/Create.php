@@ -33,8 +33,8 @@ class Create extends Component
                     fn ($query) => $query->whereRaw('LOWER(name) = ?', [$normalizedName])
                 ),
             ],
-            'stock' => ['required', 'integer', 'min:1', 'max:1000'],
-            'price' => ['required', 'numeric', 'regex:/^\\d{1,6}(\\.\\d{1,2})?$/', 'min:0', 'max:500000'],
+            'stock' => ['required', 'integer', 'min:0', 'max:1000'],
+            'price' => ['required', 'numeric', 'regex:/^\\d{1,6}(\\.\\d{1,2})?$/', 'min:500', 'max:500000'],
             'category_id' => ['required', 'exists:categories,id'],
         ];
     }
@@ -97,7 +97,7 @@ class Create extends Component
 
     private function sanitizeNumbers(): void
     {
-        $this->stock = max(1, min((int) $this->stock, 1000));
+        $this->stock = max(0, min((int) $this->stock, 1000));
         $this->price = min(max(0, round((float) $this->price, 2)), 500000);
     }
 

@@ -28,19 +28,19 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Factories (10 registros por tabla, ordenados para evitar FK)
-        Role::factory(10)->create();
+        /* Role::factory(10)->create();
         User::factory(10)->create();
         PersonType::factory(10)->create();
-        ClientType::factory(10)->create();
+        ClientType::factory(10)->create(); */
         /* Measure::factory(10)->create(); */
         /* Category::factory(10)->create(); */
-        PaymentMethod::factory(10)->create();
+        /* PaymentMethod::factory(10)->create();
         Provider::factory(10)->create();
         Client::factory(10)->create();
         Product::factory(10)->create();
         ProductDelivery::factory(10)->create();
         Sale::factory(10)->create();
-        SaleDetail::factory(10)->create();
+        SaleDetail::factory(10)->create(); */
 
         $this->call([
             RoleSeeder::class,
@@ -53,8 +53,6 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             ProductDeliverySeeder::class,   
             PaymentMethodSeeder::class,
-            SaleSeeder::class,
-            SaleDetailSeeder::class,
         ]);
 
         // Usuario administrador predeterminado
@@ -62,8 +60,12 @@ class DatabaseSeeder extends Seeder
             'name' => 'Administrador',
             'status' => true,
         ]);
+        $vendorRole = Role::firstWhere('name', 'Vendedor') ?? Role::create([
+            'name' => 'Vendedor',
+            'status' => true,
+        ]);
 
-        User::updateOrCreate(
+        $adminUser = User::updateOrCreate(
             ['email' => 'admin@gmail.com'],
             [
                 'identification' => '1234567890',
@@ -74,5 +76,21 @@ class DatabaseSeeder extends Seeder
                 'password' => Hash::make('admin1234'),
             ]
         );
+        $vendorUser = User::updateOrCreate(
+            ['email' => 'vendedor@gmail.com'],
+            [
+                'identification' => '0123456789',
+                'name' => 'vendedor',
+                'phone_number' => '3123456789',
+                'status' => true,
+                'role_id' => $vendorRole->id,
+                'password' => Hash::make('vendedor1234'),
+            ]
+        );
+
+        $this->call([
+            SaleSeeder::class,
+            SaleDetailSeeder::class,
+        ]);
     }
 }

@@ -5,13 +5,25 @@ namespace App\Livewire\PaymentMethods;
 use App\Models\PaymentMethod;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Illuminate\Validation\Rule;
 
 class Update extends Component
 {
     public ?PaymentMethod $payment;
 
-    #[Validate('required|string|max:256|regex:/^[\\pL\\s]+$/u')]
     public $name = '';
+
+    protected function rules(): array
+    {
+        return [
+            'name' => [
+                'required',
+                'max:256',
+                'regex:/^[\\p{L} ]+$/u',
+                Rule::unique('payment_methods', 'name')->ignore($this->payment?->id),
+            ],
+        ];
+    }
 
     public function mount(PaymentMethod $payment){
         $this->setPaymentMethod($payment);

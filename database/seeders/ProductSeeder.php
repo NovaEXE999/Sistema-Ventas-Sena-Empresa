@@ -14,10 +14,13 @@ class ProductSeeder extends Seeder
     public function run(): void
     {
         $products = [
-            ['name' => 'Jabon', 'stock' => 200, 'price' => 9000.00, 'status' => true, 'category_id' => 1],
-            ['name' => 'Detergente', 'stock' => 150, 'price' => 12000.00, 'status' => true, 'category_id' => 1],
-            ['name' => 'Arroz 500g', 'stock' => 300, 'price' => 3500.00, 'status' => true, 'category_id' => 2],
-            ['name' => 'Gaseosa 1.5Lt', 'stock' => 80, 'price' => 4500.00, 'status' => true, 'category_id' => 3],
+            ['name' => 'Huevos A', 'stock' => 100, 'price' => 8000.00, 'status' => true, 'category_id' => 1],
+            ['name' => 'Huevos AA', 'stock' => 75, 'price' => 9500.00, 'status' => true, 'category_id' => 1],
+            ['name' => 'Huevos AAA', 'stock' => 50, 'price' => 11000.00, 'status' => true, 'category_id' => 1],
+            ['name' => 'Platano', 'stock' => 80, 'price' => 1000.00, 'status' => true, 'category_id' => 2],
+            ['name' => 'Manzanas', 'stock' => 100, 'price' => 12000.00, 'status' => true, 'category_id' => 3],
+            ['name' => 'Bagre', 'stock' => 20, 'price' => 23000.00, 'status' => true, 'category_id' => 4],
+            ['name' => 'Carne de cerdo', 'stock' => 20, 'price' => 15000.00, 'status' => true, 'category_id' => 5],
         ];
 
         foreach ($products as $product) {

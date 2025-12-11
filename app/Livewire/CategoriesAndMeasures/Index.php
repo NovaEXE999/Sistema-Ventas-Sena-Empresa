@@ -11,9 +11,13 @@ class Index extends Component
 {
     use WithPagination;
 
-    public function mount(){
-        $category = Category::with(['measure'])->get();
+    public function mount(): void
+    {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
     }
+
     public function toggleCategoryStatus(Category $category)
     {
         if (! auth()->user()?->isAdmin()) {

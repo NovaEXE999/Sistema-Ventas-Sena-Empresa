@@ -33,7 +33,7 @@
 
     <div class="flex h-full w-full flex-1 flex-row gap-4 rounded-xl">
         <div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
-            <h2 class="text-center p-4">GestiИn de tipos de cliente</h2>
+            <h2 class="text-center p-4">Gestión de tipos de cliente</h2>
             <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
                 <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
                     <tr>

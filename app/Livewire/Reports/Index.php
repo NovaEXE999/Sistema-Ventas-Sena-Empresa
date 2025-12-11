@@ -47,7 +47,7 @@ class Index extends Component
         $start = $period->copy()->startOfMonth();
         $end = $period->copy()->endOfMonth();
 
-        $this->totalProducts = Product::count();
+        $this->totalProducts = Product::whereBetween('created_at', [$start, $end])->count();
 
         $monthlySalesQuery = Sale::whereBetween('date', [$start, $end]);
         $saleDetailsQuery = SaleDetail::whereHas('sale', function ($query) use ($start, $end) {
@@ -153,9 +153,10 @@ class Index extends Component
             [
                 'title' => 'Productos registrados',
                 'value' => $this->totalProducts,
-                'helper' => 'Total en catálogo',
+                'helper' => 'Registrados en el periodo',
             ],
         ];
+
     }
 
     private function resolveMonth(): Carbon

@@ -5,7 +5,9 @@ namespace App\Livewire\Products;
 use App\Models\Product;
 use App\Models\Category;
 use Livewire\Attributes\Validate;
+use Illuminate\Support\Str;
 use Livewire\Component;
+use Illuminate\Validation\Rule;
 
 class Update extends Component
 {
@@ -16,16 +18,30 @@ class Update extends Component
     public string $categoryLabel = '';
     public array $categoryResults = [];
 
-    #[Validate('required|string|max:256|regex:/^[\\p{L} ]+$/u')]
-    public $name = '';
-    #[Validate('required|integer|min:1|max:1000')]
-    public $stock = 0;
-    #[Validate('required|numeric|min:0|max:500000|regex:/^\\d{1,6}(\\.\\d{1,2})?$/')]
-    public $price = 0;
-    #[Validate('required|exists:categories,id')]
-    public $category_id = null;
-    #[Validate('boolean')]
     public $status = true;
+    public $name = '';
+    public $stock = 0;
+    public $price = 0;
+    public $category_id = null;
+
+    protected function rules(): array
+    {
+        $normalizedName = Str::of($this->name ?? '')->squish()->lower()->toString();
+
+        return [
+            'name' => [
+                'required',
+                'max:256',
+                'regex:/^[\\p{L} ]+$/u',
+                Rule::unique('products', 'name')->where(
+                    fn ($query) => $query->whereRaw('LOWER(name) = ?', [$normalizedName])
+                )->ignore($this->product?->id),
+            ],
+            'stock' => ['required', 'integer', 'min:0', 'max:1000'],
+            'price' => ['required', 'numeric', 'regex:/^\\d{1,6}(\\.\\d{1,2})?$/', 'min:500', 'max:500000'],
+            'category_id' => ['required', 'exists:categories,id'],
+        ];
+    }
 
     public function mount(Product $product)
     {

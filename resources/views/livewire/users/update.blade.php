@@ -12,7 +12,7 @@
         <flux:input
             wire:model.live="identification"
             name="identification"
-            :label="__('Identification')"
+            :label="__('Identificación')"
             type="text"
             disabled
             autocomplete="off"
@@ -22,7 +22,7 @@
         <flux:input
             wire:model.live="name"
             name="name"
-            :label="__('Name')"
+            :label="__('Nombre')"
             type="text"
             disabled
             autocomplete="off"
@@ -32,7 +32,7 @@
         <flux:input
             wire:model.live="email"
             name="email"
-            :label="__('Email address')"
+            :label="__('Dirección de correo electrónico')"
             type="email"
             disabled
             autocomplete="off"
@@ -42,7 +42,7 @@
         <flux:input
             wire:model.live="phone_number"
             name="phone_number"
-            :label="__('Phone number')"
+            :label="__('Número telefónico')"
             type="tel"
             disabled
             autocomplete="off"
@@ -50,7 +50,7 @@
         />
 
         <div class="flex flex-col gap-1">
-            <label class="text-sm font-medium text-zinc-700 dark:text-zinc-200">{{ __('Role') }}</label>
+            <label class="text-sm font-medium text-zinc-700 dark:text-zinc-200">{{ __('Rol') }}</label>
             <select
                 wire:model.live="role_id"
                 name="role_id"

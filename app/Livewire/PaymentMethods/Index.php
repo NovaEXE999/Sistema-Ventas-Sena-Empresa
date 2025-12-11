@@ -9,6 +9,14 @@ use App\Models\PaymentMethod;
 class Index extends Component
 {
     use WithPagination;
+
+    public function mount(): void
+    {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+    }
+
     public function toggleStatus(PaymentMethod $payment)
     {
         if (! auth()->user()?->isAdmin()) {

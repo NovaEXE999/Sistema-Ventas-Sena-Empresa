@@ -12,7 +12,7 @@
         <flux:input
             wire:model.live="identification"
             name="identification"
-            :label="__('Identification')"
+            :label="__('Identificación')"
             type="text"
             required
             minlength="3"
@@ -25,14 +25,14 @@
                 if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
             "
             autocomplete="off"
-            :placeholder="__('Identification number')"
+            :placeholder="__('Número de identificación')"
             :error="$errors->first('identification')"
         />
 
         <flux:input
             wire:model.live="name"
             name="name"
-            :label="__('Name')"
+            :label="__('Nombre')"
             type="text"
             required
             maxlength="256"
@@ -44,28 +44,28 @@
                 if (!/^[A-Za-zÀ-ÿ ]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
             "
             autocomplete="name"
-            :placeholder="__('Full name')"
+            :placeholder="__('Nombre completo')"
             :error="$errors->first('name')"
         />
 
         <flux:input
             wire:model.live="email"
             name="email"
-            :label="__('Email address')"
+            :label="__('Dirección de correo electrónico')"
             type="email"
             required
             maxlength="254"
             pattern="^[A-Za-z0-9._%+-]+@(gmail\.com|hotmail\.com|msn\.com|outlook\.com|yahoo\.com|yahoo\.es|icloud\.com|live\.com)$"
             title="Usa un correo de: gmail.com, hotmail.com, msn.com, outlook.com, yahoo.com, yahoo.es, icloud.com o live.com."
             autocomplete="email"
-            placeholder="email@example.com"
+            placeholder="email@ejemplo.com"
             :error="$errors->first('email')"
         />
 
         <flux:input
             wire:model.live="phone_number"
             name="phone_number"
-            :label="__('Phone number')"
+            :label="__('Número telefónico')"
             type="tel"
             required
             minlength="10"
@@ -78,12 +78,12 @@
                 if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
             "
             autocomplete="tel"
-            :placeholder="__('Phone number')"
+            :placeholder="__('Número telefónico')"
             :error="$errors->first('phone_number')"
         />
 
         <div class="flex flex-col gap-1">
-            <label class="text-sm font-medium text-zinc-700 dark:text-zinc-200">{{ __('Role') }}</label>
+            <label class="text-sm font-medium text-zinc-700 dark:text-zinc-200">{{ __('Rol') }}</label>
             <select
                 wire:model.live="role_id"
                 name="role_id"
@@ -94,7 +94,7 @@
                     'border border-danger text-danger focus:border-danger focus:ring-danger/40 dark:border-danger dark:text-danger' => $errors->has('role_id'),
                 ])
             >
-                <option value="">{{ __('Select a role') }}</option>
+                <option value="">{{ __('Selecciona un rol') }}</option>
                 @foreach($roles as $role)
                     <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
                 @endforeach
@@ -112,14 +112,14 @@
         <flux:input
             wire:model.live="password"
             name="password"
-            :label="__('Password')"
+            :label="__('Contraseña')"
             type="password"
             required
             minlength="12"
             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\s]).{12,}$"
             title="Mínimo 12 caracteres, incluye mayúsculas, minúsculas, números y símbolos."
             autocomplete="new-password"
-            :placeholder="__('Password')"
+            :placeholder="__('Contraseña')"
             viewable
             :error="$errors->first('password')"
         />
@@ -127,21 +127,21 @@
         <flux:input
             wire:model.live="password_confirmation"
             name="password_confirmation"
-            :label="__('Confirm password')"
+            :label="__('Confirmar contraseña')"
             type="password"
             required
             minlength="12"
             pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\s]).{12,}$"
             title="Mínimo 12 caracteres, incluye mayúsculas, minúsculas, números y símbolos."
             autocomplete="new-password"
-            :placeholder="__('Confirm password')"
+            :placeholder="__('Confirmar contraseña')"
             viewable
             :error="$errors->first('password_confirmation')"
         />
 
         <div class="flex items-center justify-end">
             <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Create account') }}
+                {{ __('Crear usuario') }}
             </flux:button>
         </div>
     </form>

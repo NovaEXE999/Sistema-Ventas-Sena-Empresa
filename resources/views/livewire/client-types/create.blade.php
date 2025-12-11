@@ -7,7 +7,7 @@
             Volver
         </a>
         <h1 class="p-4 text-center">
-            GestiÇün de tipos de cliente
+            Gestión de tipos de cliente
         </h1>
     </div>
     <x-form.error-alert />

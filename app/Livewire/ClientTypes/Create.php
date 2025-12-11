@@ -3,14 +3,20 @@
 namespace App\Livewire\ClientTypes;
 
 use Livewire\Attributes\Validate;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use App\Models\ClientType;
 
 class Create extends Component
 {
-    #[Validate('required|string|max:256|regex:/^[\\pL\\s]+$/u')]
     public $name = '';
 
+    protected function rules(): array
+    {
+        return [
+            'name' => ['required', 'max:256', 'regex:/^[\\p{L} ]+$/u', Rule::unique('client_types', 'name')],
+        ];
+    }
     public function save(){
         $this->validate();
 

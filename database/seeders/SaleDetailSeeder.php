@@ -15,14 +15,18 @@ class SaleDetailSeeder extends Seeder
      */
     public function run(): void
     {
-        $saleDetail = new SaleDetail();
+        $sale = Sale::first();
+        $product = Product::first();
 
-        $saleDetail->quantity = '20';
-        $saleDetail->price = '9000.00';
-        $saleDetail->subtotal = $saleDetail->price * $saleDetail->quantity;
-        $saleDetail->product_id = 1;
-        $saleDetail->sale_id = 1;
+        if ($sale && $product) {
+            $saleDetail = new SaleDetail();
+            $saleDetail->quantity = 20;
+            $saleDetail->price = 9000.00;
+            $saleDetail->subtotal = $saleDetail->price * $saleDetail->quantity;
+            $saleDetail->product_id = $product->id;
+            $saleDetail->sale_id = $sale->id;
 
-        $saleDetail->save();
+            $saleDetail->save();
+        }
     }
 }

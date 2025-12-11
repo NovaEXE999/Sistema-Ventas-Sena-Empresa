@@ -9,6 +9,14 @@ use App\Models\ClientType;
 class Index extends Component
 {
     use WithPagination;
+
+    public function mount(): void
+    {
+        if (! auth()->user()?->isAdmin()) {
+            abort(403);
+        }
+    }
+
     public function toggleStatus(ClientType $clienttype)
     {
         if (! auth()->user()?->isAdmin()) {

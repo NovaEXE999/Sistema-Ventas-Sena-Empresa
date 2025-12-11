@@ -5,12 +5,18 @@ namespace App\Livewire\PaymentMethods;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use App\Models\PaymentMethod;
+use Illuminate\Validation\Rule;
 
 class Create extends Component
 {
-    #[Validate('required|string|max:256|regex:/^[\\pL\\s]+$/u')]
     public $name = '';
 
+    protected function rules(): array
+    {
+        return [
+            'name' => ['required', 'max:256', 'regex:/^[\\p{L} ]+$/u', Rule::unique('payment_methods', 'name')],
+        ];
+    }
     public function save(){
         if (! auth()->user()?->isAdmin()) {
             abort(403);

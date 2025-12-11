@@ -4,15 +4,26 @@ namespace App\Livewire\ClientTypes;
 
 use App\Models\ClientType;
 use Livewire\Attributes\Validate;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class Update extends Component
 {
     public ?ClientType $clienttype;
 
-    #[Validate('required|string|max:256|regex:/^[\\pL\\s]+$/u')]
     public $name = '';
 
+    protected function rules(): array
+    {
+        return [
+            'name' => [
+                'required',
+                'max:256',
+                'regex:/^[\\p{L} ]+$/u',
+                Rule::unique('client_types', 'name')->ignore($this->clienttype?->id),
+            ],
+        ];
+    }
     public function mount(ClientType $clienttype): void
     {
         $this->setType($clienttype);

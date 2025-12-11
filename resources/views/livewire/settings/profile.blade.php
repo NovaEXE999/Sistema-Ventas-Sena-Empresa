@@ -9,6 +9,7 @@ use Livewire\Volt\Component;
 new class extends Component {
     public string $name = '';
     public string $email = '';
+    public $phone_number = '';
 
     /**
      * Mount the component.
@@ -17,6 +18,7 @@ new class extends Component {
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->phone_number = Auth::user()->phone_number;
     }
 
     /**
@@ -27,16 +29,28 @@ new class extends Component {
         $user = Auth::user();
 
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => [
+                'required',
+                'string',
+                'max:256',
+                'regex:/^[A-Za-zÇ?-Ç¨ ]{1,256}$/',
+            ],
 
             'email' => [
                 'required',
                 'string',
                 'lowercase',
                 'email',
-                'max:255',
+                'max:254',
+                'regex:/^[A-Za-z0-9._%+-]+@(gmail\\.com|hotmail\\.com|msn\\.com|outlook\\.com|yahoo\\.com|yahoo\\.es|icloud\\.com|live\\.com)$/i',
                 Rule::unique(User::class)->ignore($user->id)
             ],
+            'phone_number' => [
+                'required', 
+                'digits:10', 
+                'regex:/^3\\d{9}$/',
+                Rule::unique(User::class)->ignore($user->id)
+            ]
         ]);
 
         $user->fill($validated);
@@ -75,10 +89,36 @@ new class extends Component {
     <x-settings.layout :heading="__('Perfil')" :subheading="__('Actualiza tu nombre y correo electrónico')">
         <x-form.error-alert />
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Nombre')" type="text" required autofocus autocomplete="name" :error="$errors->first('name')" />
+            <flux:input
+                wire:model="name"
+                :label="__('Nombre')"
+                type="text"
+                required
+                maxlength="256"
+                pattern="^[A-Za-zÇ?-Ç¨ ]{1,256}$"
+                title="Solo letras y espacios. Maximo 256 caracteres."
+                x-on:input="this.value = this.value.replace(/[^A-Za-zÇ?-Ç¨ ]/g, '').slice(0, 256)"
+                x-on:keydown="
+                    const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
+                    if (!/^[A-Za-zÇ?-Ç¨ ]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
+                "
+                autofocus
+                autocomplete="name"
+                :error="$errors->first('name')"
+            />
 
             <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" :error="$errors->first('email')" />
+                <flux:input
+                    wire:model="email"
+                    :label="__('Email')"
+                    type="email"
+                    required
+                    maxlength="254"
+                    pattern="^[A-Za-z0-9._%+-]+@(gmail\\.com|hotmail\\.com|msn\\.com|outlook\\.com|yahoo\\.com|yahoo\\.es|icloud\\.com|live\\.com)$"
+                    title="Usa un correo de: gmail.com, hotmail.com, msn.com, outlook.com, yahoo.com, yahoo.es, icloud.com o live.com."
+                    autocomplete="email"
+                    :error="$errors->first('email')"
+                />
 
                 @if (auth()->user() instanceof \Illuminate\Contracts\Auth\MustVerifyEmail &&! auth()->user()->hasVerifiedEmail())
                     <div>
@@ -98,7 +138,25 @@ new class extends Component {
                     </div>
                 @endif
             </div>
-
+            <flux:input
+                wire:model.live="phone_number"
+                name="phone_number"
+                :label="__('Número telefónico')"
+                type="tel"
+                required
+                minlength="10"
+                maxlength="10"
+                pattern="^3[0-9]{9}$"
+                title="Debe iniciar con 3 y tener exactamente 10 dígitos."
+                x-on:input="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                x-on:keydown="
+                    const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
+                    if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
+                "
+                autocomplete="tel"
+                :placeholder="__('Número telefónico')"
+                :error="$errors->first('phone_number')"
+            />
             <div class="flex items-center gap-4">
                 <div class="flex items-center justify-end">
                     <flux:button variant="primary" type="submit" class="w-full" data-test="update-profile-button">
@@ -112,6 +170,6 @@ new class extends Component {
             </div>
         </form>
 
-        <livewire:settings.delete-user-form />
+        {{-- <livewire:settings.delete-user-form /> --}}
     </x-settings.layout>
 </section>

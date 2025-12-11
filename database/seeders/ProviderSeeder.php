@@ -16,7 +16,7 @@ class ProviderSeeder extends Seeder
         $providers = [
             [
                 'identification' => '123450001',
-                'name' => 'Jabones S.A.S',
+                'name' => 'La Granja S.A.S',
                 'phone_number' => '3201112233',
                 'status' => true,
                 'person_type_id' => 2,
@@ -27,6 +27,13 @@ class ProviderSeeder extends Seeder
                 'phone_number' => '3204445566',
                 'status' => true,
                 'person_type_id' => 2,
+            ],
+            [
+                'identification' => '123450003',
+                'name' => 'Juan Luis Londoño',
+                'phone_number' => '3204445774',
+                'status' => true,
+                'person_type_id' => 1,
             ],
         ];
 
