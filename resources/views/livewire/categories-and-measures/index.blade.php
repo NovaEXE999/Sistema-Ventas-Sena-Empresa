@@ -1,21 +1,273 @@
-<div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
+<div class="catmeasures-scope flex h-full w-full flex-1 flex-col gap-4 rounded-xl p-4 sm:p-6">
+    <style>
+        .catmeasures-scope {
+            --sena-green-600: #0E7A3B;
+            --sena-green-500: #1AA855;
+            --sena-green-300: #43C678;
+            --accent-amber: #F6A300;
+            --accent-cyan: #2EC7D6;
+            --error: #E5484D;
+            --warning: #F6A300;
+            --success: #1AA855;
+
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        [data-theme="light"] .catmeasures-scope,
+        .theme-light .catmeasures-scope {
+            --surface: #FFFFFF;
+            --surface-2: #F5F7F9;
+            --text: #0E1420;
+            --muted: #4A5568;
+            --border: #E2E8F0;
+            --shadow: 0 8px 24px -12px rgba(14, 20, 32, 0.18);
+        }
+
+        [data-theme="dark"] .catmeasures-scope,
+        .theme-dark .catmeasures-scope {
+            --surface: #0F1720;
+            --surface-2: #121C27;
+            --text: #E6EDF3;
+            --muted: #8BA0B5;
+            --border: rgba(255, 255, 255, 0.08);
+            --shadow: 0 12px 36px -18px rgba(0, 0, 0, 0.6);
+            color-scheme: dark;
+        }
+
+        .catmeasures-muted {
+            color: var(--muted);
+        }
+
+        .btn-primary {
+            background: var(--sena-green-500);
+            border-radius: 12px;
+            border: 1px solid var(--sena-green-500);
+            color: #FFFFFF;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            box-shadow: 0 12px 22px -14px rgba(26, 168, 85, 0.7);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.03);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--surface-2);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 6px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(26, 168, 85, 0.08);
+            border-color: rgba(26, 168, 85, 0.45);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            border-radius: 10px;
+            border: 1px solid var(--error);
+            color: #FFFFFF;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 6px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: filter 0.15s ease, transform 0.12s ease;
+        }
+
+        .btn-danger:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success);
+            border-radius: 10px;
+            border: 1px solid var(--success);
+            color: #FFFFFF;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 6px 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: filter 0.15s ease, transform 0.12s ease;
+        }
+
+        .btn-success:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        .catmeasures-alert {
+            border-radius: 14px;
+            border: 1px solid rgba(26, 168, 85, 0.45);
+            background: rgba(26, 168, 85, 0.08);
+            color: var(--text);
+            box-shadow: 0 10px 24px -14px rgba(26, 168, 85, 0.35);
+            overflow: hidden;
+        }
+
+        .catmeasures-alert-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+        }
+
+        .catmeasures-alert-icon {
+            background: linear-gradient(135deg, var(--sena-green-500), var(--accent-cyan));
+            color: #FFFFFF;
+            border-radius: 9999px;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 24px -14px rgba(26, 168, 85, 0.65);
+        }
+
+        .catmeasures-alert-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--sena-green-500);
+        }
+
+        .catmeasures-alert-text {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .catmeasures-table-wrapper {
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            background: var(--surface-2);
+        }
+
+        .catmeasures-table-title {
+            text-align: center;
+            padding: 0.75rem 1rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #ffffff;
+            background: var(--sena-green-500);
+        }
+
+        .catmeasures-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            color: var(--text);
+        }
+
+        .catmeasures-table thead th {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--muted);
+            background: rgba(26, 168, 85, 0.08);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .catmeasures-table tbody td {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .catmeasures-table tbody tr:first-child td {
+            border-top: none;
+        }
+
+        .catmeasures-table tbody tr:nth-child(even) {
+            background: rgba(14, 122, 59, 0.03);
+        }
+
+        [data-theme="dark"] .catmeasures-scope .catmeasures-table tbody tr:nth-child(even),
+        .theme-dark .catmeasures-scope .catmeasures-table tbody tr:nth-child(even) {
+            background: rgba(14, 122, 59, 0.05);
+        }
+
+        .catmeasures-table tbody tr:hover {
+            background: rgba(26, 168, 85, 0.10);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 9999px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .badge-status-active {
+            background: rgba(26, 168, 85, 0.14);
+            color: #0E7A3B;
+            border: 1px solid rgba(26, 168, 85, 0.4);
+        }
+
+        .badge-status-inactive {
+            background: rgba(229, 72, 77, 0.14);
+            color: #B4232A;
+            border: 1px solid rgba(229, 72, 77, 0.4);
+        }
+    </style>
 
     @if (session('success'))
-        <div x-data="{ alertIsVisible: true }" x-show="alertIsVisible" class="relative w-full overflow-hidden rounded-radius border border-success bg-surface text-on-surface dark:bg-surface-dark dark:text-on-surface-dark" role="alert" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90">
-            <div class="flex w-full items-center gap-2 bg-success/10 p-4">
-                <div class="bg-success/15 text-success rounded-full p-1" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-6" aria-hidden="true">
+        <div
+            x-data="{ alertIsVisible: true }"
+            x-show="alertIsVisible"
+            class="catmeasures-alert"
+            role="alert"
+            x-transition:leave="transition ease-in duration-300"
+            x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-90"
+        >
+            <div class="catmeasures-alert-header">
+                <div class="catmeasures-alert-icon" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5" aria-hidden="true">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <div class="ml-2">
-                    <h3 class="text-sm font-semibold text-success">Mensajes de Categorias y Medidas</h3>
-                    <p class="text-xs font-medium sm:text-sm">{{ session('success') }}</p>
+                <div class="flex flex-col gap-0.5">
+                    <h3 class="catmeasures-alert-title">Mensajes de Categorías y Medidas</h3>
+                    <p class="catmeasures-alert-text">{{ session('success') }}</p>
                 </div>
-                <button type="button" @click="alertIsVisible = false" class="ml-auto" aria-label="dismiss alert">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2.5" class="w-4 h-4 shrink-0">
+                <button
+                    type="button"
+                    @click="alertIsVisible = false"
+                    class="ml-auto btn-secondary"
+                    aria-label="dismiss alert"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="2" class="w-4 h-4 shrink-0">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
+                    Cerrar
                 </button>
             </div>
         </div>
@@ -23,163 +275,179 @@
 
     @php($isAdmin = auth()->user()?->isAdmin())
 
-    <div class="flex h-fit w-full justify-between flex-row gap-4 rounded-xl">
-        @if ($isAdmin)
-            <a href="{{ route('categories.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
-                Registrar una categoria
-            </a>
+    @if ($isAdmin)
+        <div class="flex flex-col lg:flex-row gap-4 w-full">
+            <div class="w-full flex justify-start">
+                <a href="{{ route('categories.create') }}" wire:navigate class="btn-primary" role="button">
+                    Registrar una categoría
+                </a>
+            </div>
+            <div class="w-full flex justify-start lg:justify-start">
+                <a href="{{ route('measures.create') }}" wire:navigate class="btn-primary" role="button">
+                    Registrar una unidad de medida
+                </a>
+            </div>
+        </div>
+    @endif
 
-            <a href="{{ route('measures.create') }}" wire:navigate class="w-fit whitespace-nowrap rounded-radius bg-primary border border-primary px-4 py-2 text-center text-sm font-medium tracking-wide text-on-primary transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary active:opacity-100 active:outline-offset-0 disabled:cursor-not-allowed disabled:opacity-75 dark:border-primary-dark dark:bg-primary-dark dark:text-on-primary-dark dark:focus-visible:outline-primary-dark" role="button">
-                Registrar una unidad de medida
-            </a>
-        @endif
-    </div>
+    <div class="flex flex-col lg:flex-row gap-4 w-full">
+        {{-- Categorías --}}
+        <div class="catmeasures-table-wrapper w-full">
+            <h2 class="catmeasures-table-title">Categorías</h2>
 
-    <div class="flex h-full w-full flex-row gap-4 rounded-xl">
-        {{-- Categorias --}}
-        <div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
-            <h2 class="text-center p-4">Categorias</h2>
-            <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
-                <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
+            <div class="overflow-x-auto">
+                <table class="catmeasures-table">
+                <thead>
                     <tr>
-                        <th scope="col" class="p-4">Nombre</th>
-                        <th scope="col" class="p-4">Unidad de medida</th>
-                        <th scope="col" class="p-4">Estado</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Unidad de medida</th>
+                        <th scope="col">Estado</th>
                         @if ($isAdmin)
-                            <th scope="col" class="p-4 text-center">Acciones</th>
+                            <th scope="col" class="text-center">Acciones</th>
                         @endif
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-outline dark:divide-outline-dark">
+                <tbody>
                     @forelse ($categories as $category)
                         <tr>
-                            <td class="p-4">{{ $category->name }}</td>
-                            <td class="p-4">{{ $category->measure->name }}</td>
-                            <td class="p-4">
-                                <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium {{ $category->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
+                            <td>{{ $category->name }}</td>
+                            <td>{{ $category->measure->name }}</td>
+                            <td>
+                                <span class="badge {{ $category->status ? 'badge-status-active' : 'badge-status-inactive' }}">
                                     {{ $category->status ? 'Activa' : 'Inactiva' }}
                                 </span>
                             </td>
                             @if ($isAdmin)
-                                <td class="p-4 flex justify-center items-center gap-2">
-                                    <a href="{{ route('categories.update', $category)}}" wire:navigate>
-                                        <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                                            </svg>
-                                            Editar
-                                        </button>
-                                    </a>
+                                <td class="text-center">
+                                    <div class="flex justify-center items-center gap-2">
+                                        <a href="{{ route('categories.update', $category)}}" wire:navigate>
+                                            <button type="button" class="btn-secondary">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                                </svg>
+                                                Editar
+                                            </button>
+                                        </a>
 
-                                    @if ($category->status)
-                                        <button
-                                            wire:click="toggleCategoryStatus({{ $category->id }})"
-                                            wire:confirm="¿Estás seguro de inhabilitar la categoria {{ $category->name }}?"
-                                            type="button"
-                                            class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                            </svg>
-                                            Inhabilitar
-                                        </button>
-                                    @else
-                                        <button
-                                            wire:click="toggleCategoryStatus({{ $category->id }})"
-                                            wire:confirm="¿Estás seguro de habilitar la categoria {{ $category->name }}?"
-                                            type="button"
-                                            class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
-                                            </svg>
-                                            Habilitar
-                                        </button>
-                                    @endif
+                                        @if ($category->status)
+                                            <button
+                                                wire:click="toggleCategoryStatus({{ $category->id }})"
+                                                wire:confirm="¿Estás seguro de inhabilitar la categoría {{ $category->name }}?"
+                                                type="button"
+                                                class="btn-danger"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                </svg>
+                                                Inhabilitar
+                                            </button>
+                                        @else
+                                            <button
+                                                wire:click="toggleCategoryStatus({{ $category->id }})"
+                                                wire:confirm="¿Estás seguro de habilitar la categoría {{ $category->name }}?"
+                                                type="button"
+                                                class="btn-success"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                                                </svg>
+                                                Habilitar
+                                            </button>
+                                        @endif
+                                    </div>
                                 </td>
                             @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $isAdmin ? 4 : 3 }}">No hay categorias registradas.</td>
+                            <td colspan="{{ $isAdmin ? 4 : 3 }}" class="catmeasures-muted text-center py-4">
+                                No hay categorías registradas.
+                            </td>
                         </tr>
                     @endforelse
-
                 </tbody>
-            </table>
+                </table>
+            </div>
             <div class="p-4">
                 {{ $categories->links() }}
             </div>
         </div>
 
         {{-- Unidades de medida --}}
-        <div class="overflow-hidden w-full overflow-x-auto rounded-radius border border-outline dark:border-outline-dark">
-            <h2 class="text-center p-4">Unidades de medida</h2>
-            <table class="w-full text-left text-sm text-on-surface dark:text-on-surface-dark">
-                <thead class="border-b border-outline bg-surface-alt text-sm text-on-surface-strong dark:border-outline-dark dark:bg-surface-dark-alt dark:text-on-surface-dark-strong">
+        <div class="catmeasures-table-wrapper w-full">
+            <h2 class="catmeasures-table-title">Unidades de medida</h2>
+
+            <div class="overflow-x-auto">
+                <table class="catmeasures-table">
+                <thead>
                     <tr>
-                        <th scope="col" class="p-4">Nombre</th>
-                        <th scope="col" class="p-4">Estado</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Estado</th>
                         @if ($isAdmin)
-                            <th scope="col" class="p-4 text-center">Acciones</th>
+                            <th scope="col" class="text-center">Acciones</th>
                         @endif
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-outline dark:divide-outline-dark">
+                <tbody>
                     @forelse ($measures as $measure)
                         <tr>
-                            <td class="p-4">{{ $measure->name }}</td>
-                            <td class="p-4">
-                                <span class="inline-flex rounded-radius px-2 py-1 text-xs font-medium {{ $measure->status ? 'bg-success/10 text-success' : 'bg-danger/10 text-danger' }}">
+                            <td>{{ $measure->name }}</td>
+                            <td>
+                                <span class="badge {{ $measure->status ? 'badge-status-active' : 'badge-status-inactive' }}">
                                     {{ $measure->status ? 'Activa' : 'Inactiva' }}
                                 </span>
                             </td>
                             @if ($isAdmin)
-                                <td class="p-4 flex justify-center items-center gap-2">
-                                    <a href="{{ route('measures.update', $measure)}}" wire:navigate>
-                                        <button type="button" class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-surface-alt border border-surface-alt dark:border-surface-dark-alt px-4 py-2 text-xs font-medium tracking-wide text-on-surface-strong transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-surface-alt active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-surface-dark-alt dark:text-on-surface-dark-strong dark:focus-visible:outline-surface-dark-alt">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-                                            </svg>
-                                            Editar
-                                        </button>
-                                    </a>
+                                <td class="text-center">
+                                    <div class="flex justify-center items-center gap-2">
+                                        <a href="{{ route('measures.update', $measure)}}" wire:navigate>
+                                            <button type="button" class="btn-secondary">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4 w-4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                                                </svg>
+                                                Editar
+                                            </button>
+                                        </a>
 
-                                    @if ($measure->status)
-                                        <button
-                                            wire:click="toggleMeasureStatus({{ $measure->id }})"
-                                            wire:confirm="¿Estás seguro de inhabilitar la unidad de medida {{ $measure->name }}?"
-                                            type="button"
-                                            class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-danger border border-danger dark:border-danger px-4 py-2 text-xs font-medium tracking-wide text-on-danger transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-danger active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-danger dark:text-on-danger dark:focus-visible:outline-danger"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                            </svg>
-                                            Inhabilitar
-                                        </button>
-                                    @else
-                                        <button
-                                            wire:click="toggleMeasureStatus({{ $measure->id }})"
-                                            wire:confirm="¿Estás seguro de habilitar la unidad de medida {{ $measure->name }}?"
-                                            type="button"
-                                            class="inline-flex justify-center items-center gap-2 whitespace-nowrap rounded-radius bg-success border border-success dark:border-success px-4 py-2 text-xs font-medium tracking-wide text-on-success transition hover:opacity-75 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-success active:opacity-100 active:outline-offset-0 disabled:opacity-75 disabled:cursor-not-allowed dark:bg-success dark:text-on-success dark:focus-visible:outline-success"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-4">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
-                                            </svg>
-                                            Habilitar
-                                        </button>
-                                    @endif
+                                        @if ($measure->status)
+                                            <button
+                                                wire:click="toggleMeasureStatus({{ $measure->id }})"
+                                                wire:confirm="¿Estás seguro de inhabilitar la unidad de medida {{ $measure->name }}?"
+                                                type="button"
+                                                class="btn-danger"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-4  w-4">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                                                </svg>
+                                                Inhabilitar
+                                            </button>
+                                        @else
+                                            <button
+                                                wire:click="toggleMeasureStatus({{ $measure->id }})"
+                                                wire:confirm="¿Estás seguro de habilitar la unidad de medida {{ $measure->name }}?"
+                                                type="button"
+                                                class="btn-success"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
+                                                </svg>
+                                                Habilitar
+                                            </button>
+                                        @endif
+                                    </div>
                                 </td>
                             @endif
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ $isAdmin ? 3 : 2 }}">No hay unidades de medida registradas.</td>
+                            <td colspan="{{ $isAdmin ? 3 : 2 }}" class="catmeasures-muted text-center py-4">
+                                No hay unidades de medida registradas.
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+                </table>
+            </div>
             <div class="p-4">
                 {{ $measures->links() }}
             </div>

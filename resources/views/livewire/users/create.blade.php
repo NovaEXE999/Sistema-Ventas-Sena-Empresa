@@ -1,148 +1,431 @@
-<div class="flex flex-col gap-6">
-    <div class="flex items-center justify-between">
-        <a href="{{ route('users.index') }}" wire:navigate class="whitespace-nowrap rounded-radius bg-surface-alt border border-outline px-4 py-2 text-sm font-medium text-on-surface transition hover:opacity-80 dark:bg-surface-dark-alt dark:text-on-surface-dark">
+<div class="users-form-scope flex h-full w-full flex-1 flex-col gap-6 items-stretch">
+    <style>
+        .users-form-scope {
+            --sena-green-600: #0E7A3B;
+            --sena-green-500: #1AA855;
+            --sena-green-300: #43C678;
+            --accent-amber: #F6A300;
+            --accent-cyan: #2EC7D6;
+            --error: #E5484D;
+            --warning: #F6A300;
+            --success: #1AA855;
+
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        [data-theme="light"] .users-form-scope,
+        .theme-light .users-form-scope {
+            --surface: #FFFFFF;
+            --surface-2: #F5F7F9;
+            --text: #0E1420;
+            --muted: #4A5568;
+            --border: #E2E8F0;
+            --shadow-soft: 0 12px 32px -18px rgba(15, 23, 42, 0.28);
+        }
+
+        [data-theme="dark"] .users-form-scope,
+        .theme-dark .users-form-scope {
+            --surface: #0F1720;
+            --surface-2: #111827;
+            --text: #E6EDF3;
+            --muted: #8BA0B5;
+            --border: rgba(255, 255, 255, 0.06);
+            --shadow-soft: 0 18px 40px -24px rgba(0, 0, 0, 0.95);
+        }
+
+        /* TOPBAR: botón volver */
+        .users-form-topbar {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 0.5rem;
+            padding-left: 0.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .users-form-topbar {
+                padding-left: 0;
+            }
+        }
+
+        /* HEADER SOLO PARA EL TÍTULO (centrado) */
+        .users-form-header {
+            width: 100%;
+            max-width: 52rem;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .users-form-title-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .45rem 1.4rem;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.20), transparent 55%),
+                        rgba(15, 23, 42, 0.03);
+            border: 1px solid rgba(26, 168, 85, 0.45);
+            box-shadow: 0 14px 32px -18px rgba(26, 168, 85, 0.65);
+            backdrop-filter: blur(9px);
+        }
+
+        [data-theme="dark"] .users-form-scope .users-form-title-badge,
+        .theme-dark .users-form-scope .users-form-title-badge {
+            background: radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.32), transparent 55%),
+                        rgba(15, 23, 42, 0.5);
+        }
+
+        .users-form-title-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, var(--sena-green-500), var(--accent-cyan));
+            color: #fff;
+        }
+
+        .users-form-title-text {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+
+        .users-form-subtitle {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        /* CARD FORM */
+        .users-form {
+            width: 100%;
+            max-width: 40rem;
+            margin: .75rem auto 0 auto;
+            padding: 1.75rem 1.75rem 1.5rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.02), rgba(26, 168, 85, 0.02));
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .users-form-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--muted);
+            margin-bottom: 0.2rem;
+            display: inline-block;
+        }
+
+        /* Estilos para inputs de Flux dentro del scope */
+        .users-form-scope input[type="text"],
+        .users-form-scope input[type="email"],
+        .users-form-scope input[type="tel"],
+        .users-form-scope input[type="password"],
+        .users-form-scope select {
+            background: var(--surface);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            padding: 0.55rem 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease, transform 0.04s ease;
+        }
+
+        .users-form-scope input::placeholder {
+            color: rgba(148, 163, 184, 0.9);
+        }
+
+        .users-form-scope input:focus-visible,
+        .users-form-scope select:focus-visible {
+            border-color: rgba(26, 168, 85, 0.9);
+            box-shadow: 0 0 0 2px rgba(26, 168, 85, 0.18);
+            transform: translateY(-0.5px);
+        }
+
+        .users-form-scope input:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        [data-theme="dark"] .users-form-scope input[type="text"],
+        [data-theme="dark"] .users-form-scope input[type="email"],
+        [data-theme="dark"] .users-form-scope input[type="tel"],
+        [data-theme="dark"] .users-form-scope input[type="password"],
+        [data-theme="dark"] .users-form-scope select,
+        .theme-dark .users-form-scope input[type="text"],
+        .theme-dark .users-form-scope input[type="email"],
+        .theme-dark .users-form-scope input[type="tel"],
+        .theme-dark .users-form-scope input[type="password"],
+        .theme-dark .users-form-scope select {
+            background: #020617;
+            border-color: rgba(67, 198, 120, 0.9);
+            color: #F9FAFB;
+            color-scheme: dark;
+        }
+
+        [data-theme="dark"] .users-form-scope select option,
+        .theme-dark .users-form-scope select option {
+            background-color: #020617;
+            color: #E6EDF3;
+        }
+
+        /* Errores de campo */
+        .users-form-scope .text-error,
+        .users-form-scope .form-error {
+            color: var(--error);
+            font-size: 0.75rem;
+        }
+
+        /* Botón submit */
+        .users-form-submit {
+            margin-top: .5rem;
+            background: linear-gradient(135deg, var(--sena-green-500), var(--sena-green-600));
+            border-radius: 9999px;
+            border: 1px solid var(--sena-green-500);
+            color: #FFFFFF;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.65rem 1.4rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45rem;
+            white-space: nowrap;
+            transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
+            box-shadow: 0 14px 30px -18px rgba(26, 168, 85, 0.85);
+        }
+
+        .users-form-submit:hover {
+            filter: brightness(1.03);
+            transform: translateY(-1px);
+        }
+
+        .users-form-submit:focus-visible {
+            outline: 3px solid rgba(26, 168, 85, 0.32);
+            outline-offset: 2px;
+        }
+
+        .users-form-submit:disabled {
+            opacity: .7;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        /* BOTÓN VOLVER */
+        .users-form-back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.4rem 1.2rem;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.20), transparent 55%),
+                        rgba(15, 23, 42, 0.03);
+            border: 1px solid rgba(26, 168, 85, 0.45);
+            box-shadow: 0 10px 26px -18px rgba(26, 168, 85, 0.70);
+            color: var(--text);
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+        }
+
+        .users-form-back-btn:hover {
+            filter: brightness(1.03);
+            transform: translateY(-1px);
+            box-shadow: 0 14px 32px -18px rgba(26, 168, 85, 0.85);
+        }
+
+        .users-form-back-btn:focus-visible {
+            outline: 2px solid rgba(26, 168, 85, 0.45);
+            outline-offset: 2px;
+        }
+
+        [data-theme="dark"] .users-form-scope .users-form-back-btn,
+        .theme-dark .users-form-scope .users-form-back-btn {
+            background: radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.32), transparent 55%),
+                        rgba(15, 23, 42, 0.55);
+            color: #E6EDF3;
+            border-color: rgba(26, 168, 85, 0.65);
+        }
+    </style>
+
+    {{-- TOPBAR: botón Volver --}}
+    <div class="users-form-topbar">
+        <a href="{{ route('users.index') }}" wire:navigate class="users-form-back-btn">
             ← Volver
         </a>
-        <h2 class="text-lg font-semibold">Registrar usuario</h2>
+    </div>
+
+    {{-- HEADER: título centrado con badge --}}
+    <div class="users-form-header">
+        <div class="users-form-title-badge">
+            <div class="users-form-title-icon">
+                <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+            </div>
+            <div class="flex flex-col leading-tight">
+                <span class="users-form-title-text">Registrar usuario</span>
+                <span class="users-form-subtitle">Gestión de accesos</span>
+            </div>
+        </div>
     </div>
 
     <x-form.error-alert />
 
-    <form wire:submit.prevent="save" class="flex flex-col gap-5" novalidate>
-        <flux:input
-            wire:model.live="identification"
-            name="identification"
-            :label="__('Identificación')"
-            type="text"
-            required
-            minlength="3"
-            maxlength="10"
-            pattern="^[0-9]{3,10}$"
-            title="Solo números, entre 3 y 10 dígitos, sin signos."
-            x-on:input="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
-            x-on:keydown="
-                const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
-                if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
-            "
-            autocomplete="off"
-            :placeholder="__('Número de identificación')"
-            :error="$errors->first('identification')"
-        />
-
-        <flux:input
-            wire:model.live="name"
-            name="name"
-            :label="__('Nombre')"
-            type="text"
-            required
-            maxlength="256"
-            pattern="^[A-Za-zÀ-ÿ ]{1,256}$"
-            title="Solo letras y espacios. Máximo 256 caracteres."
-            x-on:input="this.value = this.value.replace(/[^A-Za-zÀ-ÿ ]/g, '').slice(0, 256)"
-            x-on:keydown="
-                const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
-                if (!/^[A-Za-zÀ-ÿ ]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
-            "
-            autocomplete="name"
-            :placeholder="__('Nombre completo')"
-            :error="$errors->first('name')"
-        />
-
-        <flux:input
-            wire:model.live="email"
-            name="email"
-            :label="__('Dirección de correo electrónico')"
-            type="email"
-            required
-            maxlength="254"
-            pattern="^[A-Za-z0-9._%+-]+@(gmail\.com|hotmail\.com|msn\.com|outlook\.com|yahoo\.com|yahoo\.es|icloud\.com|live\.com)$"
-            title="Usa un correo de: gmail.com, hotmail.com, msn.com, outlook.com, yahoo.com, yahoo.es, icloud.com o live.com."
-            autocomplete="email"
-            placeholder="email@ejemplo.com"
-            :error="$errors->first('email')"
-        />
-
-        <flux:input
-            wire:model.live="phone_number"
-            name="phone_number"
-            :label="__('Número telefónico')"
-            type="tel"
-            required
-            minlength="10"
-            maxlength="10"
-            pattern="^3[0-9]{9}$"
-            title="Debe iniciar con 3 y tener exactamente 10 dígitos."
-            x-on:input="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
-            x-on:keydown="
-                const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
-                if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
-            "
-            autocomplete="tel"
-            :placeholder="__('Número telefónico')"
-            :error="$errors->first('phone_number')"
-        />
-
-        <div class="flex flex-col gap-1">
-            <label class="text-sm font-medium text-zinc-700 dark:text-zinc-200">{{ __('Rol') }}</label>
-            <select
-                wire:model.live="role_id"
-                name="role_id"
+    <form wire:submit.prevent="save" class="users-form" novalidate>
+        <div class="flex flex-col gap-5">
+            <flux:input
+                wire:model.live="identification"
+                name="identification"
+                :label="__('Identificación')"
+                type="text"
                 required
-                @class([
-                    'w-full rounded-md px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2',
-                    'border border-zinc-300 text-zinc-900 focus:border-emerald-500 focus:ring-emerald-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100' => !$errors->has('role_id'),
-                    'border border-danger text-danger focus:border-danger focus:ring-danger/40 dark:border-danger dark:text-danger' => $errors->has('role_id'),
-                ])
-            >
-                <option value="">{{ __('Selecciona un rol') }}</option>
-                @foreach($roles as $role)
-                    <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
-                @endforeach
-            </select>
-            @error('role_id')
-                <div class="mt-1 flex items-center gap-2 text-sm text-danger">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-                    </svg>
-                    <span>{{ $message }}</span>
-                </div>
-            @enderror
-        </div>
+                minlength="3"
+                maxlength="10"
+                pattern="^[0-9]{3,10}$"
+                title="Solo números, entre 3 y 10 dígitos, sin signos."
+                x-on:input="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                x-on:keydown="
+                    const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
+                    if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
+                "
+                autocomplete="off"
+                :placeholder="__('Número de identificación')"
+                :error="$errors->first('identification')"
+            />
 
-        <flux:input
-            wire:model.live="password"
-            name="password"
-            :label="__('Contraseña')"
-            type="password"
-            required
-            minlength="12"
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\s]).{12,}$"
-            title="Mínimo 12 caracteres, incluye mayúsculas, minúsculas, números y símbolos."
-            autocomplete="new-password"
-            :placeholder="__('Contraseña')"
-            viewable
-            :error="$errors->first('password')"
-        />
+            <flux:input
+                wire:model.live="name"
+                name="name"
+                :label="__('Nombre')"
+                type="text"
+                required
+                maxlength="256"
+                pattern="^[A-Za-zÀ-ÿ ]{1,256}$"
+                title="Solo letras y espacios. Máximo 256 caracteres."
+                x-on:input="this.value = this.value.replace(/[^A-Za-zÀ-ÿ ]/g, '').slice(0, 256)"
+                x-on:keydown="
+                    const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
+                    if (!/^[A-Za-zÀ-ÿ ]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
+                "
+                autocomplete="name"
+                :placeholder="__('Nombre completo')"
+                :error="$errors->first('name')"
+            />
 
-        <flux:input
-            wire:model.live="password_confirmation"
-            name="password_confirmation"
-            :label="__('Confirmar contraseña')"
-            type="password"
-            required
-            minlength="12"
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\w\\s]).{12,}$"
-            title="Mínimo 12 caracteres, incluye mayúsculas, minúsculas, números y símbolos."
-            autocomplete="new-password"
-            :placeholder="__('Confirmar contraseña')"
-            viewable
-            :error="$errors->first('password_confirmation')"
-        />
+            <flux:input
+                wire:model.live="email"
+                name="email"
+                :label="__('Dirección de correo electrónico')"
+                type="email"
+                required
+                maxlength="254"
+                pattern="^[A-Za-z0-9._%+-]+@(gmail\.com|hotmail\.com|msn\.com|outlook\.com|yahoo\.com|yahoo\.es|icloud\.com|live\.com)$"
+                title="Usa un correo de: gmail.com, hotmail.com, msn.com, outlook.com, yahoo.com, yahoo.es, icloud.com o live.com."
+                autocomplete="email"
+                placeholder="email@ejemplo.com"
+                :error="$errors->first('email')"
+            />
 
-        <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Crear usuario') }}
-            </flux:button>
+            <flux:input
+                wire:model.live="phone_number"
+                name="phone_number"
+                :label="__('Número telefónico')"
+                type="tel"
+                required
+                minlength="10"
+                maxlength="10"
+                pattern="^3[0-9]{9}$"
+                title="Debe iniciar con 3 y tener exactamente 10 dígitos."
+                x-on:input="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                x-on:keydown="
+                    const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
+                    if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
+                "
+                autocomplete="tel"
+                :placeholder="__('Número telefónico')"
+                :error="$errors->first('phone_number')"
+            />
+
+            <div class="flex flex-col gap-1">
+                <label class="users-form-label">{{ __('Rol') }}</label>
+                <select
+                    wire:model.live="role_id"
+                    name="role_id"
+                    required
+                    @class([
+                        'w-full',
+                        'border border-zinc-300 text-zinc-900 focus:border-emerald-500 focus:ring-emerald-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100' => !$errors->has('role_id'),
+                        'border border-danger text-danger focus:border-danger focus:ring-danger/40 dark:border-danger dark:text-danger' => $errors->has('role_id'),
+                    ])
+                >
+                    <option value="">{{ __('Selecciona un rol') }}</option>
+                    @foreach($roles as $role)
+                        <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
+                    @endforeach
+                </select>
+                @error('role_id')
+                    <div class="mt-1 flex items-center gap-2 text-sm text-error">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                        </svg>
+                        <span>{{ $message }}</span>
+                    </div>
+                @enderror
+            </div>
+
+            <flux:input
+                wire:model.live="password"
+                name="password"
+                :label="__('Contraseña')"
+                type="password"
+                required
+                minlength="12"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$"
+                title="Mínimo 12 caracteres, incluye mayúsculas, minúsculas, números y símbolos."
+                autocomplete="new-password"
+                :placeholder="__('Contraseña')"
+                viewable
+                :error="$errors->first('password')"
+            />
+
+            <flux:input
+                wire:model.live="password_confirmation"
+                name="password_confirmation"
+                :label="__('Confirmar contraseña')"
+                type="password"
+                required
+                minlength="12"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{12,}$"
+                title="Mínimo 12 caracteres, incluye mayúsculas, minúsculas, números y símbolos."
+                autocomplete="new-password"
+                :placeholder="__('Confirmar contraseña')"
+                viewable
+                :error="$errors->first('password_confirmation')"
+            />
+
+            <div class="flex items-center justify-end mt-3">
+                <button type="submit" class="users-form-submit w-full">
+                    {{ __('Crear usuario') }}
+                </button>
+            </div>
         </div>
     </form>
 </div>
