@@ -127,6 +127,12 @@
             display: inline-block;
         }
 
+        .users-form-helper{
+            font-size: 0.70rem;
+            color: var(--muted);
+            margin-top: 0.15rem;
+        }
+
         /* Estilos para inputs de Flux dentro del scope */
         .users-form-scope input[type="text"],
         .users-form-scope input[type="email"],
@@ -307,9 +313,10 @@
                     if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
                 "
                 autocomplete="off"
-                :placeholder="__('Número de identificación')"
+                :placeholder="__('Número de identificación, ej: 1032119426')"
                 :error="$errors->first('identification')"
             />
+            <p class="users-form-helper">Solo números, mínimo 5 máximo 10.</p>
 
             <flux:input
                 wire:model.live="name"
@@ -329,6 +336,7 @@
                 :placeholder="__('Nombre completo')"
                 :error="$errors->first('name')"
             />
+            <p class="users-form-helper">Solo letras y espacios. Máximo 256 caracteres.</p>
 
             <flux:input
                 wire:model.live="email"
@@ -340,9 +348,10 @@
                 pattern="^[A-Za-z0-9._%+-]+@(gmail\.com|hotmail\.com|msn\.com|outlook\.com|yahoo\.com|yahoo\.es|icloud\.com|live\.com)$"
                 title="Usa un correo de: gmail.com, hotmail.com, msn.com, outlook.com, yahoo.com, yahoo.es, icloud.com o live.com."
                 autocomplete="email"
-                placeholder="email@ejemplo.com"
+                placeholder="Ejemplo@gmail.com"
                 :error="$errors->first('email')"
             />
+            <p class="users-form-helper">Ingrese una dirección de correo válida (ej. usuario@gmail.com).</p>
 
             <flux:input
                 wire:model.live="phone_number"
@@ -360,9 +369,10 @@
                     if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
                 "
                 autocomplete="tel"
-                :placeholder="__('Número telefónico')"
+                :placeholder="__('Número telefónico, ej: 3014879502')"
                 :error="$errors->first('phone_number')"
             />
+            <p class="users-form-helper">Solo números, el número debe iniciar en 3 y tener 10 dígitos.</p>
 
             <div class="flex flex-col gap-1">
                 <label class="users-form-label">{{ __('Rol') }}</label>
@@ -381,6 +391,7 @@
                         <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
                     @endforeach
                 </select>
+                <p class="users-form-helper">Seleccione un rol.</p>
                 @error('role_id')
                     <div class="mt-1 flex items-center gap-2 text-sm text-error">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -405,6 +416,7 @@
                 viewable
                 :error="$errors->first('password')"
             />
+            <p class="users-form-helper">Mínimo 12 caracteres, al menos una mayúscula, una minúscula, un número y un signo.</p>
 
             <flux:input
                 wire:model.live="password_confirmation"
@@ -420,6 +432,7 @@
                 viewable
                 :error="$errors->first('password_confirmation')"
             />
+            <p class="users-form-helper">Repita la contraseña ingresada anteriormente.</p>
 
             <div class="flex items-center justify-end mt-3">
                 <button type="submit" class="users-form-submit w-full">

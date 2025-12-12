@@ -124,6 +124,12 @@
             display: inline-block;
         }
 
+        .providers-form-helper{
+            font-size: 0.70rem;
+            color: var(--muted);
+            margin-top: 0.15rem;
+        }
+
         .providers-form-scope input[type="text"],
         .providers-form-scope input[type="number"],
         .providers-form-scope input[type="tel"],
@@ -154,6 +160,45 @@
             cursor: not-allowed;
         }
 
+        /* Select con estilo igual a los filtros (flecha y fondo radial) */
+        .sales-select {
+            border-radius: 0.75rem;
+            padding: 0.55rem 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text);
+            outline: none;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.12), transparent 55%),
+                var(--surface);
+            transition: border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease, transform 0.05s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 2rem;
+        }
+
+        .sales-select option {
+            background-color: #ffffff;
+            color: #0E1420;
+        }
+
+        .sales-select-wrapper {
+            position: relative;
+        }
+
+        .sales-select-wrapper::after {
+            content: "";
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            width: 0.55rem;
+            height: 0.55rem;
+            border-right: 2px solid rgba(148, 163, 184, 0.85);
+            border-bottom: 2px solid rgba(148, 163, 184, 0.85);
+            transform: translateY(-60%) rotate(45deg);
+            pointer-events: none;
+        }
+
         [data-theme="dark"] .providers-form-scope input[type="text"],
         [data-theme="dark"] .providers-form-scope input[type="number"],
         [data-theme="dark"] .providers-form-scope input[type="tel"],
@@ -168,8 +213,23 @@
             color-scheme: dark;
         }
 
+        [data-theme="dark"] .providers-form-scope .sales-select,
+        .theme-dark .providers-form-scope .sales-select {
+            background:
+                radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.24), transparent 55%),
+                #020617;
+            border-color: rgba(67, 198, 120, 0.9);
+            color: #F9FAFB;
+        }
+
         [data-theme="dark"] .providers-form-scope select option,
         .theme-dark .providers-form-scope select option {
+            background-color: #020617;
+            color: #E6EDF3;
+        }
+
+        [data-theme="dark"] .providers-form-scope .sales-select option,
+        .theme-dark .providers-form-scope .sales-select option {
             background-color: #020617;
             color: #E6EDF3;
         }
@@ -297,7 +357,7 @@
             <x-form.input wire:model="identification"
                           label="Identificación"
                           name="identification"
-                          placeholder="Documento del proveedor"
+                          placeholder="Documento del proveedor, ej: 1001348132"
                           pattern="\d{3,10}"
                           minlength="3"
                           maxlength="10"
@@ -306,6 +366,7 @@
                           title="Solo números, 3 a 10 dígitos"
                           onkeydown="return window.allowDigitsOnly(event);"
                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" />
+            <p class="providers-form-helper">Solo números, mínimo 3 máximo 10.</p>
 
             <x-form.input wire:model.live.debounce.250ms="name"
                           label="Nombre del proveedor"
@@ -318,11 +379,12 @@
                           onkeydown="return window.allowLettersSpacesDots(event);"
                           oninput="this.value = this.value.replace(/[^A-Za-zÀ-ÿ0-9\.\s]/g, '').slice(0, 256);"
                           autocomplete="off" />
+            <p class="providers-form-helper">Solo letras y espacios.</p>
 
             <x-form.input wire:model="phone_number"
                           label="Teléfono"
                           name="phone_number"
-                          placeholder="Teléfono del proveedor"
+                          placeholder="Teléfono del proveedor, ej: 3209875684"
                           pattern="3\d{9}"
                           maxlength="10"
                           inputmode="numeric"
@@ -331,16 +393,20 @@
                           title="Debe iniciar en 3 y tener 10 dígitos"
                           onkeydown="return window.allowDigitsOnly(event);"
                           oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" />
+            <p class="providers-form-helper">Solo números, el número debe iniciar en 3 y tener 10 dígitos.</p>
 
             <div>
                 <label class="providers-form-label">Tipo de persona</label>
-                <select wire:model="person_type_id" required class="w-full">
-                    <option value="">Seleccione...</option>
-                    @foreach($personTypes as $type)
-                        <option value="{{ $type['id'] }}">{{ $type['name'] }}</option>
-                    @endforeach
-                </select>
+                <div class="sales-select-wrapper">
+                    <select wire:model="person_type_id" required class="sales-select w-full">
+                        <option value="">Seleccione...</option>
+                        @foreach($personTypes as $type)
+                            <option value="{{ $type['id'] }}">{{ $type['name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <x-form.field-error for="person_type_id" />
+                <p class="providers-form-helper">Seleccione el tipo de persona.</p>
             </div>
 
             <div class="flex items-center justify-end mt-3">

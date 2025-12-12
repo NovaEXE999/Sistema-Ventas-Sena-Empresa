@@ -439,30 +439,53 @@
             <div>
                 <label class="inventory-form-label">Fecha</label>
                 <input type="date" wire:model="date" disabled class="w-full">
+                <p class="inventory-form-helper">Fecha de la entrada.</p>
             </div>
 
             {{-- Proveedor --}}
             <div x-data @click.outside="$wire.hideProviderResults()">
-                <x-form.input wire:model.live.debounce.300ms="providerSearch"
-                              wire:blur="ensureProviderSelected"
-                              autocomplete="off"
-                              label="Proveedor" name="providerSearch" placeholder="Busca proveedor por nombre o identificación..." />
-                @if($providerResults)
-                    <ul class="autocomplete-results">
-                        @foreach($providerResults as $prov)
-                            <li wire:mousedown.prevent="selectProvider({{ $prov['id'] }}, @js($prov['name']))"
-                                class="autocomplete-results-item">
-                                <div class="flex flex-col">
-                                    <span class="font-medium">{{ $prov['name'] }}</span>
-                                    @if(!empty($prov['identification']))
-                                        <span class="text-xs inventory-form-helper">ID: {{ $prov['identification'] }}</span>
-                                    @endif
-                                </div>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
-                <x-form.field-error for="provider_id" />
+                <div class="flex flex-col gap-2">
+                    <div class="flex items-start gap-3 flex-wrap">
+                        <div class="flex-1 min-w-0">
+                            <x-form.input wire:model.live.debounce.300ms="providerSearch"
+                                          wire:blur="ensureProviderSelected"
+                                          autocomplete="off"
+                                          label="Proveedor" name="providerSearch" placeholder="Busca proveedor por nombre o identificación..." />
+                        </div>
+
+                        @if($providerNotFound && $isAdmin)
+                            <a href="{{ route('providers.create')}}"
+                               wire:navigate
+                               class="inventory-form-back-btn flex-none"
+                               role="button">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                                    <path d="M12 5v14" />
+                                    <path d="M5 12h14" />
+                                </svg>
+                                <span class="ml-1">Crear proveedor</span>
+                            </a>
+                        @endif
+                    </div>
+
+                    @if($providerResults)
+                        <ul class="autocomplete-results">
+                            @foreach($providerResults as $prov)
+                                <li wire:mousedown.prevent="selectProvider({{ $prov['id'] }}, @js($prov['name']))"
+                                    class="autocomplete-results-item">
+                                    <div class="flex flex-col">
+                                        <span class="font-medium">{{ $prov['name'] }}</span>
+                                        @if(!empty($prov['identification']))
+                                            <span class="text-xs inventory-form-helper">ID: {{ $prov['identification'] }}</span>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+
+                    <x-form.field-error for="provider_id" :message="$providerNotFound ? $providerNotice : null" />
+                    <p class="inventory-form-helper">Busque y seleccione un proveedor.</p>
+                </div>
             </div>
         </div>
 
@@ -474,6 +497,7 @@
                                   wire:blur="ensureProductSelected"
                                   autocomplete="off"
                                   label="Producto" name="productSearch" placeholder="Busca producto activo..." />
+                                  <p class="inventory-form-helper">Busque y seleccione un producto.</p>
                     @if($productResults)
                         <ul class="autocomplete-results">
                             @foreach($productResults as $product)
@@ -485,6 +509,7 @@
                         </ul>
                     @endif
                 </div>
+                
                 <div x-data>
                     <x-form.input wire:model="productQuantity"
                                   type="number"

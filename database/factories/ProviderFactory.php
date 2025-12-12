@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\PersonType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,7 +17,7 @@ class ProviderFactory extends Factory
      */
     public function definition(): array
     {
-        $personTypeId = \App\Models\PersonType::query()->inRandomOrder()->value('id') ?? \App\Models\PersonType::factory();
+        $personTypeId = PersonType::query()->inRandomOrder()->value('id') ?? PersonType::factory();
 
         return [
             'identification' => $this->faker->unique()->numerify('##########'),

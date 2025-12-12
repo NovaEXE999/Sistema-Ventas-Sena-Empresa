@@ -20,6 +20,7 @@ class Create extends Component
     public array $clientResults = [];
     public ?int $client_id = null;
     public string $clientNotice = '';
+    public bool $clientNotFound = false;
 
     // Metodo de pago
     public array $paymentMethods = [];
@@ -144,6 +145,16 @@ class Create extends Component
     {
         $term = trim($this->clientSearch);
 
+        $this->client_id = null;
+        $this->clientNotice = '';
+        $this->clientNotFound = false;
+
+        if ($term === '') {
+            $this->clientResults = [];
+            $this->resetErrorBag(['clientSearch']);
+            return;
+        }
+
         $this->clientResults = Client::query()
             ->where(function ($query) use ($term) {
                 $query->where('name', 'like', '%'.$term.'%')
@@ -154,12 +165,13 @@ class Create extends Component
             ->get(['id','name','identification'])
             ->toArray();
 
-        $this->client_id = null;
-        $this->clientNotice = '';
-
-        if ($term !== '' && empty($this->clientResults)) {
+        if (empty($this->clientResults)) {
             $this->clientNotice = 'El cliente que intentas usar no existe. Regístralo primero en la sección "Clientes".';
+            $this->clientNotFound = true;
+            return;
         }
+
+        $this->resetErrorBag(['clientSearch']);
     }
 
     public function hideClientResults(): void
@@ -170,7 +182,13 @@ class Create extends Component
     public function ensureClientSelected(): void
     {
         if (!$this->client_id) {
+            if ($this->clientNotFound && $this->clientNotice) {
+                $this->addError('clientSearch', $this->clientNotice);
+                return;
+            }
+
             $this->clientNotice = 'Selecciona un cliente de la lista. Si no existe, regístralo en "Clientes".';
+            $this->clientNotFound = false;
             $this->addError('clientSearch', $this->clientNotice);
         }
     }
@@ -181,6 +199,7 @@ class Create extends Component
         $this->clientSearch = $name;
         $this->clientResults = [];
         $this->clientNotice = '';
+        $this->clientNotFound = false;
         $this->resetErrorBag(['clientSearch']);
     }
 

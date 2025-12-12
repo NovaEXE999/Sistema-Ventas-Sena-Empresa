@@ -14,6 +14,7 @@ class CreateCategory extends Component
 
     public string $measureSearch = '';
     public array $measureResults = [];
+    public array $measureOptions = [];
 
     protected function rules(): array
     {
@@ -27,6 +28,7 @@ class CreateCategory extends Component
     {
         $this->measure_id = null;
         $this->measureSearch = '';
+        $this->measureOptions = $this->loadMeasureOptions();
     }
 
     public function updatedMeasureSearch(): void
@@ -56,13 +58,25 @@ class CreateCategory extends Component
         $this->measureResults = [];
     }
 
+    public function updatedMeasureId($value): void
+    {
+        if (! $value) {
+            return;
+        }
+
+        $selected = collect($this->measureOptions)->firstWhere('id', (int) $value);
+        if ($selected) {
+            $this->measureSearch = $selected['name'];
+        }
+    }
+
     public function ensureMeasureSelected(): void
     {
         $this->measureResults = [];
         $this->resetErrorBag(['measure_id', 'measureSearch']);
 
-        if (!$this->measure_id) {
-            $this->addError('measure_id', 'Selecciona una unidad de la lista. Si no existe, regístrala en "Unidades de medida".');
+        if (! $this->measure_id) {
+            $this->addError('measure_id', 'Selecciona una unidad de la lista. Si no existe, regヴstrala en "Unidades de medida".');
         }
     }
 
@@ -70,12 +84,13 @@ class CreateCategory extends Component
     {
         return [
             'name.regex' => 'El nombre solo puede contener letras y espacios.',
-            'measure_id.required' => 'Selecciona una unidad de la lista. Si no existe, regístrala en "Unidades de medida".',
-            'measure_id.exists' => 'La unidad de medida no existe. Regístrala primero en "Unidades de medida".',
+            'measure_id.required' => 'Selecciona una unidad de la lista. Si no existe, regヴstrala en "Unidades de medida".',
+            'measure_id.exists' => 'La unidad de medida no existe. Regヴstrala primero en "Unidades de medida".',
         ];
     }
 
-    public function save(){
+    public function save()
+    {
         if (! auth()->user()?->isAdmin()) {
             abort(403);
         }
@@ -90,6 +105,16 @@ class CreateCategory extends Component
 
         session()->flash('success', 'Categoria creada satisfactoriamente.');
         $this->redirectRoute('categoriesandmeasures.index', navigate:true);
+    }
+
+    private function loadMeasureOptions(): array
+    {
+        return Measure::query()
+            ->where('status', true)
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->map(fn ($m) => ['id' => $m->id, 'name' => $m->name])
+            ->toArray();
     }
 
     public function render()

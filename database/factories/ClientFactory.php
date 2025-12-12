@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\ClientType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,7 +17,7 @@ class ClientFactory extends Factory
      */
     public function definition(): array
     {
-        $clientTypeId = \App\Models\ClientType::query()->inRandomOrder()->value('id') ?? \App\Models\ClientType::factory();
+        $clientTypeId = ClientType::query()->inRandomOrder()->value('id') ?? ClientType::factory();
 
         return [
             'identification' => $this->faker->unique()->numerify('##########'),

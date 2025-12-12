@@ -462,8 +462,8 @@
             <label class="products-label">Orden</label>
             <div class="products-select-wrapper">
                 <select wire:model.live="order" class="products-select w-full">
-                    <option value="created_desc">CreaciÇün: nuevo a antiguo</option>
-                    <option value="created_asc">CreaciÇün: antiguo a nuevo</option>
+                    <option value="created_desc">Creación: nuevo a antiguo</option>
+                    <option value="created_asc">Creación: antiguo a nuevo</option>
                     <option value="name_asc">Nombre: A a Z</option>
                 </select>
             </div>
@@ -489,7 +489,7 @@
             </div>
         </div>
         <div class="flex flex-col gap-1 text-sm">
-            <label class="products-label">CategorÇða</label>
+            <label class="products-label">Categoria</label>
             <div class="products-select-wrapper">
                 <select wire:model.live="category" class="products-select w-full">
                     <option value="all">Todas</option>

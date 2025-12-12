@@ -246,6 +246,12 @@
             color: #E6EDF3;
             border-color: rgba(26, 168, 85, 0.65);
         }
+
+        .measureform-helper {
+            font-size: 0.70rem;
+            color: var(--muted);
+            margin-top: 0.15rem;
+        }
     </style>
 
     {{-- TOPBAR: botón Volver --}}
@@ -289,6 +295,7 @@
                           x-on:keydown="if ($event.ctrlKey || $event.metaKey || $event.altKey) { return; } if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]$/.test($event.key) && !['Backspace','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Delete','Home','End','Enter'].includes($event.key)) { $event.preventDefault(); }"
                           title="Solo letras y espacios"
                           autocomplete="off"/>
+            <p class="measureform-helper">Solo letras y espacios, ej: Kg</p>
 
             <div class="flex items-center justify-end mt-3">
                 <button type="submit" class="measureform-submit">

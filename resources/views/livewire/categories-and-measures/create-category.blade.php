@@ -284,6 +284,57 @@
             color: var(--sena-green-300);
             transform: translateY(-0.5px);
         }
+
+        /* Selector de unidades */
+        .measure-select-wrapper {
+            position: relative;
+        }
+
+        .measure-select {
+            width: 100%;
+            max-height: 15rem;
+            overflow-y: auto;
+            background: var(--surface);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            padding: 0.45rem 0.7rem;
+            font-size: 0.85rem;
+            color: var(--text);
+            outline: none;
+        }
+
+        [data-theme="dark"] .catform-scope .measure-select,
+        .theme-dark .catform-scope .measure-select {
+            background: #020617;
+            border-color: rgba(67, 198, 120, 0.9);
+            color: #F9FAFB;
+        }
+
+        .measure-mode-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.14), transparent 55%),
+                        rgba(15, 23, 42, 0.03);
+            border: 1px solid rgba(26, 168, 85, 0.45);
+            color: var(--text);
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+        }
+
+        .measure-mode-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 26px -18px rgba(26, 168, 85, 0.60);
+        }
+
+        .catform-helper {
+            font-size: 0.70rem;
+            color: var(--muted);
+            margin-top: 0.15rem;
+        }
     </style>
 
     {{-- TOPBAR: botón Volver --}}
@@ -328,24 +379,55 @@
                           x-on:keydown="if ($event.ctrlKey || $event.metaKey || $event.altKey) { return; } if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]$/.test($event.key) && !['Backspace','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Delete','Home','End','Enter'].includes($event.key)) { $event.preventDefault(); }"
                           title="Solo letras y espacios"
                           autocomplete="off"/>
+            <p class="catform-helper">El nombre en plural y solo letras y espacios, ej: Frutas</p>
 
-            <div class="relative" x-data @click.outside="$wire.hideMeasureResults()">
-                <x-form.input wire:model.live.debounce.250ms="measureSearch"
-                              wire:blur="ensureMeasureSelected"
-                              autocomplete="off"
-                              label="Unidad de medida"
-                              name="measureSearch"
-                              placeholder="Busca una medida..." />
-                @if($measureResults)
-                    <ul class="autocomplete-results">
-                        @foreach($measureResults as $measure)
-                            <li wire:mousedown.prevent="selectMeasure({{ $measure['id'] }}, @js($measure['name']))"
-                                class="autocomplete-results-item">
-                                {{ $measure['name'] }}
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
+            <div class="relative" x-data="{ mode: 'search' }" @click.outside="$wire.hideMeasureResults()">
+                <div class="flex items-center justify-end mb-1">
+                    <button type="button" class="measure-mode-toggle" x-on:click="mode = mode === 'search' ? 'select' : 'search'">
+                        <span x-text="mode === 'search' ? 'Usar selector' : 'Usar búsqueda'"></span>
+                    </button>
+                </div>
+
+                <template x-if="mode === 'search'">
+                    <div>
+                        <x-form.input wire:model.live.debounce.250ms="measureSearch"
+                                      wire:blur="ensureMeasureSelected"
+                                      autocomplete="off"
+                                      label="Unidad de medida"
+                                      name="measureSearch"
+                                      placeholder="Busca una medida..." />
+                        @if($measureResults)
+                            <ul class="autocomplete-results">
+                                @foreach($measureResults as $measure)
+                                    <li wire:mousedown.prevent="selectMeasure({{ $measure['id'] }}, @js($measure['name']))"
+                                        class="autocomplete-results-item">
+                                        {{ $measure['name'] }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                        <p class="catform-helper">Escribe para buscar y selecciona una unidad.</p>
+                    </div>
+                </template>
+
+                <template x-if="mode === 'select'">
+                    <div class="measure-select-wrapper">
+                        <select
+                            id="measureSelect"
+                            wire:model.live="measure_id"
+                            class="measure-select"
+                            size="10"
+                            required
+                        >
+                            <option value="">Selecciona una unidad</option>
+                            @foreach($measureOptions as $measure)
+                                <option value="{{ $measure['id'] }}">{{ $measure['name'] }}</option>
+                            @endforeach
+                        </select>
+                        <p class="catform-helper">Desplázate para ver más de 10 unidades.</p>
+                    </div>
+                </template>
+
                 <x-form.field-error for="measure_id" />
             </div>
 

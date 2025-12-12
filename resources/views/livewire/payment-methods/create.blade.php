@@ -246,6 +246,12 @@
             color: #E6EDF3;
             border-color: rgba(26, 168, 85, 0.65);
         }
+
+        .paymentform-helper {
+            font-size: 0.70rem;
+            color: var(--muted);
+            margin-top: 0.15rem;
+        }
     </style>
 
     {{-- TOPBAR: botón Volver --}}
@@ -285,12 +291,13 @@
                 wire:model="name"
                 label="Nombre"
                 name="name"
-                placeholder="Ingresa el método de pago"
+                placeholder="Ingresa el método de pago, ej: Efectivo"
                 maxlength="256"
                 pattern="^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]{1,256}$"
                 x-on:keydown="if ($event.ctrlKey || $event.metaKey || $event.altKey) { return; } if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]$/.test($event.key) && !['Backspace','Tab','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Delete','Home','End','Enter'].includes($event.key)) { $event.preventDefault(); }"
                 title="Solo se permiten letras y espacios"
             />
+            <p class="paymentform-helper">Solo letras y espacios.</p>
 
             <div class="flex items-center justify-end mt-3">
                 <button type="submit" class="paymentform-submit">

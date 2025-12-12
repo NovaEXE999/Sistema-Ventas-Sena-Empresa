@@ -14,6 +14,9 @@ class Create extends Component
     public string $providerSearch = '';
     public array $providerResults = [];
     public ?int $provider_id = null;
+    public string $providerNotice = '';
+    public bool $providerNotFound = false;
+    public bool $isAdmin = false;
 
     public string $productSearch = '';
     public array $productResults = [];
@@ -35,6 +38,7 @@ class Create extends Component
     public function mount($delivery = null): void
     {
         $this->date = now()->toDateString();
+        $this->isAdmin = auth()->user()?->isAdmin() ?? false;
     }
 
     public function save(): void
@@ -59,13 +63,13 @@ class Create extends Component
         foreach ($this->lineItems as $item) {
             $product = $products[$item['product_id']] ?? null;
             if (!$product || !$product->status) {
-                $this->addError('lineItems', 'Un producto seleccionado ya no existe o está inactivo.');
+                $this->addError('lineItems', 'Un producto seleccionado ya no existe o esta inactivo.');
                 return;
             }
 
             $totalAfterEntry = (int) $product->stock + (int) $item['quantity'];
             if ($totalAfterEntry > 1000) {
-                $this->addError('lineItems', "No puedes registrar más de 1000 unidades de {$product->name}. Stock actual: {$product->stock}.");
+                $this->addError('lineItems', "No puedes registrar mas de 1000 unidades de {$product->name}. Stock actual: {$product->stock}.");
                 return;
             }
         }
@@ -97,6 +101,16 @@ class Create extends Component
     {
         $term = trim($this->providerSearch);
 
+        $this->provider_id = null;
+        $this->providerNotice = '';
+        $this->providerNotFound = false;
+
+        if ($term === '') {
+            $this->providerResults = [];
+            $this->resetErrorBag(['provider_id', 'providerSearch']);
+            return;
+        }
+
         $this->providerResults = Provider::query()
             ->where(function ($query) use ($term) {
                 $query->where('name', 'like', '%'.$term.'%')
@@ -107,26 +121,30 @@ class Create extends Component
             ->get(['id','name','identification'])
             ->toArray();
 
-        $this->provider_id = null;
-
-        if ($term !== '' && empty($this->providerResults)) {
-            $this->addError('provider_id', 'El proveedor no existe o está inactivo. Selecciona uno de la lista.');
-        } else {
-            $this->resetErrorBag(['provider_id', 'providerSearch']);
+        if (empty($this->providerResults)) {
+            $this->providerNotice = $this->isAdmin
+                ? 'El proveedor que intentas usar no existe o esta inactivo. Registralo primero en "Proveedores".'
+                : 'El proveedor que intentas usar no existe o esta inactivo. Contacta al administrador para registrarlo.';
+            $this->providerNotFound = true;
+            return;
         }
+
+        $this->resetErrorBag(['provider_id', 'providerSearch']);
     }
 
     public function selectProvider(int $id, string $name): void
     {
         $provider = Provider::find($id);
         if (!$provider || !$provider->status) {
-            $this->addError('provider_id', 'El proveedor está inactivo o no existe.');
+            $this->addError('provider_id', 'El proveedor esta inactivo o no existe.');
             return;
         }
 
         $this->provider_id = $id;
         $this->providerSearch = $name;
         $this->providerResults = [];
+        $this->providerNotice = '';
+        $this->providerNotFound = false;
         $this->resetErrorBag(['provider_id', 'providerSearch']);
     }
 
@@ -139,7 +157,16 @@ class Create extends Component
     {
         $this->providerResults = [];
         if (!$this->provider_id) {
-            $this->addError('provider_id', 'Selecciona un proveedor de la lista.');
+            if ($this->providerNotFound && $this->providerNotice !== '') {
+                $this->addError('provider_id', $this->providerNotice);
+                return;
+            }
+
+            $this->providerNotice = $this->isAdmin
+                ? 'Selecciona un proveedor de la lista. Si no existe, registralo en "Proveedores".'
+                : 'Selecciona un proveedor de la lista. Si no existe, contacta al administrador para registrarlo.';
+            $this->providerNotFound = false;
+            $this->addError('provider_id', $this->providerNotice);
         }
     }
 
@@ -152,7 +179,7 @@ class Create extends Component
                 return null;
             }
             if (!$provider->status) {
-                $this->addError('provider_id', 'El proveedor está inactivo; no puedes registrar la entrada.');
+                $this->addError('provider_id', 'El proveedor esta inactivo; no puedes registrar la entrada.');
                 return null;
             }
             return $provider;
@@ -178,14 +205,14 @@ class Create extends Component
         $this->resetErrorBag(['productSearch']);
         $term = trim($this->productSearch);
         if ($term !== '' && empty($this->productResults)) {
-            $this->addError('productSearch', 'El producto no existe, está inactivo o ya alcanzó el límite de stock (1000).');
+            $this->addError('productSearch', 'El producto no existe, esta inactivo o ya alcanzo el limite de stock (1000).');
         }
     }
 
     public function ensureProductSelected(): void
     {
         $this->productResults = [];
-        // no-op if no selección; mensaje ya lo maneja updatedProductSearch/addProductLine
+        // no-op if no seleccion; mensaje ya lo maneja updatedProductSearch/addProductLine
     }
 
     public function updatedProductQuantity($value): void
@@ -220,7 +247,7 @@ class Create extends Component
 
         if (!$this->selectedProductId) {
             $message = $this->productSearch !== ''
-                ? 'El producto no existe o está inactivo. Selecciona uno de la lista.'
+                ? 'El producto no existe o esta inactivo. Selecciona uno de la lista.'
                 : 'Selecciona un producto de la lista.';
             $this->resetErrorBag(['productSearch']);
             $this->addError('productSearch', $message);
@@ -235,7 +262,7 @@ class Create extends Component
 
         $currentStock = (int) $product->stock;
         if ($currentStock >= 1000) {
-            $this->addError('productSearch', "El producto {$product->name} ya está en el límite de stock (1000).");
+            $this->addError('productSearch', "El producto {$product->name} ya esta en el limite de stock (1000).");
             return;
         }
 
@@ -246,7 +273,7 @@ class Create extends Component
         }
 
         if ($quantity > 1000) {
-            $this->addError('productQuantity', 'La cantidad máxima que puede entregar un proveedor es 1000.');
+            $this->addError('productQuantity', 'La cantidad maxima que puede entregar un proveedor es 1000.');
             return;
         }
 
@@ -255,7 +282,7 @@ class Create extends Component
 
         $availableForEntry = 1000 - $currentStock - $existingQuantity;
         if ($availableForEntry <= 0) {
-            $this->addError('lineItems', "El producto {$product->name} alcanzará el límite de 1000 con su stock actual. Quita esta línea.");
+            $this->addError('lineItems', "El producto {$product->name} alcanzara el limite de 1000 con su stock actual. Quita esta linea.");
             return;
         }
 
@@ -290,7 +317,7 @@ class Create extends Component
         $maxAllowed = max(0, 1000 - $baseStock);
 
         if ($quantity > $maxAllowed) {
-            $this->addError('lineItems', "La cantidad supera el límite de 1000 con el stock actual ({$baseStock}). Máximo permitido: {$maxAllowed}.");
+            $this->addError('lineItems', "La cantidad supera el limite de 1000 con el stock actual ({$baseStock}). Maximo permitido: {$maxAllowed}.");
             $quantity = $maxAllowed;
         }
 

@@ -52,6 +52,7 @@ use App\Livewire\Users\Create as UsersCreate;
 use App\Livewire\Users\Update as UsersUpdate;
 
 use App\Livewire\Reports\Index as ReportsIndex;
+use App\Livewire\Reports\Reports as ReportsReports;
 
 Route::get('/', function () {
     return view('livewire.auth.login');
@@ -133,5 +134,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('users/{user}/update', UsersUpdate::class)->name('users.update');
 
         Route::get('reports', ReportsIndex::class)->name('reports.index');
+        /* Route::get('reports/{report}/reports/pdf', [ReportsReports::class, 'pdf'])->name('reports.reports.pdf');
+        Route::get('reports/{report}/reports/download', [ReportsReports::class, 'download'])->name('reports.reports.download'); */
     });
 });

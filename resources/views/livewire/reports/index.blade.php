@@ -64,14 +64,34 @@
             box-shadow: 0 12px 22px -14px rgba(26, 168, 85, 0.7);
             transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
         }
-        .btn-primary:hover {
-            filter: brightness(1.03);
-            transform: translateY(-1px);
+        .btn-primary:hover { filter: brightness(1.03); transform: translateY(-1px); }
+        .btn-primary:focus-visible { outline: 3px solid rgba(26, 168, 85, 0.28); outline-offset: 2px; }
+
+        .btn-blue {
+            background: #2563eb;
+            border: 1px solid #2563eb;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            padding: 10px 14px;
+            box-shadow: 0 12px 22px -14px rgba(37, 99, 235, 0.7);
+            transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
         }
-        .btn-primary:focus-visible {
-            outline: 3px solid rgba(26, 168, 85, 0.28);
-            outline-offset: 2px;
+        .btn-blue:hover { filter: brightness(1.03); transform: translateY(-1px); }
+        .btn-blue:focus-visible { outline: 3px solid rgba(37, 99, 235, 0.28); outline-offset: 2px; }
+
+        .btn-green {
+            background: #1aa855;
+            border: 1px solid #1aa855;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 700;
+            padding: 10px 14px;
+            box-shadow: 0 12px 22px -14px rgba(26, 168, 85, 0.7);
+            transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease;
         }
+        .btn-green:hover { filter: brightness(1.03); transform: translateY(-1px); }
+        .btn-green:focus-visible { outline: 3px solid rgba(26, 168, 85, 0.28); outline-offset: 2px; }
 
         .summary-card,
         .panel-card {
@@ -187,7 +207,6 @@
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex flex-wrap items-center gap-2 text-sm">
-            <label for="monthFilter" class="reports-label">Mes</label>
             <input
                 id="monthFilter"
                 type="month"
@@ -328,4 +347,9 @@
             </div>
         </div>
     </article>
+
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 mt-2">
+        <button type="button" class="btn-blue">Ver PDF</button>
+        <button type="button" class="btn-green">Descargar PDF</button>
+    </div>
 </div>

@@ -256,6 +256,74 @@
             transform: translateY(-0.5px);
         }
 
+        .category-results-item .category-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .category-results-item .category-title {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .category-results-item .category-measure {
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: var(--sena-green-500);
+        }
+
+        .category-results-item .category-meta {
+            font-size: 0.72rem;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        /* Selector de categorÇða */
+        .category-select-wrapper {
+            position: relative;
+        }
+
+        .category-select {
+            width: 100%;
+            max-height: 15rem;
+            overflow-y: auto;
+            background: var(--surface);
+            border-radius: 0.75rem;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            padding: 0.45rem 0.7rem;
+            font-size: 0.85rem;
+            color: var(--text);
+            outline: none;
+        }
+
+        [data-theme="dark"] .products-form-scope .category-select,
+        .theme-dark .products-form-scope .category-select {
+            background: #020617;
+            border-color: rgba(67, 198, 120, 0.9);
+            color: #F9FAFB;
+        }
+
+        .category-mode-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.9rem;
+            border-radius: 9999px;
+            background: radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.14), transparent 55%),
+                        rgba(15, 23, 42, 0.03);
+            border: 1px solid rgba(26, 168, 85, 0.45);
+            color: var(--text);
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+        }
+
+        .category-mode-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 26px -18px rgba(26, 168, 85, 0.60);
+        }
+
         /* Errores de campo */
         .products-form-scope .text-error,
         .products-form-scope .form-error {
@@ -425,7 +493,7 @@
                 <x-form.input
                     wire:model.lazy="stock"
                     type="number"
-                    min="1"
+                    min="0"
                     max="1000"
                     step="1"
                     inputmode="numeric"
@@ -485,36 +553,34 @@
                     wire:model.lazy="price"
                     type="number"
                     min="0"
-                    max="500000"
+                    max="999999999"
                     step="0.01"
                     inputmode="decimal"
-                    pattern="\\d{1,6}(\\.\\d{1,2})?"
+                    pattern="\d{1,9}(\.\d{1,2})?"
                     label="Precio"
                     name="price"
                     placeholder="Ingresa el precio"
                     required
-                    maxlength="9"
+                    maxlength="12"
                     x-data
                     x-on:keydown="
-                        const allowed = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End','Enter','Escape'];
+                        const allowed = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End','Enter','Escape','.'];
                         if (allowed.includes($event.key)) { return; }
                         if ($event.key === '.' && ($el.value || '').includes('.')) { $event.preventDefault(); return; }
                         if (!/^[0-9.]$/.test($event.key)) { $event.preventDefault(); return; }
                         const [intPart = ''] = ($el.value || '').split('.');
-                        if ($event.key !== '.' && !$el.value.includes('.') && intPart.length >= 6) {
-                            $event.preventDefault();
                         }
                     "
                     x-on:input="
                         let val = ($el.value || '').replace(/[^0-9.]/g, '');
                         let [intPart = '', decPart = ''] = val.split('.');
-                        intPart = intPart.replace(/^0+(?=\d)/, '').slice(0, 6);
+                        intPart = intPart.replace(/^0+(?=\d)/, '').slice(0, 9);
                         decPart = decPart.slice(0, 2);
                         val = decPart ? `${intPart || '0'}.${decPart}` : (intPart || '');
                         let num = parseFloat(val);
                         if (Number.isNaN(num)) { $el.value = ''; return; }
-                        if (num > 500000) {
-                            num = 500000;
+                        if (num > 999999999) {
+                            num = 999999999;
                             decPart = '';
                         }
                         const [finalInt, finalDec = ''] = num.toString().split('.');
@@ -524,12 +590,12 @@
                     x-on:change="
                         let val = ($el.value || '').replace(/[^0-9.]/g, '');
                         let [intPart = '', decPart = ''] = val.split('.');
-                        intPart = intPart.replace(/^0+(?=\d)/, '').slice(0, 6);
+                        intPart = intPart.replace(/^0+(?=\d)/, '').slice(0, 9);
                         decPart = decPart.slice(0, 2);
                         val = decPart ? `${intPart || '0'}.${decPart}` : (intPart || '');
                         let num = parseFloat(val);
                         if (Number.isNaN(num)) { $el.value = ''; return; }
-                        if (num > 500000) { num = 500000; }
+                        if (num > 999999999) { num = 999999999; }
                         const [finalInt, finalDec = ''] = num.toString().split('.');
                         const decimals = decPart !== '' ? decPart : finalDec.slice(0, 2);
                         $el.value = decimals ? `${finalInt}.${decimals}` : finalInt;
@@ -538,45 +604,79 @@
                         let pasted = (event.clipboardData || window.clipboardData).getData('text') || '';
                         pasted = pasted.replace(/[^0-9.]/g, '');
                         let [intPart = '', decPart = ''] = pasted.split('.');
-                        intPart = intPart.replace(/^0+(?=\d)/, '').slice(0, 6);
+                        intPart = intPart.replace(/^0+(?=\d)/, '').slice(0, 9);
                         decPart = decPart.slice(0, 2);
                         let sanitized = decPart ? `${intPart || '0'}.${decPart}` : (intPart || '');
                         let num = parseFloat(sanitized);
                         if (Number.isNaN(num)) { sanitized = ''; }
-                        if (num > 500000) { sanitized = '500000'; }
+                        if (num > 999999999) { sanitized = '999999999'; }
                         if (sanitized !== '') {
                             $el.value = sanitized;
                             $el.dispatchEvent(new Event('input'));
                         }
                     "
                 />
-                <p class="products-form-helper">Hasta 500&nbsp;000, con máximo dos decimales.</p>
+                <p class="products-form-helper">Hasta 999,999,999 con máximo dos decimales.</p>
             </div>
 
             {{-- Categoría --}}
-            <div class="products-form-full" x-data @click.outside="$wire.hideCategoryResults()">
-                <x-form.input
-                    wire:model.live.debounce.300ms="categorySearch"
-                    wire:blur="hideCategoryResults"
-                    autocomplete="off"
-                    label="Categoría"
-                    name="categorySearch"
-                    placeholder="Escribe para buscar..."
-                    required
-                />
-                @if($categoryResults)
-                    <ul class="category-results">
-                        @foreach($categoryResults as $cat)
-                            <li
-                                wire:mousedown.prevent="selectCategory({{ $cat['id'] }}, @js($cat['name']))"
-                                class="category-results-item"
-                            >
-                                <span>{{ $cat['name'] }}</span>
-                                <span>#{{ $cat['id'] }}</span>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
+            <div class="products-form-full" x-data="{ mode: 'search' }" @click.outside="$wire.hideCategoryResults()">
+                <div class="flex items-center justify-between mb-1">
+                    <span class="products-form-label">Categoría</span>
+                    <button type="button" class="category-mode-toggle" x-on:click="mode = mode === 'search' ? 'select' : 'search'">
+                        <span x-text="mode === 'search' ? 'Usar selector' : 'Usar búsqueda'"></span>
+                    </button>
+                </div>
+
+                <template x-if="mode === 'search'">
+                    <div>
+                        <x-form.input
+                            wire:model.live.debounce.300ms="categorySearch"
+                            wire:blur="hideCategoryResults"
+                            autocomplete="off"
+                            label="Categoría"
+                            name="categorySearch"
+                            placeholder="Escribe para buscar..."
+                            required
+                        />
+                        <p class="products-form-helper">Escribe y elige una categoría con su unidad de medida.</p>
+                        @if($categoryResults)
+                            <ul class="category-results">
+                                @foreach($categoryResults as $cat)
+                                    <li
+                                        wire:mousedown.prevent="selectCategory({{ $cat['id'] }}, @js($cat['name']))"
+                                        class="category-results-item"
+                                    >
+                                        <div class="category-info">
+                                            <span class="category-title">{{ $cat['name'] }}</span>
+                                            <span class="category-measure">Unidad: {{ $cat['measure'] }}</span>
+                                        </div>
+                                        <span class="category-meta">#{{ $cat['id'] }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                </template>
+
+                <template x-if="mode === 'select'">
+                    <div class="category-select-wrapper">
+                        <select
+                            id="categorySelect"
+                            wire:model.live="category_id"
+                            class="category-select"
+                            size="10"
+                            required
+                        >
+                            <option value="">Selecciona una categoría</option>
+                            @foreach($categoryOptions as $cat)
+                                <option value="{{ $cat['id'] }}">{{ $cat['name'] }} - {{ $cat['measure'] }}</option>
+                            @endforeach
+                        </select>
+                        <p class="products-form-helper">Desplázate para ver más de 10 categorías.</p>
+                    </div>
+                </template>
+
                 <x-form.field-error for="category_id" />
             </div>
         </div>

@@ -41,7 +41,7 @@ new class extends Component {
 <section class="w-full">
     @include('partials.settings-heading')
 
-    <x-settings.layout :heading="__('Actualizar contraseña')" :subheading="__('Asegurate de que tu cuenta esté usando una contraseña larga y aleatoria para mantenerte seguro.')">
+    <x-settings.layout :heading="__('Actualizar contraseña')" :subheading="__('Asegurate de que tu cuenta esté usando una contraseña larga y aleatoria para mantenerte seguro. Mínimo 12 caracteres, al menos una mayúscula, una minúscula, un número y un signo.')">
         <x-form.error-alert />
         <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
             <flux:input

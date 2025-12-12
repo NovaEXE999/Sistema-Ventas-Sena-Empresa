@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Client;
+use App\Models\PaymentMethod;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,9 +19,9 @@ class SaleFactory extends Factory
      */
     public function definition(): array
     {
-        $userId = \App\Models\User::query()->inRandomOrder()->value('id') ?? \App\Models\User::factory();
-        $clientId = \App\Models\Client::query()->inRandomOrder()->value('id') ?? \App\Models\Client::factory();
-        $paymentMethodId = \App\Models\PaymentMethod::query()->inRandomOrder()->value('id') ?? \App\Models\PaymentMethod::factory();
+        $userId = User::query()->inRandomOrder()->value('id') ?? User::factory();
+        $clientId = Client::query()->inRandomOrder()->value('id') ?? Client::factory();
+        $paymentMethodId = PaymentMethod::query()->inRandomOrder()->value('id') ?? PaymentMethod::factory();
 
         return [
             'total_value' => $this->faker->randomFloat(2, 10000, 5000000),

@@ -189,6 +189,45 @@
             cursor: not-allowed;
         }
 
+        /* Select con estilo igual a filtros del index */
+        .sales-select {
+            border-radius: 0.75rem;
+            padding: 0.55rem 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text);
+            outline: none;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.12), transparent 55%),
+                var(--surface);
+            transition: border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease, transform 0.05s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 2rem;
+        }
+
+        .sales-select option {
+            background-color: #ffffff;
+            color: #0E1420;
+        }
+
+        .sales-select-wrapper {
+            position: relative;
+        }
+
+        .sales-select-wrapper::after {
+            content: "";
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            width: 0.55rem;
+            height: 0.55rem;
+            border-right: 2px solid rgba(148, 163, 184, 0.85);
+            border-bottom: 2px solid rgba(148, 163, 184, 0.85);
+            transform: translateY(-60%) rotate(45deg);
+            pointer-events: none;
+        }
+
         [data-theme="dark"] .sales-form-scope input[type="text"],
         [data-theme="dark"] .sales-form-scope input[type="number"],
         [data-theme="dark"] .sales-form-scope input[type="date"],
@@ -213,8 +252,23 @@
             color-scheme: dark;
         }
 
+        [data-theme="dark"] .sales-form-scope .sales-select,
+        .theme-dark .sales-form-scope .sales-select {
+            background:
+                radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.24), transparent 55%),
+                #020617;
+            border-color: rgba(67, 198, 120, 0.9);
+            color: #F9FAFB;
+        }
+
         [data-theme="dark"] .sales-form-scope select option,
         .theme-dark .sales-form-scope select option {
+            background-color: #020617;
+            color: #E6EDF3;
+        }
+
+        [data-theme="dark"] .sales-form-scope .sales-select option,
+        .theme-dark .sales-form-scope .sales-select option {
             background-color: #020617;
             color: #E6EDF3;
         }
@@ -479,43 +533,76 @@
             <div>
                 <label class="sales-form-label">Vendedor</label>
                 <input type="text" value="{{ $sellerName }}" disabled class="w-full">
+                <p class="sales-form-helper">Vendedor asignado automáticamente.</p>
             </div>
 
             {{-- Método de pago --}}
             <div class="sales-form-full">
                 <label class="sales-form-label">Método de pago</label>
-                <select wire:model="payment_method_id" class="w-full">
-                    <option value="">Seleccione...</option>
-                    @foreach($paymentMethods as $method)
-                        <option value="{{ $method['id'] }}">{{ $method['name'] }}</option>
-                    @endforeach
-                </select>
+                <div class="sales-select-wrapper">
+                    <select wire:model="payment_method_id" class="sales-select w-full">
+                        <option value="">Seleccione...</option>
+                        @foreach($paymentMethods as $method)
+                            <option value="{{ $method['id'] }}">{{ $method['name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <p class="sales-form-helper">Seleccione un método de pago.</p>
                 <x-form.field-error for="payment_method_id" />
             </div>
         </div>
 
         {{-- Cliente --}}
         <div class="sales-form-full mt-4" x-data @click.outside="$wire.hideClientResults()">
-            <x-form.input wire:model.live.debounce.300ms="clientSearch"
-                          wire:blur="ensureClientSelected"
-                          autocomplete="off"
-                          label="Cliente" name="clientSearch" placeholder="Busca o escribe el cliente..." />
-            @if($clientResults)
-                <ul class="autocomplete-results">
-                    @foreach($clientResults as $client)
-                        <li wire:mousedown.prevent="selectClient({{ $client['id'] }}, @js($client['name']))"
-                            class="autocomplete-results-item">
-                            <div class="flex flex-col">
-                                <span class="font-medium">{{ $client['name'] }}</span>
-                                @if(!empty($client['identification']))
-                                    <span class="text-xs">ID: {{ $client['identification'] }}</span>
-                                @endif
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-            @endif
-            <x-form.field-error for="clientSearch" />
+            <div class="flex flex-col gap-2">
+                <div class="flex items-start gap-3 flex-wrap">
+                    <div class="flex-1 min-w-0">
+                        <label class="sales-form-label" for="clientSearch">Cliente</label>
+                        <input
+                            wire:model.live.debounce.300ms="clientSearch"
+                            wire:blur="ensureClientSelected"
+                            autocomplete="off"
+                            type="search"
+                            name="clientSearch"
+                            id="clientSearch"
+                            placeholder="Busca o escribe el cliente..."
+                            class="w-full"
+                        >
+                    </div>
+
+                    @if($clientNotFound)
+                        <a href="{{ route('clients.create')}}"
+                           wire:navigate
+                           class="sales-form-back-btn flex-none"
+                           role="button">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                                <path d="M12 5v14" />
+                                <path d="M5 12h14" />
+                            </svg>
+                            <span>Crear cliente</span>
+                        </a>
+                    @endif
+                </div>
+
+                @if($clientResults)
+                    <ul class="autocomplete-results">
+                        @foreach($clientResults as $client)
+                            <li wire:mousedown.prevent="selectClient({{ $client['id'] }}, @js($client['name']))"
+                                class="autocomplete-results-item">
+                                <div class="flex flex-col">
+                                    <span class="font-medium">{{ $client['name'] }}</span>
+                                    @if(!empty($client['identification']))
+                                        <span class="text-xs">ID: {{ $client['identification'] }}</span>
+                                    @endif
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                <x-form.field-error for="clientSearch" :message="$clientNotFound ? $clientNotice : null" />
+                <p class="sales-form-helper">Busque y seleccione un cliente de la lista.</p>
+            </div>
         </div>
 
         {{-- Productos --}}
@@ -537,11 +624,17 @@
                         </ul>
                     @endif
                     <x-form.field-error for="productSearch" />
+                    
+                    <p class="sales-form-helper">Busque y agregue productos a la venta.</p>
+                    <div class="sales-form-topbar">
+                    </div>
                 </div>
+
                 <div>
                     <x-form.input wire:model="productQuantity" type="number" min="1"
                                   label="Cantidad" name="productQuantity" placeholder="0" />
                     <x-form.field-error for="productQuantity" />
+                    <p class="sales-form-helper">De 1 a 1000.</p>
                 </div>
                 <button type="button" wire:click="addProductLine" class="btn-insert h-10">
                     Insertar

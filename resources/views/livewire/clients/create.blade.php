@@ -124,6 +124,12 @@
             display: inline-block;
         }
 
+        .clients-form-helper{
+            font-size: 0.70rem;
+            color: var(--muted);
+            margin-top: 0.15rem;
+        }
+
         .clients-form-scope input[type="text"],
         .clients-form-scope input[type="number"],
         .clients-form-scope input[type="tel"],
@@ -155,6 +161,45 @@
             cursor: not-allowed;
         }
 
+        /* Select con estilo igual a los filtros (flecha y fondo radial) */
+        .sales-select {
+            border-radius: 0.75rem;
+            padding: 0.55rem 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text);
+            outline: none;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.12), transparent 55%),
+                var(--surface);
+            transition: border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease, transform 0.05s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            padding-right: 2rem;
+        }
+
+        .sales-select option {
+            background-color: #ffffff;
+            color: #0E1420;
+        }
+
+        .sales-select-wrapper {
+            position: relative;
+        }
+
+        .sales-select-wrapper::after {
+            content: "";
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            width: 0.55rem;
+            height: 0.55rem;
+            border-right: 2px solid rgba(148, 163, 184, 0.85);
+            border-bottom: 2px solid rgba(148, 163, 184, 0.85);
+            transform: translateY(-60%) rotate(45deg);
+            pointer-events: none;
+        }
+
         [data-theme="dark"] .clients-form-scope input[type="text"],
         [data-theme="dark"] .clients-form-scope input[type="number"],
         [data-theme="dark"] .clients-form-scope input[type="tel"],
@@ -169,8 +214,23 @@
             color-scheme: dark;
         }
 
+        [data-theme="dark"] .clients-form-scope .sales-select,
+        .theme-dark .clients-form-scope .sales-select {
+            background:
+                radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.24), transparent 55%),
+                #020617;
+            border-color: rgba(67, 198, 120, 0.9);
+            color: #F9FAFB;
+        }
+
         [data-theme="dark"] .clients-form-scope select option,
         .theme-dark .clients-form-scope select option {
+            background-color: #020617;
+            color: #E6EDF3;
+        }
+
+        [data-theme="dark"] .clients-form-scope .sales-select option,
+        .theme-dark .clients-form-scope .sales-select option {
             background-color: #020617;
             color: #E6EDF3;
         }
@@ -300,7 +360,7 @@
                     wire:model="identification"
                     type="text"
                     name="identification"
-                    placeholder="Documento del cliente"
+                    placeholder="Documento del cliente, ej: 1027869503"
                     pattern="\d{3,10}"
                     minlength="3"
                     maxlength="10"
@@ -310,42 +370,48 @@
                     @if (request()->routeIs('clients.update')) disabled @endif
                 />
                 <x-form.field-error for="identification" />
+                <p class="clients-form-helper">Solo números, mínimo 3 máximo 10.</p>
             </div>
 
             <x-form.input
                 wire:model.live.debounce.250ms="name"
                 label="Nombre"
                 name="name"
-                placeholder="Ingresa tu nombre"
+                placeholder="Ingresa el nombre del cliente"
                 pattern="[A-Za-zÀ-ÿ\s]+"
                 title="Solo letras y espacios"
                 autocomplete="off"
             />
+            <p class="clients-form-helper">Solo letras y espacios.</p>
 
             <x-form.input
                 wire:model="phone_number"
                 label="Teléfono"
                 name="phone_number"
-                placeholder="Teléfono del cliente"
+                placeholder="Teléfono del cliente, ej: 3156782010"
                 pattern="3\d{9}"
                 maxlength="10"
                 inputmode="numeric"
                 title="Debe iniciar en 3 y tener 10 dígitos"
             />
+            <p class="clients-form-helper">Solo números, el número debe iniciar en 3 y tener 10 dígitos.</p>
 
             <div>
                 <label class="clients-form-label">Tipo de cliente</label>
-                <select
-                    wire:model="client_type_id"
-                    class="w-full"
-                    @if (request()->routeIs('clients.update') && ! $isAdmin) disabled @endif
-                >
-                    <option value="">Seleccione...</option>
-                    @foreach($clientTypes as $type)
-                        <option value="{{ $type['id'] }}">{{ $type['name'] }}</option>
-                    @endforeach
-                </select>
+                <div class="sales-select-wrapper">
+                    <select
+                        wire:model="client_type_id"
+                        class="sales-select w-full"
+                        @if (request()->routeIs('clients.update') && ! $isAdmin) disabled @endif
+                    >
+                        <option value="">Seleccione...</option>
+                        @foreach($clientTypes as $type)
+                            <option value="{{ $type['id'] }}">{{ $type['name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <x-form.field-error for="client_type_id" />
+                <p class="clients-form-helper">Seleccione el tipo de cliente.</p>
             </div>
 
             <div class="flex items-center justify-end mt-3">

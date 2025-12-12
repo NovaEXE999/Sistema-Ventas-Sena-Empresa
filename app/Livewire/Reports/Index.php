@@ -136,19 +136,19 @@ class Index extends Component
                 'helper' => isset($clientType->total) ? "{$clientType->total} ventas" : 'N/A',
             ],
             [
-                'title' => 'Método de pago favorito',
+                'title' => 'Metodo de pago favorito',
                 'value' => $paymentMethod->name ?? 'Sin datos',
                 'helper' => isset($paymentMethod->total) ? "{$paymentMethod->total} usos" : 'N/A',
             ],
             [
-                'title' => 'Categoría que más vende',
+                'title' => 'Categoria que más vende',
                 'value' => $this->topCategory,
                 'helper' => 'Según cantidad de productos',
             ],
             [
-                'title' => 'Proporción imp./vend.',
-                'value' => "{$this->importVsSales['imported_pct']}% / {$this->importVsSales['sold_pct']}%",
-                'helper' => "Imp: {$productsImported} | Vend: {$productsSold}",
+                'title' => 'Porcentaje de productos vendidos',
+                'value' => "{$this->importVsSales['sold_pct']}%",
+                'helper' => "Respecto a lo importado",
             ],
             [
                 'title' => 'Productos registrados',
@@ -191,3 +191,4 @@ class Index extends Component
         return view('livewire.reports.index');
     }
 }
+

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
+use App\Models\Provider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +18,8 @@ class ProductDeliveryFactory extends Factory
      */
     public function definition(): array
     {
-        $productId = \App\Models\Product::query()->inRandomOrder()->value('id') ?? \App\Models\Product::factory();
-        $providerId = \App\Models\Provider::query()->inRandomOrder()->value('id') ?? \App\Models\Provider::factory();
+        $productId = Product::query()->inRandomOrder()->value('id') ?? Product::factory();
+        $providerId = Provider::query()->inRandomOrder()->value('id') ?? Provider::factory();
 
         return [
             'date' => $this->faker->dateTimeThisMonth(),
