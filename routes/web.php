@@ -134,7 +134,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('users/{user}/update', UsersUpdate::class)->name('users.update');
 
         Route::get('reports', ReportsIndex::class)->name('reports.index');
-        /* Route::get('reports/{report}/reports/pdf', [ReportsReports::class, 'pdf'])->name('reports.reports.pdf');
-        Route::get('reports/{report}/reports/download', [ReportsReports::class, 'download'])->name('reports.reports.download'); */
+        Route::get('reports/{report}/reports/pdf', [ReportsReports::class, 'pdf'])->name('reports.reports.pdf');
+        Route::get('reports/{report}/reports/download', [ReportsReports::class, 'download'])->name('reports.reports.download');
     });
 });

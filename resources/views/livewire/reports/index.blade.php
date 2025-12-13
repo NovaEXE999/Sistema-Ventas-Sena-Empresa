@@ -203,6 +203,8 @@
             'productos-registrados' => '<path d="m7.5 4.21 4.5-2.5 4.5 2.5v4.58l-4.5 2.5-4.5-2.5Z" /><path d="m3 6.5 4.5 2.5v5l4.5 2.5 4.5-2.5v-5L21 6.5" />',
             'default' => '<path d="m12 2 3 7h7l-5.5 4.25 2 7L12 16l-6.5 4.25 2-7L2 9h7Z" />',
         ];
+
+        $reportMonth = $month ?? now()->format('Y-m');
     @endphp
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -349,7 +351,19 @@
     </article>
 
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3 mt-2">
-        <button type="button" class="btn-blue">Ver PDF</button>
-        <button type="button" class="btn-green">Descargar PDF</button>
+        <a
+            href="{{ route('reports.reports.pdf', ['report' => $reportMonth]) }}"
+            target="_blank"
+            rel="noopener"
+            class="btn-blue inline-flex items-center justify-center text-center"
+        >
+            Ver PDF
+        </a>
+        <a
+            href="{{ route('reports.reports.download', ['report' => $reportMonth]) }}"
+            class="btn-green inline-flex items-center justify-center text-center"
+        >
+            Descargar PDF
+        </a>
     </div>
 </div>

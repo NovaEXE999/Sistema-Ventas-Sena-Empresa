@@ -141,9 +141,9 @@ class Index extends Component
                 'helper' => isset($paymentMethod->total) ? "{$paymentMethod->total} usos" : 'N/A',
             ],
             [
-                'title' => 'Categoria que más vende',
+                'title' => 'Categoria que mas vende',
                 'value' => $this->topCategory,
-                'helper' => 'Según cantidad de productos',
+                'helper' => 'Segun cantidad de productos',
             ],
             [
                 'title' => 'Porcentaje de productos vendidos',

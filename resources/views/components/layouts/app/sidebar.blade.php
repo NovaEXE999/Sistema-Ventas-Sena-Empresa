@@ -137,7 +137,7 @@
                     @endif
                       
                     
-                    <flux:navlist.item icon="information-circle" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Acerca de</flux:navlist.item>
+                    {{-- <flux:navlist.item icon="information-circle" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Acerca de</flux:navlist.item> --}}
                 </flux:navlist.group>
             </flux:navlist>
 
