@@ -76,7 +76,7 @@ class CreateCategory extends Component
         $this->resetErrorBag(['measure_id', 'measureSearch']);
 
         if (! $this->measure_id) {
-            $this->addError('measure_id', 'Selecciona una unidad de la lista. Si no existe, regヴstrala en "Unidades de medida".');
+            $this->addError('measure_id', 'Selecciona una unidad de la lista. Si no existe, registrala en "Unidades de medida".');
         }
     }
 
@@ -84,8 +84,8 @@ class CreateCategory extends Component
     {
         return [
             'name.regex' => 'El nombre solo puede contener letras y espacios.',
-            'measure_id.required' => 'Selecciona una unidad de la lista. Si no existe, regヴstrala en "Unidades de medida".',
-            'measure_id.exists' => 'La unidad de medida no existe. Regヴstrala primero en "Unidades de medida".',
+            'measure_id.required' => 'Selecciona una unidad de la lista. Si no existe, registrala en "Unidades de medida".',
+            'measure_id.exists' => 'La unidad de medida no existe. Registrala primero en "Unidades de medida".',
         ];
     }
 

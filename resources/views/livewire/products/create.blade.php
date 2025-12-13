@@ -621,8 +621,7 @@
 
             {{-- Categoría --}}
             <div class="products-form-full" x-data="{ mode: 'search' }" @click.outside="$wire.hideCategoryResults()">
-                <div class="flex items-center justify-between mb-1">
-                    <span class="products-form-label">Categoría</span>
+                <div class="flex items-center justify-end mb-1">
                     <button type="button" class="category-mode-toggle" x-on:click="mode = mode === 'search' ? 'select' : 'search'">
                         <span x-text="mode === 'search' ? 'Usar selector' : 'Usar búsqueda'"></span>
                     </button>

@@ -361,12 +361,18 @@
                     type="text"
                     name="identification"
                     placeholder="Documento del cliente, ej: 1027869503"
-                    pattern="\d{3,10}"
+                    required
                     minlength="3"
                     maxlength="10"
+                    pattern="^[0-9]{3,10}$"
                     inputmode="numeric"
                     title="Solo números, 3 a 10 dígitos"
                     class="w-full"
+                    x-on:input="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                    x-on:keydown="
+                        const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
+                        if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
+                    "
                     @if (request()->routeIs('clients.update')) disabled @endif
                 />
                 <x-form.field-error for="identification" />
@@ -378,21 +384,35 @@
                 label="Nombre"
                 name="name"
                 placeholder="Ingresa el nombre del cliente"
-                pattern="[A-Za-zÀ-ÿ\s]+"
-                title="Solo letras y espacios"
+                required
+                maxlength="255"
+                pattern="^[A-Za-zÀ-ÿ ]{1,255}$"
+                title="Solo letras y espacios. Máximo 255 caracteres."
+                x-on:input="this.value = this.value.replace(/[^A-Za-zÀ-ÿ ]/g, '').slice(0, 255)"
+                x-on:keydown="
+                    const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
+                    if (!/^[A-Za-zÀ-ÿ ]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
+                "
                 autocomplete="off"
             />
-            <p class="clients-form-helper">Solo letras y espacios.</p>
+            <p class="clients-form-helper">Solo letras y espacios. Máximo 255 caracteres.</p>
 
             <x-form.input
                 wire:model="phone_number"
                 label="Teléfono"
                 name="phone_number"
                 placeholder="Teléfono del cliente, ej: 3156782010"
-                pattern="3\d{9}"
+                required
+                minlength="10"
                 maxlength="10"
+                pattern="^3[0-9]{9}$"
                 inputmode="numeric"
                 title="Debe iniciar en 3 y tener 10 dígitos"
+                x-on:input="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                x-on:keydown="
+                    const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
+                    if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
+                "
             />
             <p class="clients-form-helper">Solo números, el número debe iniciar en 3 y tener 10 dígitos.</p>
 
@@ -401,6 +421,7 @@
                 <div class="sales-select-wrapper">
                     <select
                         wire:model="client_type_id"
+                        required
                         class="sales-select w-full"
                         @if (request()->routeIs('clients.update') && ! $isAdmin) disabled @endif
                     >

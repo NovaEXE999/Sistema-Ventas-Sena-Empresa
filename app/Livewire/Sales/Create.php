@@ -231,6 +231,11 @@ class Create extends Component
         $this->productResults = [];
     }
 
+    public function updatedProductQuantity($value): void
+    {
+        $this->productQuantity = $this->sanitizeQuantity($value);
+    }
+
     public function selectProduct(int $id): void
     {
         $product = Product::select('id', 'name', 'price', 'stock')->find($id);
@@ -247,6 +252,7 @@ class Create extends Component
     public function addProductLine(): void
     {
         $this->resetErrorBag(['productQuantity', 'productSearch', 'lineItems']);
+        $this->productQuantity = $this->sanitizeQuantity($this->productQuantity);
 
         if (!$this->selectedProductId) {
             $message = $this->productSearch !== ''
@@ -263,7 +269,7 @@ class Create extends Component
             return;
         }
 
-        $quantity = max(1, (int) $this->productQuantity);
+        $quantity = $this->sanitizeQuantity($this->productQuantity);
         if ($quantity > $product->stock) {
             $this->addError('productQuantity', "Solo hay {$product->stock} unidades en stock.");
             return;
@@ -324,6 +330,19 @@ class Create extends Component
         }
 
         $this->total_value = collect($this->lineItems)->sum(fn ($item) => $item['subtotal']);
+    }
+
+    protected function sanitizeQuantity($value): int
+    {
+        $qty = (int) $value;
+        if ($qty < 1) {
+            $qty = 1;
+        }
+        if ($qty > 1000) {
+            $qty = 1000;
+        }
+
+        return $qty;
     }
 
     public function render()

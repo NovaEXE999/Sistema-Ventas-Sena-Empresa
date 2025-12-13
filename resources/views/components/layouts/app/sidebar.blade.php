@@ -101,16 +101,12 @@
             <flux:navlist variant="outline" class="sidebar-sena">
                 <flux:navlist.group :heading="__('Plataforma')" class="grid">
                     @php($isAdmin = auth()->user()?->isAdmin())
-                    <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-
-                    <flux:navlist.item icon="shopping-cart" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>Productos</flux:navlist.item>
-
-                    <flux:navlist.item icon="currency-dollar" :href="route('sales.index')" :current="request()->routeIs('sales.*')" wire:navigate>Ventas</flux:navlist.item>
-
+                    {{-- <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item> --}}
                     @if ($isAdmin)
-                        <flux:navlist.item icon="tag" :href="route('categoriesandmeasures.index')" :current="request()->routeIs('categoriesandmeasures.*')" wire:navigate>Categorias y Medidas</flux:navlist.item>
+                        <flux:navlist.item icon="document" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>Reportes</flux:navlist.item>
+                        <flux:navlist.item icon="user-group" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>Gestion de usuarios</flux:navlist.item>
                     @endif
-                    
+
                     <flux:navlist.group heading="Gestion de clientes" expandable>
                         <flux:navlist.item icon="user" :href="route('clients.index')" :current="request()->routeIs('clients.*')" wire:navigate>Clientes</flux:navlist.item>
                         @if ($isAdmin)
@@ -118,6 +114,15 @@
                         @endif
                     </flux:navlist.group>
 
+                    @if ($isAdmin)
+                        <flux:navlist.item icon="tag" :href="route('categoriesandmeasures.index')" :current="request()->routeIs('categoriesandmeasures.*')" wire:navigate>Categorias y Medidas</flux:navlist.item>
+                    @endif
+
+                    <flux:navlist.item icon="shopping-cart" :href="route('products.index')" :current="request()->routeIs('products.*')" wire:navigate>Productos</flux:navlist.item>
+
+                    <flux:navlist.item icon="currency-dollar" :href="route('sales.index')" :current="request()->routeIs('sales.*')" wire:navigate>Ventas</flux:navlist.item>
+
+                    
                     <flux:navlist.group heading="Gestion de proveedores" expandable>
                         <flux:navlist.item icon="truck" :href="route('providers.index')" :current="request()->routeIs('providers.*')" wire:navigate>Proveedores</flux:navlist.item>
                         @if ($isAdmin)
@@ -131,10 +136,7 @@
                         <flux:navlist.item icon="credit-card" :href="route('paymentmethods.index')" :current="request()->routeIs('paymentmethods.*')" wire:navigate>Metodos de pago</flux:navlist.item>
                     @endif
                       
-                    @if ($isAdmin)
-                        <flux:navlist.item icon="user-group" :href="route('users.index')" :current="request()->routeIs('users.*')" wire:navigate>Gestion de usuarios</flux:navlist.item>
-                        <flux:navlist.item icon="document" :href="route('reports.index')" :current="request()->routeIs('reports.*')" wire:navigate>Reportes</flux:navlist.item>
-                    @endif
+                    
                     <flux:navlist.item icon="information-circle" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>Acerca de</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>

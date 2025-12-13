@@ -623,17 +623,60 @@
                             @endforeach
                         </ul>
                     @endif
-                    <x-form.field-error for="productSearch" />
-                    
                     <p class="sales-form-helper">Busque y agregue productos a la venta.</p>
                     <div class="sales-form-topbar">
                     </div>
                 </div>
 
                 <div>
-                    <x-form.input wire:model="productQuantity" type="number" min="1"
-                                  label="Cantidad" name="productQuantity" placeholder="0" />
-                    <x-form.field-error for="productQuantity" />
+                    <x-form.input wire:model="productQuantity"
+                                  type="number"
+                                  min="1"
+                                  max="1000"
+                                  label="Cantidad"
+                                  name="productQuantity"
+                                  placeholder="0"
+                                  x-data
+                                  x-on:keydown="
+                                      const allowed = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End','Enter','Escape'];
+                                      if (allowed.includes($event.key)) { return; }
+                                      if (!/^[0-9]$/.test($event.key)) { $event.preventDefault(); return; }
+                                      const selectionStart = $el.selectionStart ?? 0;
+                                      const selectionEnd = $el.selectionEnd ?? 0;
+                                      const current = $el.value || '';
+                                      const nextValue = current.slice(0, selectionStart) + $event.key + current.slice(selectionEnd);
+                                      const numeric = parseInt(nextValue, 10);
+                                      if (nextValue.length > 4 || Number.isNaN(numeric) || numeric > 1000) {
+                                          $event.preventDefault();
+                                      }
+                                  "
+                                  x-on:input="
+                                      let val = ($el.value || '').replace(/[^0-9]/g, '').slice(0, 4);
+                                      if (val === '') { $el.value = ''; return; }
+                                      let num = parseInt(val, 10);
+                                      if (Number.isNaN(num) || num < 1) { num = 1; }
+                                      if (num > 1000) { num = 1000; }
+                                      $el.value = num;
+                                  "
+                                  x-on:change="
+                                      let val = ($el.value || '').replace(/[^0-9]/g, '').slice(0, 4);
+                                      if (val === '') { $el.value = ''; return; }
+                                      let num = parseInt(val, 10);
+                                      if (Number.isNaN(num) || num < 1) { num = 1; }
+                                      if (num > 1000) { num = 1000; }
+                                      $el.value = num;
+                                  "
+                                  x-on:paste.prevent="
+                                      let pasted = (event.clipboardData || window.clipboardData).getData('text') || '';
+                                      pasted = pasted.replace(/[^0-9]/g, '').slice(0, 4);
+                                      if (pasted === '') { return; }
+                                      let num = parseInt(pasted, 10);
+                                      if (Number.isNaN(num) || num < 1) { num = 1; }
+                                      if (num > 1000) { num = 1000; }
+                                      $el.value = num;
+                                      $el.dispatchEvent(new Event('input'));
+                                  "
+                    />
                     <p class="sales-form-helper">De 1 a 1000.</p>
                 </div>
                 <button type="button" wire:click="addProductLine" class="btn-insert h-10">

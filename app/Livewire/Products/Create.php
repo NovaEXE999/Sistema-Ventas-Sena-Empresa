@@ -148,8 +148,8 @@ class Create extends Component
     public function messages(): array
     {
         return [
-            'category_id.required' => 'La categorヴa es obligatoria.',
-            'category_id.exists' => 'Selecciona una categorヴa vケlida.',
+            'category_id.required' => 'La categoría es obligatoria.',
+            'category_id.exists' => 'Selecciona una categoría valida.',
         ];
     }
 

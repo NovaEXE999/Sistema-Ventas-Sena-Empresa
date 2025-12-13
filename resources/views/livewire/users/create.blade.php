@@ -165,6 +165,57 @@
             cursor: not-allowed;
         }
 
+        /* Select personalizado (mismo estilo que Tipo de persona) */
+        .users-select-wrapper {
+            position: relative;
+        }
+
+        .users-select-wrapper::after {
+            content: "";
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            width: 0.55rem;
+            height: 0.55rem;
+            border-right: 2px solid rgba(148, 163, 184, 0.85);
+            border-bottom: 2px solid rgba(148, 163, 184, 0.85);
+            transform: translateY(-60%) rotate(45deg);
+            pointer-events: none;
+        }
+
+        .users-select {
+            width: 100%;
+            border-radius: 0.75rem;
+            padding: 0.55rem 0.8rem;
+            padding-right: 2rem;
+            font-size: 0.85rem;
+            color: var(--text);
+            outline: none;
+            border: 1px solid rgba(148, 163, 184, 0.6);
+            background:
+                radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.12), transparent 55%),
+                var(--surface);
+            transition: border-color 0.14s ease, box-shadow 0.14s ease, background 0.14s ease, transform 0.05s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .users-select option {
+            background-color: #ffffff;
+            color: #0E1420;
+        }
+
+        .users-select:focus-visible {
+            border-color: rgba(26, 168, 85, 0.9);
+            box-shadow: 0 0 0 2px rgba(26, 168, 85, 0.18);
+            transform: translateY(-0.5px);
+        }
+
+        .users-select-error {
+            border-color: rgba(229, 72, 77, 0.9);
+            box-shadow: 0 0 0 2px rgba(229, 72, 77, 0.18);
+        }
+
         [data-theme="dark"] .users-form-scope input[type="text"],
         [data-theme="dark"] .users-form-scope input[type="email"],
         [data-theme="dark"] .users-form-scope input[type="tel"],
@@ -183,6 +234,22 @@
 
         [data-theme="dark"] .users-form-scope select option,
         .theme-dark .users-form-scope select option {
+            background-color: #020617;
+            color: #E6EDF3;
+        }
+
+        [data-theme="dark"] .users-form-scope .users-select,
+        .theme-dark .users-form-scope .users-select {
+            background:
+                radial-gradient(circle at 0% 0%, rgba(26, 168, 85, 0.24), transparent 55%),
+                #020617;
+            border-color: rgba(67, 198, 120, 0.9);
+            color: #E6EDF3;
+            color-scheme: dark;
+        }
+
+        [data-theme="dark"] .users-form-scope .users-select option,
+        .theme-dark .users-form-scope .users-select option {
             background-color: #020617;
             color: #E6EDF3;
         }
@@ -376,21 +443,22 @@
 
             <div class="flex flex-col gap-1">
                 <label class="users-form-label">{{ __('Rol') }}</label>
-                <select
-                    wire:model.live="role_id"
-                    name="role_id"
-                    required
-                    @class([
-                        'w-full',
-                        'border border-zinc-300 text-zinc-900 focus:border-emerald-500 focus:ring-emerald-200 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100' => !$errors->has('role_id'),
-                        'border border-danger text-danger focus:border-danger focus:ring-danger/40 dark:border-danger dark:text-danger' => $errors->has('role_id'),
-                    ])
-                >
-                    <option value="">{{ __('Selecciona un rol') }}</option>
-                    @foreach($roles as $role)
-                        <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
-                    @endforeach
-                </select>
+                <div class="users-select-wrapper">
+                    <select
+                        wire:model.live="role_id"
+                        name="role_id"
+                        required
+                        @class([
+                            'users-select',
+                            'users-select-error' => $errors->has('role_id'),
+                        ])
+                    >
+                        <option value="">{{ __('Selecciona un rol') }}</option>
+                        @foreach($roles as $role)
+                            <option value="{{ $role['id'] }}">{{ $role['name'] }}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <p class="users-form-helper">Seleccione un rol.</p>
                 @error('role_id')
                     <div class="mt-1 flex items-center gap-2 text-sm text-error">
