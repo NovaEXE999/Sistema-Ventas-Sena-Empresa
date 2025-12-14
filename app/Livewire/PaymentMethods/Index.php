@@ -23,7 +23,6 @@ class Index extends Component
             abort(403);
         }
 
-        // 1 = Activo, 0 = Inactivo
         $payment->status = ! $payment->status;
         $payment->save();
 

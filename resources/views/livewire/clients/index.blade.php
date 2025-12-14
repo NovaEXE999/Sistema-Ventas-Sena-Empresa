@@ -400,7 +400,7 @@
         </div>
     </div>
 
-    {{-- FILTROS --}}
+    
     <div class="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
         <div class="flex flex-col gap-1 text-sm">
             <label class="clients-label">Orden</label>

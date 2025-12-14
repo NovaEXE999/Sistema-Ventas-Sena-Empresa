@@ -34,7 +34,7 @@
             --shadow-soft: 0 18px 40px -24px rgba(0, 0, 0, 0.95);
         }
 
-        /* TOPBAR: botón volver pegado a la izquierda */
+        
         .sales-form-topbar {
             width: 100%;
             display: flex;
@@ -50,7 +50,7 @@
             }
         }
 
-        /* HEADER SOLO PARA EL TÍTULO (centrado) */
+        
         .sales-form-header {
             width: 100%;
             max-width: 52rem;
@@ -107,7 +107,7 @@
             color: var(--muted);
         }
 
-        /* CARD FORM */
+        
         .sales-form {
             width: 100%;
             max-width: 50rem;
@@ -149,7 +149,7 @@
             margin-top: 0.15rem;
         }
 
-        /* Inputs dentro del scope */
+        
         .sales-form-scope input[type="text"],
         .sales-form-scope input[type="number"],
         .sales-form-scope input[type="date"],
@@ -189,7 +189,7 @@
             cursor: not-allowed;
         }
 
-        /* Select con estilo igual a filtros del index */
+        
         .sales-select {
             border-radius: 0.75rem;
             padding: 0.55rem 0.8rem;
@@ -281,7 +281,7 @@
             color: #43C678;
         }
 
-        /* Autocomplete/resultados */
+        
         .autocomplete-results {
             margin-top: .25rem;
             border-radius: 14px;
@@ -316,14 +316,14 @@
             transform: translateY(-0.5px);
         }
 
-        /* Errores de campo */
+        
         .sales-form-scope .text-error,
         .sales-form-scope .form-error {
             color: var(--error);
             font-size: 0.75rem;
         }
 
-        /* Botón submit */
+        
         .sales-form-submit {
             margin-top: .5rem;
             background: linear-gradient(135deg, var(--sena-green-500), var(--sena-green-600));
@@ -358,9 +358,7 @@
             box-shadow: none;
         }
 
-        /* ===========
-           BOTÓN VOLVER
-           =========== */
+       
         .sales-form-back-btn {
             display: inline-flex;
             align-items: center;
@@ -403,7 +401,7 @@
             border-color: rgba(26, 168, 85, 0.65);
         }
 
-        /* Botones de acción */
+        
         .btn-insert {
             background: var(--sena-green-500);
             border-radius: 10px;
@@ -442,7 +440,7 @@
             transform: translateY(-1px);
         }
 
-        /* Tabla de productos */
+        
         .sales-products-table {
             width: 100%;
             border-collapse: collapse;
@@ -479,7 +477,7 @@
             background: rgba(14, 122, 59, 0.05);
         }
 
-        /* Sección de productos */
+        
         .sales-products-section {
             border-radius: 16px;
             border: 1px solid var(--border);
@@ -488,7 +486,7 @@
         }
     </style>
 
-    {{-- TOPBAR: botón Volver --}}
+    
     <div class="sales-form-topbar">
         <a href="{{ route('sales.index')}}"
            wire:navigate
@@ -501,7 +499,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="sales-form-header">
         <div class="sales-form-title-badge">
             <div class="sales-form-title-icon">
@@ -523,20 +521,20 @@
 
     <form wire:submit.prevent="save" class="sales-form">
         <div class="sales-form-grid">
-            {{-- Fecha --}}
+            
             <div>
                 <label class="sales-form-label">Fecha</label>
                 <input type="date" wire:model="date" disabled class="w-full">
             </div>
 
-            {{-- Vendedor --}}
+            
             <div>
                 <label class="sales-form-label">Vendedor</label>
                 <input type="text" value="{{ $sellerName }}" disabled class="w-full">
                 <p class="sales-form-helper">Vendedor asignado automáticamente.</p>
             </div>
 
-            {{-- Método de pago --}}
+            
             <div class="sales-form-full">
                 <label class="sales-form-label">Método de pago</label>
                 <div class="sales-select-wrapper">
@@ -552,7 +550,7 @@
             </div>
         </div>
 
-        {{-- Cliente --}}
+        
         <div class="sales-form-full mt-4" x-data @click.outside="$wire.hideClientResults()">
             <div class="flex flex-col gap-2">
                 <div class="flex items-start gap-3 flex-wrap">
@@ -605,7 +603,7 @@
             </div>
         </div>
 
-        {{-- Productos --}}
+        
         <div class="sales-form-full mt-4 sales-products-section">
             <div class="grid gap-3 md:grid-cols-[2fr_120px_auto] items-end mb-4">
                 <div x-data @click.outside="$wire.hideProductResults()">

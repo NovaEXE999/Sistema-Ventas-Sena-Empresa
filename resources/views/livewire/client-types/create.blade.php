@@ -253,7 +253,7 @@
         }
     </style>
 
-    {{-- TOPBAR: botón Volver --}}
+    
     <div class="clienttypeform-topbar">
         <a href="{{ route('clienttypes.index')}}"
            wire:navigate
@@ -266,7 +266,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="clienttypeform-header">
         <div class="clienttypeform-title-badge">
             <div class="clienttypeform-title-icon">

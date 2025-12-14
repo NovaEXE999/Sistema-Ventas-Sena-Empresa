@@ -160,7 +160,7 @@
             cursor: not-allowed;
         }
 
-        /* Select con estilo igual a los filtros (flecha y fondo radial) */
+        
         .sales-select {
             border-radius: 0.75rem;
             padding: 0.55rem 0.8rem;
@@ -319,7 +319,7 @@
 
     @php($isEdit = property_exists($this, 'provider') && $this->provider?->exists)
 
-    {{-- TOPBAR: botón Volver --}}
+    
     <div class="providers-form-topbar">
         <a href="{{ route('providers.index')}}"
            wire:navigate
@@ -332,7 +332,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="providers-form-header">
         <div class="providers-form-title-badge">
             <div class="providers-form-title-icon">

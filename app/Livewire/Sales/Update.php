@@ -41,7 +41,7 @@ class Update extends Create
                 continue;
             }
 
-            // Devuelve a stock la cantidad vendida para permitir editar sin bloquear por inventario actual
+            
             $this->lineItems[$product->id] = [
                 'product_id' => $product->id,
                 'name' => $product->name,
@@ -82,7 +82,7 @@ class Update extends Create
         }
 
         DB::transaction(function () use ($client, $products) {
-            // Devuelve stock previo de la venta actual
+            
             foreach ($this->sale->details as $detail) {
                 $detail->product?->increment('stock', $detail->quantity);
             }

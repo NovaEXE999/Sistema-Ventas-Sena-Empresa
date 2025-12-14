@@ -34,7 +34,7 @@
             --shadow-soft: 0 18px 40px -24px rgba(0, 0, 0, 0.95);
         }
 
-        /* TOPBAR: botón volver */
+        
         .users-form-topbar {
             width: 100%;
             display: flex;
@@ -50,7 +50,7 @@
             }
         }
 
-        /* HEADER SOLO PARA EL TÍTULO (centrado) */
+        
         .users-form-header {
             width: 100%;
             max-width: 52rem;
@@ -107,7 +107,7 @@
             color: var(--muted);
         }
 
-        /* CARD FORM */
+        
         .users-form {
             width: 100%;
             max-width: 40rem;
@@ -133,7 +133,7 @@
             margin-top: 0.15rem;
         }
 
-        /* Estilos para inputs de Flux dentro del scope */
+        
         .users-form-scope input[type="text"],
         .users-form-scope input[type="email"],
         .users-form-scope input[type="tel"],
@@ -165,7 +165,7 @@
             cursor: not-allowed;
         }
 
-        /* Select personalizado (mismo estilo que Tipo de persona) */
+        
         .users-select-wrapper {
             position: relative;
         }
@@ -254,14 +254,14 @@
             color: #E6EDF3;
         }
 
-        /* Errores de campo */
+        
         .users-form-scope .text-error,
         .users-form-scope .form-error {
             color: var(--error);
             font-size: 0.75rem;
         }
 
-        /* Botón submit */
+        
         .users-form-submit {
             margin-top: .5rem;
             background: linear-gradient(135deg, var(--sena-green-500), var(--sena-green-600));
@@ -296,7 +296,7 @@
             box-shadow: none;
         }
 
-        /* BOTÓN VOLVER */
+        
         .users-form-back-btn {
             display: inline-flex;
             align-items: center;
@@ -335,14 +335,14 @@
         }
     </style>
 
-    {{-- TOPBAR: botón Volver --}}
+    
     <div class="users-form-topbar">
         <a href="{{ route('users.index') }}" wire:navigate class="users-form-back-btn">
             ← Volver
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="users-form-header">
         <div class="users-form-title-badge">
             <div class="users-form-title-icon">

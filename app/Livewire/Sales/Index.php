@@ -16,7 +16,7 @@ class Index extends Component
 
     public string $order = 'date_desc';
     public ?string $filterDate = null;
-    public string $filterDateType = 'date'; // date | month | year
+    public string $filterDateType = 'date';
     public string $paymentMethod = 'all';
     public string $seller = 'all';
     public string $search = '';

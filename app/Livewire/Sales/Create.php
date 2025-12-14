@@ -15,18 +15,18 @@ class Create extends Component
 {
     public string $sellerName = '';
 
-    // Busqueda de cliente
+
     public string $clientSearch = '';
     public array $clientResults = [];
     public ?int $client_id = null;
     public string $clientNotice = '';
     public bool $clientNotFound = false;
 
-    // Metodo de pago
+
     public array $paymentMethods = [];
     public ?int $payment_method_id = null;
 
-    // Productos y lineas de venta
+
     public string $productSearch = '';
     public array $productResults = [];
     public ?int $selectedProductId = null;
@@ -140,7 +140,6 @@ class Create extends Component
         $this->redirectRoute('sales.index', navigate: true);
     }
 
-    // Busqueda de cliente
     public function updatedClientSearch(): void
     {
         $term = trim($this->clientSearch);

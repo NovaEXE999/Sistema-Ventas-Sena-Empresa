@@ -47,11 +47,6 @@
             color: var(--muted);
         }
 
-        /* ===============================
-           INPUTS / SELECTS ESTILO PRO
-           (mismo lenguaje visual que el badge de "Registro de productos")
-           =============================== */
-
         .products-input,
         .products-select {
             border-radius: 0.75rem;
@@ -87,7 +82,6 @@
             cursor: not-allowed;
         }
 
-        /* DARK MODE: inputs / selects oscuros y elegantes */
         [data-theme="dark"] .products-scope .products-input,
         .theme-dark .products-scope .products-input,
         [data-theme="dark"] .products-scope .products-select,
@@ -105,12 +99,12 @@
             color: rgba(148, 163, 184, 0.9);
         }
 
-        /* Opciones del select (light & dark) */
+        
         .products-select {
             appearance: none;
             -webkit-appearance: none;
             position: relative;
-            padding-right: 2rem; /* espacio para el pseudo-icono */
+            padding-right: 2rem;
         }
 
         .products-select option {
@@ -132,7 +126,7 @@
             color: #43C678;
         }
 
-        /* Pseudo icono de flecha para los selects (solo decorativo) */
+        
         .products-select-wrapper {
             position: relative;
         }
@@ -149,7 +143,6 @@
             pointer-events: none;
         }
 
-        /* Botones */
         .btn-primary {
             background: var(--sena-green-500);
             border-radius: 12px;
@@ -233,7 +226,7 @@
             transform: translateY(-1px);
         }
 
-        /* Alertas */
+        
         .products-alert {
             border-radius: 14px;
             border: 1px solid rgba(26, 168, 85, 0.45);
@@ -273,7 +266,6 @@
             color: var(--text);
         }
 
-        /* Tabla wrapper */
         .products-table-wrapper {
             border-radius: 16px;
             border: 1px solid var(--border);
@@ -281,7 +273,6 @@
             background: var(--surface-2);
         }
 
-        /* TÇ?TULO Productos centrado con fondo verde */
         .products-table-title {
             text-align: center;
             padding: 0.75rem 1rem;
@@ -332,7 +323,7 @@
             background: rgba(26, 168, 85, 0.10);
         }
 
-        /* Badges */
+        
         .badge {
             display: inline-flex;
             align-items: center;
@@ -373,7 +364,7 @@
             border: 1px solid rgba(229, 72, 77, 0.4);
         }
 
-        /* Buscador */
+        
         .products-search-wrapper {
             position: relative;
         }
@@ -438,7 +429,7 @@
             </a>
         @endif
 
-        {{-- BUSCADOR CON ESTILO TIPO BADGE --}}
+        
         <div class="products-search-wrapper w-full max-w-xs">
             <span class="products-search-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="h-5 w-5">
@@ -456,7 +447,7 @@
         </div>
     </div>
 
-    {{-- FILTROS: Orden / Stock / Estado / CategorÇða con el mismo lenguaje visual --}}
+    
     <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <div class="flex flex-col gap-1 text-sm">
             <label class="products-label">Orden</label>
@@ -473,8 +464,8 @@
             <div class="products-select-wrapper">
                 <select wire:model.live="stockOrder" class="products-select w-full">
                     <option value="none">Sin ordenar por stock</option>
-                    <option value="stock_desc">Stock: mÇ­s a menos</option>
-                    <option value="stock_asc">Stock: menos a mÇ­s</option>
+                    <option value="stock_desc">Stock: má­s a menos</option>
+                    <option value="stock_asc">Stock: menos a má­s</option>
                 </select>
             </div>
         </div>

@@ -96,7 +96,6 @@ class Create extends Component
         });
     }
 
-    // Busqueda de proveedor
     public function updatedProviderSearch(): void
     {
         $term = trim($this->providerSearch);
@@ -189,7 +188,6 @@ class Create extends Component
         return null;
     }
 
-    // Busqueda de producto
     public function updatedProductSearch(): void
     {
         $this->productResults = Product::query()
@@ -212,7 +210,6 @@ class Create extends Component
     public function ensureProductSelected(): void
     {
         $this->productResults = [];
-        // no-op if no seleccion; mensaje ya lo maneja updatedProductSearch/addProductLine
     }
 
     public function updatedProductQuantity($value): void

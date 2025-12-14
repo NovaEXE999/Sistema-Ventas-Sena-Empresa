@@ -254,7 +254,7 @@
         }
     </style>
 
-    {{-- TOPBAR: botón Volver --}}
+    
     <div class="measureform-topbar">
         <a href="{{ route('categoriesandmeasures.index')}}"
            wire:navigate
@@ -267,7 +267,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="measureform-header">
         <div class="measureform-title-badge">
             <div class="measureform-title-icon">

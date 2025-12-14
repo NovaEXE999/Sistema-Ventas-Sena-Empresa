@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ config('app.name') }} - Forgot password</title>
 
-    {{-- Bootstrap e íconos --}}
+    
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
-    {{-- Assets principales --}}
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
-        /* Video de fondo */
+        
         #bg-video {
             position: fixed;
             top: 0;
@@ -25,7 +25,7 @@
             filter: brightness(0.45);
         }
 
-        /* Capa degradada sobre el video */
+        
         .overlay-gradient {
             position: fixed;
             top: 0;
@@ -48,7 +48,7 @@
             padding: 20px 0;
         }
 
-        /* Contenedor principal */
+        
         .wrapper {
             width: 90%;
             max-width: 1200px;
@@ -61,7 +61,7 @@
             overflow: hidden;
         }
 
-        /* Panel izquierdo */
+        
         .left {
             background: linear-gradient(135deg, rgba(0,120,60,0.55), rgba(0,180,90,0.45));
             width: 50%;
@@ -86,7 +86,7 @@
             letter-spacing: 1px;
         }
 
-        /* Panel derecho */
+        
         .right {
             width: 50%;
             background: rgba(255,255,255,0.92);
@@ -225,17 +225,17 @@
 </head>
 <body>
 
-    <!-- Video de fondo -->
+    
     <video autoplay muted loop id="bg-video">
         <source src="{{ asset('videos/videoplayback.mp4') }}" type="video/mp4">
     </video>
 
-    <!-- Capa degradada superior -->
+    
     <div class="overlay-gradient"></div>
 
     <div class="wrapper">
 
-        <!-- Panel izquierdo -->
+        
         <div class="left">
             <img src="{{ asset('imagenes/Farmer-bro.png') }}" alt="Ilustración agricultor">
             <h1>¿Olvidaste tu contraseña?</h1>
@@ -244,7 +244,7 @@
             </p>
         </div>
 
-        <!-- Panel derecho -->
+        
         <div class="right">
             <div class="login-box">
 
@@ -269,7 +269,7 @@
                 <form method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-6">
                     @csrf
 
-                    <!-- Email Address -->
+                    
                     <div class="input-group mb-3">
                         <span class="input-group-text">
                             <i class="bi bi-envelope"></i>

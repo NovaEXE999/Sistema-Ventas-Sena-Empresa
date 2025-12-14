@@ -44,7 +44,7 @@ class Update extends Create
 
     public function save(): void
     {
-        // En edición, recalculamos reglas y reutilizamos validaciones del padre
+
         $this->validate();
 
         if (empty($this->lineItems)) {
@@ -77,13 +77,11 @@ class Update extends Create
         }
 
         DB::transaction(function () use ($item, $provider) {
-            // Revertir stock previo
             if ($this->delivery->product_id) {
                 Product::where('id', $this->delivery->product_id)
                     ->decrement('stock', $this->delivery->delivered_amount);
             }
 
-            // Actualizar registro
             $this->delivery->update([
                 'date' => $this->date,
                 'delivered_amount' => $item['quantity'],
@@ -91,7 +89,6 @@ class Update extends Create
                 'provider_id' => $provider->id,
             ]);
 
-            // Aplicar nuevo stock
             Product::where('id', $item['product_id'])
                 ->increment('stock', $item['quantity']);
         });

@@ -86,7 +86,7 @@
             padding: 0 !important;
         }
 
-        /* Tables row (3 columns) */
+        
         .panels {
             width: 100%;
             border-collapse: separate;
@@ -157,7 +157,7 @@
     </div>
 
     @php
-        // Limit rows so the report always fits on a single page.
+        
         $maxRows = 6;
 
         $salesByClientTypeAll = $salesByClientType ?? [];

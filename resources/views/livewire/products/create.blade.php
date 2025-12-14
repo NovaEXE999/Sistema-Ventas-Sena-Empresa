@@ -34,7 +34,7 @@
             --shadow-soft: 0 18px 40px -24px rgba(0, 0, 0, 0.95);
         }
 
-        /* TOPBAR: botón volver pegado a la izquierda */
+        
         .products-form-topbar {
             width: 100%;
             display: flex;
@@ -50,7 +50,7 @@
             }
         }
 
-        /* HEADER SOLO PARA EL TÍTULO (centrado) */
+        
         .products-form-header {
             width: 100%;
             max-width: 52rem;
@@ -107,7 +107,7 @@
             color: var(--muted);
         }
 
-        /* CARD FORM */
+        
         .products-form {
             width: 100%;
             max-width: 40rem;
@@ -149,7 +149,7 @@
             margin-top: 0.15rem;
         }
 
-        /* Inputs dentro del scope (x-form.input) */
+        
         .products-form-scope input[type="text"],
         .products-form-scope input[type="number"],
         .products-form-scope input[type="search"],
@@ -221,7 +221,7 @@
             color: #43C678;
         }
 
-        /* Autocomplete categoría */
+        
         .category-results {
             margin-top: .25rem;
             border-radius: 14px;
@@ -279,7 +279,7 @@
             white-space: nowrap;
         }
 
-        /* Selector de categorÇða */
+        
         .category-select-wrapper {
             position: relative;
         }
@@ -324,14 +324,14 @@
             box-shadow: 0 10px 26px -18px rgba(26, 168, 85, 0.60);
         }
 
-        /* Errores de campo */
+        
         .products-form-scope .text-error,
         .products-form-scope .form-error {
             color: var(--error);
             font-size: 0.75rem;
         }
 
-        /* Botón submit */
+        
         .products-form-submit {
             margin-top: .5rem;
             background: linear-gradient(135deg, var(--sena-green-500), var(--sena-green-600));
@@ -366,9 +366,7 @@
             box-shadow: none;
         }
 
-        /* ===========
-           BOTÓN VOLVER
-           =========== */
+        
         .products-form-back-btn {
             display: inline-flex;
             align-items: center;
@@ -412,7 +410,7 @@
         }
     </style>
 
-    {{-- TOPBAR: botón Volver más a la esquina superior izquierda --}}
+    
     <div class="products-form-topbar">
         <a href="{{ route('products.index')}}"
            wire:navigate
@@ -425,7 +423,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con fondo translúcido --}}
+    
     <div class="products-form-header">
         <div class="products-form-title-badge">
             <div class="products-form-title-icon">
@@ -447,7 +445,7 @@
 
     <form wire:submit="save" class="products-form">
         <div class="products-form-grid">
-            {{-- Nombre --}}
+            
             <div class="products-form-full">
                 <x-form.input
                     wire:model.live.debounce.300ms="name"
@@ -488,7 +486,7 @@
                 <p class="products-form-helper">Usa un nombre descriptivo que identifique claramente el producto.</p>
             </div>
 
-            {{-- Stock --}}
+            
             <div>
                 <x-form.input
                     wire:model.lazy="stock"
@@ -547,7 +545,7 @@
                 <p class="products-form-helper">Rango permitido: 0 a 1000 unidades.</p>
             </div>
 
-            {{-- Precio --}}
+            
             <div>
                 <x-form.input
                     wire:model.lazy="price"
@@ -619,7 +617,7 @@
                 <p class="products-form-helper">Hasta 999,999,999 con máximo dos decimales.</p>
             </div>
 
-            {{-- Categoría --}}
+            
             <div class="products-form-full" x-data="{ mode: 'search' }" @click.outside="$wire.hideCategoryResults()">
                 <div class="flex items-center justify-end mb-1">
                     <button type="button" class="category-mode-toggle" x-on:click="mode = mode === 'search' ? 'select' : 'search'">

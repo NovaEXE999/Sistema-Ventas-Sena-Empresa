@@ -47,7 +47,7 @@
             color: var(--muted);
         }
 
-        /* Botones */
+        
         .btn-primary {
             background: var(--sena-green-500);
             border-radius: 12px;
@@ -131,7 +131,7 @@
             transform: translateY(-1px);
         }
 
-        /* Alertas */
+        
         .users-alert {
             border-radius: 14px;
             border: 1px solid rgba(26, 168, 85, 0.45);
@@ -171,7 +171,7 @@
             color: var(--text);
         }
 
-        /* Tabla wrapper */
+        
         .users-table-wrapper {
             border-radius: 16px;
             border: 1px solid var(--border);
@@ -179,7 +179,7 @@
             background: var(--surface-2);
         }
 
-        /* TÍTULO centrado con fondo verde */
+        
         .users-table-title {
             text-align: center;
             padding: 0.75rem 1rem;
@@ -230,7 +230,7 @@
             background: rgba(26, 168, 85, 0.10);
         }
 
-        /* Badges */
+        
         .badge {
             display: inline-flex;
             align-items: center;

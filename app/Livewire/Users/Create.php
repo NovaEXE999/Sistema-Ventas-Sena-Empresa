@@ -30,7 +30,7 @@ class Create extends Component
 
     public function updated(string $propertyName): void
     {
-        // Clear error for the field as soon as it changes
+
         $this->resetErrorBag($propertyName);
     }
 

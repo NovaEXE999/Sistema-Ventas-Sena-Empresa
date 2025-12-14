@@ -13,7 +13,6 @@ class Update extends Component
 {
     public ?Product $product = null;
 
-    // Buscador de categorヴa
     public string $categorySearch = '';
     public string $categoryLabel = '';
     public array $categoryResults = [];
@@ -133,7 +132,7 @@ class Update extends Component
 
     private function sanitizeName(): void
     {
-        $this->name = \Illuminate\Support\Str::of($this->name ?? '')
+        $this->name = Str::of($this->name ?? '')
             ->squish()
             ->substr(0, 256)
             ->toString();

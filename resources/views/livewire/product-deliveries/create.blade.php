@@ -399,7 +399,7 @@
         }
     </style>
 
-    {{-- TOPBAR: botón Volver --}}
+   
     <div class="inventory-form-topbar">
         <a href="{{ route('productdeliveries.index')}}"
            wire:navigate
@@ -412,7 +412,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="inventory-form-header">
         <div class="inventory-form-title-badge">
             <div class="inventory-form-title-icon">
@@ -435,14 +435,14 @@
 
     <form wire:submit.prevent="save" class="inventory-form">
         <div class="inventory-form-grid">
-            {{-- Fecha --}}
+            
             <div>
                 <label class="inventory-form-label">Fecha</label>
                 <input type="date" wire:model="date" disabled class="w-full">
                 <p class="inventory-form-helper">Fecha de la entrada.</p>
             </div>
 
-            {{-- Proveedor --}}
+            
             <div x-data @click.outside="$wire.hideProviderResults()">
                 <div class="flex flex-col gap-2">
                     <div class="flex items-start gap-3 flex-wrap">
@@ -489,7 +489,7 @@
             </div>
         </div>
 
-        {{-- Productos --}}
+        
         <div class="inventory-form-full mt-4 inventory-products-section">
             <div class="grid gap-3 md:grid-cols-[2fr_140px_auto] items-end mb-4">
                 <div x-data @click.outside="$wire.hideProductResults()">

@@ -254,7 +254,7 @@
         }
     </style>
 
-    {{-- TOPBAR: botón Volver --}}
+    
     <div class="paymentform-topbar">
         <a href="{{ route('paymentmethods.index')}}"
            wire:navigate
@@ -267,7 +267,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="paymentform-header">
         <div class="paymentform-title-badge">
             <div class="paymentform-title-icon">

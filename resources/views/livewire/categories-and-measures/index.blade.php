@@ -291,7 +291,7 @@
     @endif
 
     <div class="flex flex-col lg:flex-row gap-4 w-full">
-        {{-- Categorías --}}
+        
         <div class="catmeasures-table-wrapper w-full">
             <h2 class="catmeasures-table-title">Categorías</h2>
 
@@ -373,7 +373,7 @@
             </div>
         </div>
 
-        {{-- Unidades de medida --}}
+        
         <div class="catmeasures-table-wrapper w-full">
             <h2 class="catmeasures-table-title">Unidades de medida</h2>
 

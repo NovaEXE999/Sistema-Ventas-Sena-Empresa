@@ -337,7 +337,7 @@
         }
     </style>
 
-    {{-- TOPBAR: botón Volver --}}
+    
     <div class="catform-topbar">
         <a href="{{ route('categoriesandmeasures.index')}}"
            wire:navigate
@@ -350,7 +350,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="catform-header">
         <div class="catform-title-badge">
             <div class="catform-title-icon">

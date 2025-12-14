@@ -161,7 +161,7 @@
             cursor: not-allowed;
         }
 
-        /* Select con estilo igual a los filtros (flecha y fondo radial) */
+        
         .sales-select {
             border-radius: 0.75rem;
             padding: 0.55rem 0.8rem;
@@ -321,7 +321,7 @@
     @php($isAdmin = auth()->user()?->isAdmin())
     @php($isEdit = property_exists($this, 'client') && $this->client?->exists)
 
-    {{-- TOPBAR: botón Volver --}}
+    
     <div class="clients-form-topbar">
         <a href="{{ route('clients.index')}}"
            wire:navigate
@@ -334,7 +334,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="clients-form-header">
         <div class="clients-form-title-badge">
             <div class="clients-form-title-icon">

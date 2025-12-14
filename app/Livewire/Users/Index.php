@@ -11,7 +11,7 @@ class Index extends Component
     use WithPagination;
     public function toggleStatus(User $user)
     {
-        // 1 = Activo, 0 = Inactivo
+
         $user->status = ! $user->status;
         $user->save();
 

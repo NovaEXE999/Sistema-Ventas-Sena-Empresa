@@ -18,8 +18,8 @@ class Reports extends Component
         ]);
 
         $items = $sale->details->count();
-        $paperWidth = 215; // ~76mm
-        $paperHeight = max(500 + ($items * 45), 500); // puntos tipográficos: base ~176mm + ~16mm por ítem
+        $paperWidth = 215;
+        $paperHeight = max(500 + ($items * 45), 500);
 
         $pdf->setPaper([0, 0, $paperWidth, $paperHeight], 'portrait');
 
@@ -37,8 +37,8 @@ class Reports extends Component
         ]);
 
         $items = $sale->details->count();
-        $paperWidth = 215; // ~76mm
-        $paperHeight = max(500 + ($items * 45), 500); // puntos tipográficos: base ~176mm + ~16mm por ítem
+        $paperWidth = 215;
+        $paperHeight = max(500 + ($items * 45), 500);
 
         $pdf->setPaper([0, 0, $paperWidth, $paperHeight], 'portrait');
 

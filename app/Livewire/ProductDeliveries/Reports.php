@@ -24,8 +24,7 @@ class Reports extends Component
         ]);
 
         $items = $deliveries->count();
-        $paperWidth = 215; // ~76mm
-        // Altura ajustada: base menor para evitar espacio en blanco cuando hay pocos productos
+        $paperWidth = 215;
         $paperHeight = max(500 + ($items * 45), 500);
 
         $pdf->setPaper([0, 0, $paperWidth, $paperHeight], 'portrait');
@@ -49,7 +48,7 @@ class Reports extends Component
         ]);
 
         $items = max($deliveries->count(), 1);
-        $paperWidth = 215; // ~76mm
+        $paperWidth = 215;
         $paperHeight = max(500 + ($items * 45), 500);
 
         $pdf->setPaper([0, 0, $paperWidth, $paperHeight], 'portrait');

@@ -2,7 +2,7 @@
     <div class="flex flex-col gap-6">
         <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
 
-        <!-- Session Status -->
+        
         <x-auth-session-status class="text-center" :status="session('status')" />
 
         <x-form.error-alert />
@@ -10,7 +10,7 @@
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
 
-            <!-- Identification -->
+            
             <flux:input
                 name="identification"
                 :label="__('Identification')"
@@ -22,7 +22,7 @@
                 :error="$errors->first('identification')"
             />
 
-            <!-- Name -->
+            
             <flux:input
                 name="name"
                 :label="__('Name')"
@@ -35,7 +35,7 @@
                 :error="$errors->first('name')"
             />
 
-            <!-- Email Address -->
+            
             <flux:input
                 name="email"
                 :label="__('Email address')"
@@ -47,7 +47,7 @@
                 :error="$errors->first('email')"
             />
 
-            <!-- Phone Number -->
+            
             <flux:input
                 name="phone_number"
                 :label="__('Phone number')"
@@ -59,7 +59,7 @@
                 :error="$errors->first('phone_number')"
             />
 
-            <!-- Role -->
+            
             <div class="flex flex-col gap-1">
                 <label class="text-sm font-medium text-zinc-700 dark:text-zinc-200">{{ __('Role') }}</label>
                 <select
@@ -75,7 +75,7 @@
                 <x-form.field-error for="role_id" />
             </div>
 
-            <!-- Password -->
+            
             <flux:input
                 name="password"
                 :label="__('Password')"
@@ -87,7 +87,7 @@
                 :error="$errors->first('password')"
             />
 
-            <!-- Confirm Password -->
+            
             <flux:input
                 name="password_confirmation"
                 :label="__('Confirm password')"

@@ -253,7 +253,7 @@
         }
     </style>
 
-    {{-- TOPBAR: botón Volver --}}
+    
     <div class="persontypeform-topbar">
         <a href="{{ route('persontypes.index')}}"
            wire:navigate
@@ -266,7 +266,7 @@
         </a>
     </div>
 
-    {{-- HEADER: título centrado con badge --}}
+    
     <div class="persontypeform-header">
         <div class="persontypeform-title-badge">
             <div class="persontypeform-title-icon">

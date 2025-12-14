@@ -47,7 +47,7 @@
             color: var(--muted);
         }
 
-        /* INPUTS / SELECTS */
+        
         .inventory-input,
         .inventory-select {
             border-radius: 0.75rem;
@@ -128,7 +128,7 @@
             pointer-events: none;
         }
 
-        /* Botones */
+        
         .btn-primary {
             background: var(--sena-green-500);
             border-radius: 12px;
@@ -226,7 +226,7 @@
             border-color: rgba(26, 168, 85, 0.45);
         }
 
-        /* Alertas */
+       
         .inventory-alert {
             border-radius: 14px;
             border: 1px solid rgba(26, 168, 85, 0.45);
@@ -266,7 +266,7 @@
             color: var(--text);
         }
 
-        /* Tabla wrapper */
+        
         .inventory-table-wrapper {
             border-radius: 16px;
             border: 1px solid var(--border);
@@ -324,7 +324,7 @@
             background: rgba(26, 168, 85, 0.10);
         }
 
-        /* Buscador */
+        
         .inventory-search-wrapper {
             position: relative;
         }
@@ -405,7 +405,7 @@
         </div>
     </div>
 
-    {{-- FILTROS --}}
+    
     <div class="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
         <div class="flex flex-col gap-1 text-sm">
             <label class="inventory-label">Orden</label>

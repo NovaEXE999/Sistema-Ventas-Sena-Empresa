@@ -47,9 +47,6 @@
             color: var(--muted);
         }
 
-        /* ===============================
-           INPUTS / SELECTS ESTILO PRO
-           =============================== */
 
         .sales-input,
         .sales-select {
@@ -86,7 +83,7 @@
             cursor: not-allowed;
         }
 
-        /* DARK MODE: inputs / selects oscuros y elegantes */
+        
         [data-theme="dark"] .sales-scope .sales-input,
         .theme-dark .sales-scope .sales-input,
         [data-theme="dark"] .sales-scope .sales-select,
@@ -104,7 +101,7 @@
             color: rgba(148, 163, 184, 0.9);
         }
 
-        /* Opciones del select (light & dark) */
+        
         .sales-select {
             appearance: none;
             -webkit-appearance: none;
@@ -131,7 +128,7 @@
             color: #43C678;
         }
 
-        /* Pseudo icono de flecha para los selects */
+        
         .sales-select-wrapper {
             position: relative;
         }
@@ -148,7 +145,7 @@
             pointer-events: none;
         }
 
-        /* Botones */
+        
         .btn-primary {
             background: var(--sena-green-500);
             border-radius: 12px;
@@ -251,7 +248,7 @@
             transform: translateY(-1px);
         }
 
-        /* Alertas */
+        
         .sales-alert {
             border-radius: 14px;
             border: 1px solid rgba(26, 168, 85, 0.45);
@@ -291,7 +288,7 @@
             color: var(--text);
         }
 
-        /* Tabla wrapper */
+       
         .sales-table-wrapper {
             border-radius: 16px;
             border: 1px solid var(--border);
@@ -299,7 +296,7 @@
             background: var(--surface-2);
         }
 
-        /* TÍTULO Ventas centrado con fondo verde */
+        
         .sales-table-title {
             text-align: center;
             padding: 0.75rem 1rem;
@@ -350,7 +347,7 @@
             background: rgba(26, 168, 85, 0.10);
         }
 
-        /* Buscador */
+        
         .sales-search-wrapper {
             position: relative;
         }
@@ -411,7 +408,7 @@
             Registrar una venta
         </a>
 
-        {{-- BUSCADOR CON ESTILO --}}
+        
         <div class="sales-search-wrapper w-full max-w-xs">
             <span class="sales-search-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true" class="h-5 w-5">
@@ -429,7 +426,7 @@
         </div>
     </div>
 
-    {{-- FILTROS --}}
+    
     <div class="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
         <div class="flex flex-col gap-1 text-sm">
             <label class="sales-label">Orden</label>
