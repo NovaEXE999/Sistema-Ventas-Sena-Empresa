@@ -196,22 +196,29 @@
             color: var(--text);
         }
 
-        .users-table thead th {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--muted);
-            background: rgba(26, 168, 85, 0.08);
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
+	        .users-table thead th {
+	            padding: 0.75rem 1rem;
+	            text-align: left;
+	            font-weight: 700;
+	            font-size: 0.8rem;
+	            color: var(--muted);
+	            background: rgba(26, 168, 85, 0.08);
+	            border-bottom: 1px solid var(--border);
+	            white-space: nowrap;
+	        }
 
-        .users-table tbody td {
-            padding: 0.75rem 1rem;
-            border-top: 1px solid var(--border);
-            vertical-align: middle;
-        }
+	        .users-table th.users-actions-cell,
+	        .users-table td.users-actions-cell {
+	            width: 1%;
+	            white-space: nowrap;
+	            text-align: center;
+	        }
+
+	        .users-table tbody td {
+	            padding: 0.75rem 1rem;
+	            border-top: 1px solid var(--border);
+	            vertical-align: middle;
+	        }
 
         .users-table tbody tr:first-child td {
             border-top: none;
@@ -293,7 +300,7 @@
         <a
             href="{{ route('users.create') }}"
             wire:navigate
-            class="btn-primary"
+            class="btn-primary self-start sm:self-auto"
         >
             Registrar un usuario
         </a>
@@ -312,7 +319,7 @@
                         <th scope="col">Teléfono</th>
                         <th scope="col">Rol</th>
                         <th scope="col">Estado</th>
-                        <th scope="col" class="text-center">Acciones</th>
+	                        <th scope="col" class="users-actions-cell">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -329,7 +336,7 @@
                                 </span>
                             </td>
 
-                            <td class="text-center">
+	                            <td class="users-actions-cell">
                                 <div class="flex justify-center items-center gap-2">
                                     <a href="{{route('users.update', $user)}}" wire:navigate>
                                         <button type="button" class="btn-secondary">

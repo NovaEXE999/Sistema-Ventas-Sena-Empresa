@@ -315,6 +315,11 @@
             transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
         }
 
+        .users-form-back-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
         .users-form-back-btn:hover {
             filter: brightness(1.03);
             transform: translateY(-1px);
@@ -337,8 +342,11 @@
 
     
     <div class="users-form-topbar">
-        <a href="{{ route('users.index') }}" wire:navigate class="users-form-back-btn">
-            ← Volver
+        <a href="{{ route('users.index') }}" wire:navigate class="users-form-back-btn" role="button">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg>
+            <span class="ml-1">Volver</span>
         </a>
     </div>
 
@@ -502,8 +510,8 @@
             />
             <p class="users-form-helper">Repita la contraseña ingresada anteriormente.</p>
 
-            <div class="flex items-center justify-end mt-3">
-                <button type="submit" class="users-form-submit w-full">
+            <div class="mt-3 flex justify-end">
+                <button type="submit" class="users-form-submit">
                     {{ __('Crear usuario') }}
                 </button>
             </div>

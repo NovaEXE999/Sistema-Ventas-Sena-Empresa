@@ -410,6 +410,10 @@
         }
     </style>
 
+    @php
+        $isEdit = property_exists($this, 'product') && $this->product?->exists;
+    @endphp
+
     
     <div class="products-form-topbar">
         <a href="{{ route('products.index')}}"
@@ -435,7 +439,7 @@
                 </svg>
             </div>
             <div class="flex flex-col leading-tight">
-                <span class="products-form-title-text">Registro de productos</span>
+                <span class="products-form-title-text">{{ $isEdit ? 'Actualizar producto' : 'Crear producto' }}</span>
                 <span class="products-form-subtitle">Define stock, precio y categoría</span>
             </div>
         </div>
@@ -677,10 +681,6 @@
                 <x-form.field-error for="category_id" />
             </div>
         </div>
-
-        @php
-            $isEdit = property_exists($this, 'product') && $this->product?->exists;
-        @endphp
 
         <div class="products-form-full mt-3 flex justify-end">
             <button

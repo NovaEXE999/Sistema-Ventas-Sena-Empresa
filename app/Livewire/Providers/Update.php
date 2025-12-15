@@ -48,7 +48,7 @@ class Update extends Component
                 'required', 
                 'digits:10', 
                 'regex:/^3\\d{9}$/',
-                Rule::unique('providers', 'phone_number')->ignore($this->provider?->phone_number)
+                Rule::unique('providers', 'phone_number')->ignore($this->provider?->id)
             ],
             'status' => ['boolean'],
             'person_type_id' => ['required', 'exists:person_types,id'],

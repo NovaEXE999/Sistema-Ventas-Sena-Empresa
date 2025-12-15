@@ -181,22 +181,29 @@
             color: var(--text);
         }
 
-        .paymentmethods-table thead th {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--muted);
-            background: rgba(26, 168, 85, 0.08);
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
+	        .paymentmethods-table thead th {
+	            padding: 0.75rem 1rem;
+	            text-align: left;
+	            font-weight: 700;
+	            font-size: 0.8rem;
+	            color: var(--muted);
+	            background: rgba(26, 168, 85, 0.08);
+	            border-bottom: 1px solid var(--border);
+	            white-space: nowrap;
+	        }
 
-        .paymentmethods-table tbody td {
-            padding: 0.75rem 1rem;
-            border-top: 1px solid var(--border);
-            vertical-align: middle;
-        }
+	        .paymentmethods-table th.paymentmethods-actions-cell,
+	        .paymentmethods-table td.paymentmethods-actions-cell {
+	            width: 1%;
+	            white-space: nowrap;
+	            text-align: center;
+	        }
+
+	        .paymentmethods-table tbody td {
+	            padding: 0.75rem 1rem;
+	            border-top: 1px solid var(--border);
+	            vertical-align: middle;
+	        }
 
         .paymentmethods-table tbody tr:first-child td {
             border-top: none;
@@ -277,7 +284,7 @@
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-start">
         @if ($isAdmin)
-            <a href="{{ route('paymentmethods.create') }}" wire:navigate class="btn-primary" role="button">
+            <a href="{{ route('paymentmethods.create') }}" wire:navigate class="btn-primary self-start sm:self-auto" role="button">
                 Registrar un método de pago
             </a>
         @endif
@@ -293,7 +300,7 @@
                     <th scope="col">Nombre</th>
                     <th scope="col">Estado</th>
                     @if ($isAdmin)
-                        <th scope="col" class="text-center">Acciones</th>
+	                        <th scope="col" class="paymentmethods-actions-cell">Acciones</th>
                     @endif
                 </tr>
             </thead>
@@ -308,7 +315,7 @@
                         </td>
 
                         @if ($isAdmin)
-                            <td class="text-center">
+	                            <td class="paymentmethods-actions-cell">
                                 <div class="flex justify-center items-center gap-2">
                                     <a href="{{ route('paymentmethods.update', $payment) }}" wire:navigate>
                                         <button type="button" class="btn-secondary">

@@ -17,6 +17,7 @@ class UpdateCategory extends Component
 
     public string $measureSearch = '';
     public array $measureResults = [];
+    public array $measureOptions = [];
 
     protected function rules(): array
     {
@@ -32,12 +33,14 @@ class UpdateCategory extends Component
         ];
     }
 
-    public function mount(Category $category)
+    public function mount(Category $category): void
     {
         $this->setCategory($category);
+        $this->measureOptions = $this->loadMeasureOptions($this->measure_id);
     }
 
-    public function setCategory (Category $category){
+    public function setCategory(Category $category): void
+    {
         $this->category = $category;
         $this->name = $category->name;
         $this->measure_id = $category->measure_id;
@@ -72,6 +75,18 @@ class UpdateCategory extends Component
         $this->measureResults = [];
     }
 
+    public function updatedMeasureId($value): void
+    {
+        if (! $value) {
+            return;
+        }
+
+        $selected = collect($this->measureOptions)->firstWhere('id', (int) $value);
+        if ($selected) {
+            $this->measureSearch = $selected['name'];
+        }
+    }
+
     public function ensureMeasureSelected(): void
     {
         $this->measureResults = [];
@@ -89,6 +104,20 @@ class UpdateCategory extends Component
             'measure_id.required' => 'Selecciona una unidad de la lista. Si no existe, regístrala en "Unidades de medida".',
             'measure_id.exists' => 'La unidad de medida no existe. Regístrala primero en "Unidades de medida".',
         ];
+    }
+
+    private function loadMeasureOptions(?int $selectedId = null): array
+    {
+        return Measure::query()
+            ->when(
+                $selectedId,
+                fn ($query) => $query->where(fn ($q) => $q->where('status', true)->orWhere('id', $selectedId)),
+                fn ($query) => $query->where('status', true),
+            )
+            ->orderBy('name')
+            ->get(['id', 'name'])
+            ->map(fn ($m) => ['id' => $m->id, 'name' => $m->name])
+            ->toArray();
     }
 
     public function update()

@@ -290,22 +290,29 @@
             color: var(--text);
         }
 
-        .inventory-table thead th {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--muted);
-            background: rgba(26, 168, 85, 0.08);
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
+	        .inventory-table thead th {
+	            padding: 0.75rem 1rem;
+	            text-align: left;
+	            font-weight: 700;
+	            font-size: 0.8rem;
+	            color: var(--muted);
+	            background: rgba(26, 168, 85, 0.08);
+	            border-bottom: 1px solid var(--border);
+	            white-space: nowrap;
+	        }
 
-        .inventory-table tbody td {
-            padding: 0.75rem 1rem;
-            border-top: 1px solid var(--border);
-            vertical-align: middle;
-        }
+	        .inventory-table th.inventory-actions-cell,
+	        .inventory-table td.inventory-actions-cell {
+	            width: 1%;
+	            white-space: nowrap;
+	            text-align: center;
+	        }
+
+	        .inventory-table tbody td {
+	            padding: 0.75rem 1rem;
+	            border-top: 1px solid var(--border);
+	            vertical-align: middle;
+	        }
 
         .inventory-table tbody tr:first-child td {
             border-top: none;
@@ -383,7 +390,7 @@
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         @if ($canCreate)
-            <a href="{{route('productdeliveries.create')}}" wire:navigate class="btn-primary" role="button">
+            <a href="{{route('productdeliveries.create')}}" wire:navigate class="btn-primary self-start sm:self-auto" role="button">
                 Registrar una entrada de inventario
             </a>
         @endif
@@ -455,7 +462,7 @@
                         <th scope="col">Producto Entregado</th>
                         <th scope="col">Cantidad Entregada</th>
                         <th scope="col">Fecha</th>
-                        <th scope="col" class="text-center">Acciones</th>
+	                        <th scope="col" class="inventory-actions-cell">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -466,7 +473,7 @@
                             <td>{{ $delivery->product->name }}</td>
                             <td>{{ $delivery->delivered_amount }} {{ $delivery->product->category->measure->name }}</td>
                             <td>{{ $delivery->date }}</td>
-                            <td class="text-center">
+	                            <td class="inventory-actions-cell">
                                 <div class="flex justify-center items-center gap-2">
                                     <a href="{{ route('productdeliveries.reports.pdf', $delivery) }}" target="_blank">
                                         <button type="button" class="btn-info">

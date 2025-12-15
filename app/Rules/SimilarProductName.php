@@ -60,6 +60,10 @@ class SimilarProductName implements ValidationRule
 
     private function isTooSimilar(string $a, string $b): bool
     {
+        if ($this->differsOnlyByAllowedGradeSuffix($a, $b)) {
+            return false;
+        }
+
         $percent = 0;
         similar_text($a, $b, $percent);
 
@@ -67,5 +71,48 @@ class SimilarProductName implements ValidationRule
         $relative = $distance / max(strlen($a), strlen($b), 1);
 
         return $percent >= 85 || $relative <= 0.15;
+    }
+
+    private function differsOnlyByAllowedGradeSuffix(string $a, string $b): bool
+    {
+        $tokensA = array_values(array_filter(explode(' ', $a)));
+        $tokensB = array_values(array_filter(explode(' ', $b)));
+
+        if (count($tokensA) < 2 || count($tokensB) < 2) {
+            return false;
+        }
+
+        if (count($tokensA) !== count($tokensB)) {
+            return false;
+        }
+
+        $baseA = array_slice($tokensA, 0, -1);
+        $baseB = array_slice($tokensB, 0, -1);
+        if ($baseA !== $baseB) {
+            return false;
+        }
+
+        $suffixA = $tokensA[count($tokensA) - 1];
+        $suffixB = $tokensB[count($tokensB) - 1];
+
+        if ($suffixA === $suffixB) {
+            return false;
+        }
+
+        return $this->isAllowedGradeToken($suffixA) && $this->isAllowedGradeToken($suffixB);
+    }
+
+    private function isAllowedGradeToken(string $token): bool
+    {
+        $token = trim($token);
+        if ($token === '') {
+            return false;
+        }
+
+        if (preg_match('/^([a-z])\\1{0,4}$/', $token) === 1) {
+            return true;
+        }
+
+        return in_array($token, ['xs', 's', 'm', 'l', 'xl', 'xxl', 'xxxl'], true);
     }
 }

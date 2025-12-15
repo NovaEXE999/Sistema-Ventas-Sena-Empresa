@@ -344,7 +344,7 @@
                 </svg>
             </div>
             <div class="flex flex-col leading-tight">
-                <span class="providers-form-title-text">Registro de Proveedores</span>
+                <span class="providers-form-title-text">{{ $isEdit ? 'Actualizar proveedor' : 'Crear proveedor' }}</span>
                 <span class="providers-form-subtitle">Datos del proveedor</span>
             </div>
         </div>

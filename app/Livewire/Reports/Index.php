@@ -127,7 +127,7 @@ class Index extends Component
             ],
             [
                 'title' => 'Ingresos del mes',
-                'value' => number_format($revenue, 2),
+                'value' => rtrim(rtrim(number_format($revenue, 2), '0'), '.'),
                 'helper' => 'Valor total de ventas',
             ],
             [
@@ -191,4 +191,3 @@ class Index extends Component
         return view('livewire.reports.index');
     }
 }
-

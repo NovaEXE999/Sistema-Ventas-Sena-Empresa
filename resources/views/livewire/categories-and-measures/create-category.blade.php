@@ -337,6 +337,10 @@
         }
     </style>
 
+    @php
+        $isEdit = property_exists($this, 'category') && $this->category?->exists;
+    @endphp
+
     
     <div class="catform-topbar">
         <a href="{{ route('categoriesandmeasures.index')}}"
@@ -360,7 +364,7 @@
                 </svg>
             </div>
             <div class="flex flex-col leading-tight">
-                <span class="catform-title-text">Registro de categorías</span>
+                <span class="catform-title-text">{{ $isEdit ? 'Actualizar categoría' : 'Crear categoría' }}</span>
                 <span class="catform-subtitle">Gestión de productos</span>
             </div>
         </div>
@@ -430,10 +434,6 @@
 
                 <x-form.field-error for="measure_id" />
             </div>
-
-            @php
-                $isEdit = property_exists($this, 'category') && $this->category?->exists;
-            @endphp
 
             <div class="flex items-center justify-end mt-3">
                 <button type="submit" class="catform-submit">

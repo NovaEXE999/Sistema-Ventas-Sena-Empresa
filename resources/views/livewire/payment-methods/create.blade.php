@@ -277,7 +277,7 @@
                 </svg>
             </div>
             <div class="flex flex-col leading-tight">
-                <span class="paymentform-title-text">Métodos de pago</span>
+                <span class="paymentform-title-text">{{ request()->routeIs('paymentmethods.create') ? 'Crear método de pago' : 'Actualizar método de pago' }}</span>
                 <span class="paymentform-subtitle">Gestión de pagos</span>
             </div>
         </div>

@@ -289,22 +289,29 @@
             color: var(--text);
         }
 
-        .products-table thead th {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--muted);
-            background: rgba(26, 168, 85, 0.08);
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
+	        .products-table thead th {
+	            padding: 0.75rem 1rem;
+	            text-align: left;
+	            font-weight: 700;
+	            font-size: 0.8rem;
+	            color: var(--muted);
+	            background: rgba(26, 168, 85, 0.08);
+	            border-bottom: 1px solid var(--border);
+	            white-space: nowrap;
+	        }
 
-        .products-table tbody td {
-            padding: 0.75rem 1rem;
-            border-top: 1px solid var(--border);
-            vertical-align: middle;
-        }
+	        .products-table th.products-actions-cell,
+	        .products-table td.products-actions-cell {
+	            width: 1%;
+	            white-space: nowrap;
+	            text-align: center;
+	        }
+
+	        .products-table tbody td {
+	            padding: 0.75rem 1rem;
+	            border-top: 1px solid var(--border);
+	            vertical-align: middle;
+	        }
 
         .products-table tbody tr:first-child td {
             border-top: none;
@@ -424,7 +431,7 @@
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         @if ($isAdmin)
-            <a href="{{ route('products.create') }}" wire:navigate class="btn-primary" role="button">
+            <a href="{{ route('products.create') }}" wire:navigate class="btn-primary self-start sm:self-auto" role="button">
                 Registrar un producto
             </a>
         @endif
@@ -505,7 +512,7 @@
                         <th scope="col">Categoría</th>
                         <th scope="col">Estado</th>
                         @if ($isAdmin)
-                            <th scope="col" class="text-center">Acciones</th>
+	                            <th scope="col" class="products-actions-cell">Acciones</th>
                         @endif
                     </tr>
                 </thead>
@@ -555,7 +562,7 @@
                             </td>
 
                             @if ($isAdmin)
-                                <td class="text-center">
+	                            <td class="products-actions-cell">
                                     <div class="flex justify-center items-center gap-2">
                                         <a href="{{ route('products.update', $product)}}" wire:navigate>
                                             <button type="button" class="btn-secondary">

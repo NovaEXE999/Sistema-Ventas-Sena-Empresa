@@ -313,22 +313,29 @@
             color: var(--text);
         }
 
-        .sales-table thead th {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--muted);
-            background: rgba(26, 168, 85, 0.08);
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
+	        .sales-table thead th {
+	            padding: 0.75rem 1rem;
+	            text-align: left;
+	            font-weight: 700;
+	            font-size: 0.8rem;
+	            color: var(--muted);
+	            background: rgba(26, 168, 85, 0.08);
+	            border-bottom: 1px solid var(--border);
+	            white-space: nowrap;
+	        }
 
-        .sales-table tbody td {
-            padding: 0.75rem 1rem;
-            border-top: 1px solid var(--border);
-            vertical-align: middle;
-        }
+	        .sales-table th.sales-actions-cell,
+	        .sales-table td.sales-actions-cell {
+	            width: 1%;
+	            white-space: nowrap;
+	            text-align: center;
+	        }
+
+	        .sales-table tbody td {
+	            padding: 0.75rem 1rem;
+	            border-top: 1px solid var(--border);
+	            vertical-align: middle;
+	        }
 
         .sales-table tbody tr:first-child td {
             border-top: none;
@@ -404,7 +411,7 @@
     @php($isAdmin = auth()->user()?->isAdmin())
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <a href="{{ route('sales.create') }}" wire:navigate class="btn-primary" role="button">
+        <a href="{{ route('sales.create') }}" wire:navigate class="btn-primary self-start sm:self-auto" role="button">
             Registrar una venta
         </a>
 
@@ -443,7 +450,7 @@
                 <select wire:model.live="filterDateType" class="sales-select w-full">
                     <option value="date">Fecha especifica</option>
                     <option value="month">Mes</option>
-                    <option value="year">Ano</option>
+                    <option value="year">Año</option>
                 </select>
             </div>
         </div>
@@ -500,7 +507,7 @@
                         <th scope="col">Forma de pago</th>
                         <th scope="col">Cliente</th>
                         <th scope="col">Vendedor</th>
-                        <th scope="col" class="text-center">Acciones</th>
+	                        <th scope="col" class="sales-actions-cell">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -511,7 +518,7 @@
                             <td>{{ $sale->paymentMethod->name }}</td>
                             <td>{{ $sale->client->name }}</td>
                             <td>{{ $sale->user->name }}</td>
-                            <td class="text-center">
+	                            <td class="sales-actions-cell">
                                 <div class="flex justify-center items-center gap-2">
                                     @if ($isAdmin)
                                         <button

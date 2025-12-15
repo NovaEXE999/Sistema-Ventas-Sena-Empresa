@@ -48,9 +48,6 @@ class Update extends Component
         if ($isAdmin) {
             $rules['status'] = 'boolean';
             $rules['client_type_id'] = 'required|exists:client_types,id';
-        } else {
-            $rules['status'] = 'prohibited';
-            $rules['client_type_id'] = 'prohibited';
         }
 
         return $rules;

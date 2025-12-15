@@ -278,8 +278,8 @@
                 </svg>
             </div>
             <div class="flex flex-col leading-tight">
-                <span class="persontypeform-title-text">Tipos de persona</span>
-                <span class="persontypeform-subtitle">Gestión de clasificaciones</span>
+                <span class="persontypeform-title-text">{{ request()->routeIs('persontypes.create') ? 'Crear tipo de persona' : 'Actualizar tipo de persona' }}</span>
+                <span class="persontypeform-subtitle">Gestión de proveedores</span>
             </div>
         </div>
     </div>

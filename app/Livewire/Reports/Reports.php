@@ -127,7 +127,7 @@ class Reports extends Component
             ],
             [
                 'title' => 'Ingresos del mes',
-                'value' => number_format($revenue, 2),
+                'value' => rtrim(rtrim(number_format($revenue, 2), '0'), '.'),
                 'helper' => 'Valor total de ventas',
             ],
             [

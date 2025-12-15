@@ -94,7 +94,7 @@
         <flux:sidebar sticky stashable class="border-e border-[#158a4c] bg-[#1aa855] text-white">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
+            <a href="{{ route('reports.index') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
                 <x-app-logo />
             </a>
 

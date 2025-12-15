@@ -181,22 +181,29 @@
             color: var(--text);
         }
 
-        .catmeasures-table thead th {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--muted);
-            background: rgba(26, 168, 85, 0.08);
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
+	        .catmeasures-table thead th {
+	            padding: 0.75rem 1rem;
+	            text-align: left;
+	            font-weight: 700;
+	            font-size: 0.8rem;
+	            color: var(--muted);
+	            background: rgba(26, 168, 85, 0.08);
+	            border-bottom: 1px solid var(--border);
+	            white-space: nowrap;
+	        }
 
-        .catmeasures-table tbody td {
-            padding: 0.75rem 1rem;
-            border-top: 1px solid var(--border);
-            vertical-align: middle;
-        }
+	        .catmeasures-table th.catmeasures-actions-cell,
+	        .catmeasures-table td.catmeasures-actions-cell {
+	            width: 1%;
+	            white-space: nowrap;
+	            text-align: center;
+	        }
+
+	        .catmeasures-table tbody td {
+	            padding: 0.75rem 1rem;
+	            border-top: 1px solid var(--border);
+	            vertical-align: middle;
+	        }
 
         .catmeasures-table tbody tr:first-child td {
             border-top: none;
@@ -303,7 +310,7 @@
                         <th scope="col">Unidad de medida</th>
                         <th scope="col">Estado</th>
                         @if ($isAdmin)
-                            <th scope="col" class="text-center">Acciones</th>
+	                            <th scope="col" class="catmeasures-actions-cell">Acciones</th>
                         @endif
                     </tr>
                 </thead>
@@ -318,7 +325,7 @@
                                 </span>
                             </td>
                             @if ($isAdmin)
-                                <td class="text-center">
+	                                <td class="catmeasures-actions-cell">
                                     <div class="flex justify-center items-center gap-2">
                                         <a href="{{ route('categories.update', $category)}}" wire:navigate>
                                             <button type="button" class="btn-secondary">
@@ -384,7 +391,7 @@
                         <th scope="col">Nombre</th>
                         <th scope="col">Estado</th>
                         @if ($isAdmin)
-                            <th scope="col" class="text-center">Acciones</th>
+	                            <th scope="col" class="catmeasures-actions-cell">Acciones</th>
                         @endif
                     </tr>
                 </thead>
@@ -398,7 +405,7 @@
                                 </span>
                             </td>
                             @if ($isAdmin)
-                                <td class="text-center">
+	                                <td class="catmeasures-actions-cell">
                                     <div class="flex justify-center items-center gap-2">
                                         <a href="{{ route('measures.update', $measure)}}" wire:navigate>
                                             <button type="button" class="btn-secondary">

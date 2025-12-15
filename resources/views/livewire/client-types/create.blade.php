@@ -278,7 +278,7 @@
                 </svg>
             </div>
             <div class="flex flex-col leading-tight">
-                <span class="clienttypeform-title-text">Tipos de cliente</span>
+                <span class="clienttypeform-title-text">{{ request()->routeIs('clienttypes.create') ? 'Crear tipo de cliente' : 'Actualizar tipo de cliente' }}</span>
                 <span class="clienttypeform-subtitle">Gestión de clasificaciones</span>
             </div>
         </div>

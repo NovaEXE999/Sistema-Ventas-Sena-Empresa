@@ -344,7 +344,7 @@
                 </svg>
             </div>
             <div class="flex flex-col leading-tight">
-                <span class="clients-form-title-text">Registro de clientes</span>
+                <span class="clients-form-title-text">{{ $isEdit ? 'Actualizar cliente' : 'Crear cliente' }}</span>
                 <span class="clients-form-subtitle">Datos del cliente</span>
             </div>
         </div>
@@ -373,7 +373,7 @@
                         const allowedKeys = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','End'];
                         if (!/^[0-9]$/.test($event.key) && !allowedKeys.includes($event.key)) { $event.preventDefault(); }
                     "
-                    @if (request()->routeIs('clients.update')) disabled @endif
+                    @if ($isEdit) disabled @endif
                 />
                 <x-form.field-error for="identification" />
                 <p class="clients-form-helper">Solo números, mínimo 3 máximo 10.</p>
@@ -423,7 +423,7 @@
                         wire:model="client_type_id"
                         required
                         class="sales-select w-full"
-                        @if (request()->routeIs('clients.update') && ! $isAdmin) disabled @endif
+                        @if ($isEdit && ! $isAdmin) disabled @endif
                     >
                         <option value="">Seleccione...</option>
                         @foreach($clientTypes as $type)

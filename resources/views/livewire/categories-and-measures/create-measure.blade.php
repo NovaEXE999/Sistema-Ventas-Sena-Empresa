@@ -276,7 +276,7 @@
                 </svg>
             </div>
             <div class="flex flex-col leading-tight">
-                <span class="measureform-title-text">Unidades de medida</span>
+                <span class="measureform-title-text">{{ request()->routeIs('measures.create') ? 'Crear unidad de medida' : 'Actualizar unidad de medida' }}</span>
                 <span class="measureform-subtitle">Gestión de productos</span>
             </div>
         </div>

@@ -79,7 +79,7 @@ class DatabaseSeeder extends Seeder
         $vendorUser = User::updateOrCreate(
             ['email' => 'vendedor@gmail.com'],
             [
-                'identification' => '0123456789',
+                'identification' => '1123456789',
                 'name' => 'vendedor',
                 'phone_number' => '3123456789',
                 'status' => true,

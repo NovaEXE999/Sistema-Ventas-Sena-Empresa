@@ -267,22 +267,29 @@
             color: var(--text);
         }
 
-        .clients-table thead th {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            font-weight: 700;
-            font-size: 0.8rem;
-            color: var(--muted);
-            background: rgba(26, 168, 85, 0.08);
-            border-bottom: 1px solid var(--border);
-            white-space: nowrap;
-        }
+	        .clients-table thead th {
+	            padding: 0.75rem 1rem;
+	            text-align: left;
+	            font-weight: 700;
+	            font-size: 0.8rem;
+	            color: var(--muted);
+	            background: rgba(26, 168, 85, 0.08);
+	            border-bottom: 1px solid var(--border);
+	            white-space: nowrap;
+	        }
 
-        .clients-table tbody td {
-            padding: 0.75rem 1rem;
-            border-top: 1px solid var(--border);
-            vertical-align: middle;
-        }
+	        .clients-table th.clients-actions-cell,
+	        .clients-table td.clients-actions-cell {
+	            width: 1%;
+	            white-space: nowrap;
+	            text-align: center;
+	        }
+
+	        .clients-table tbody td {
+	            padding: 0.75rem 1rem;
+	            border-top: 1px solid var(--border);
+	            vertical-align: middle;
+	        }
 
         .clients-table tbody tr:first-child td {
             border-top: none;
@@ -379,7 +386,7 @@
     @php($isAdmin = auth()->user()?->isAdmin())
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <a href="{{ route('clients.create') }}" wire:navigate class="btn-primary" role="button">
+        <a href="{{ route('clients.create') }}" wire:navigate class="btn-primary self-start sm:self-auto" role="button">
             Registrar un cliente
         </a>
 
@@ -447,7 +454,7 @@
                     <th scope="col">Teléfono</th>
                     <th scope="col">Tipo de cliente</th>
                     <th scope="col">Estado</th>
-                    <th scope="col" class="text-center">Acciones</th>
+	                    <th scope="col" class="clients-actions-cell">Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -463,7 +470,7 @@
                             </span>
                         </td>
 
-                        <td class="text-center">
+	                        <td class="clients-actions-cell">
                             <div class="flex justify-center items-center gap-2">
                                 <a href="{{ route('clients.update', $client) }}" wire:navigate>
                                     <button type="button" class="btn-secondary">
